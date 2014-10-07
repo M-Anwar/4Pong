@@ -84,10 +84,19 @@ public class IntroState extends GameState
             ball.draw(g);
         //Drawing code goes here
         g.setColor(Color.WHITE.getRGB());
-        g.setFont("Arial", Graphics.BOLD, 180);
-        g.drawstring("4 P O N G", WIDTH/2 - g.getFontDimension("4 P O N G")[0]/2, 250);
+        
+        //Draw the Title and credits        
+        g.setFont("Arial", Graphics.BOLD, 180);       
+        g.drawString("4 P O N G", WIDTH/2 - g.getFontDimension("4 P O N G")[0]/2, 250);
         g.setFont("Arial", Graphics.PLAIN, 20);
-        g.drawstring("Muhammed A. , Jason X.", WIDTH-g.getFontDimension("Muhammed A. , Jason X.")[0]-100, 300);
+        g.drawString("Muhammed A. , Jason X.", WIDTH-g.getFontDimension("Muhammed A. , Jason X.")[0]-100, 300);
+        
+        //Draw Instructions and welcome details
+        g.setFont("Arial", Graphics.BOLD, 45);
+        g.drawString("Welcome",WIDTH/2-100,420);
+        g.setFont("Arial",Graphics.PLAIN, 20);
+        g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 450);
+        g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);
         super.draw(g);
     }
 

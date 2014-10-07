@@ -72,7 +72,7 @@ public class GameButton extends Component
         g.setColor(Color.WHITE.getRGB());
         g.drawRect(this.position.x-border/2, this.position.y-border/2-this.txtHeight, width, height);
         
-        g.drawstring(this.getText(), this.position.x, this.position.y);                
+        g.drawString(this.getText(), this.position.x, this.position.y);                
     }
     public float getWidth(){return this.width;}
     public float getHeight(){return this.height;}

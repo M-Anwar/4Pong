@@ -94,7 +94,7 @@ public class Component
         else
             g.setColor(Color.RED.getRGB());
         g.setFont(font, Graphics.BOLD, fontSize);
-        g.drawstring(text, position.x, position.y);
+        g.drawString(text, position.x, position.y);
         g.drawRect(position.x-5, position.y-txtHeight-5, txtWidth+10, txtHeight+10);
         
     }

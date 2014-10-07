@@ -57,10 +57,10 @@ public class SinglePlayerGame extends GameState{
 
     @Override
     public void draw(Graphics g) {             
-        g2.drawstring("Hello World", 10, 10);
+        g2.drawString("Hello World", 10, 10);
         g.setFont("Arial", Graphics.BOLD, 40);
         g.setColor(Color.WHITE.getRGB());
-        g.drawstring("WELCOME TO SINGLE PLAYER PONG", 50, GamePanel.HEIGHT/2);
+        g.drawString("WELCOME TO SINGLE PLAYER PONG", 50, GamePanel.HEIGHT/2);
         g.drawImage(0, 0, i);
         super.draw(g);
     }    

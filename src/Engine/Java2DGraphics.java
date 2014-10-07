@@ -42,7 +42,7 @@ public class Java2DGraphics implements Graphics
      * <p>The x,y coordinates define the upper left corner of the bounding rectangle</p>
      */
     @Override  
-    public void drawstring(String text, float x, float y) {
+    public void drawString(String text, float x, float y) {
         g.drawString(text, x, y);
     }
 

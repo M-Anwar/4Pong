@@ -17,7 +17,7 @@ public interface Graphics
     public static final String PLAIN = "PLAIN";
     
     //Text functions
-    public void drawstring(String text,float x,float y);
+    public void drawString(String text,float x,float y);
     public void setFont(String font, String type, int size);
     public String getFont();
     public int[] getFontDimension(String t);
