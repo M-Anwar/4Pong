@@ -11,7 +11,8 @@ import GUI.GameButton;
 import java.util.ArrayList;
 
 /**
- *
+ * Every unique game screen should extend this class. Game states should be 
+ * switched using only the GameStateManager instance.
  * @author muhammed.anwar
  */
 public abstract class GameState 

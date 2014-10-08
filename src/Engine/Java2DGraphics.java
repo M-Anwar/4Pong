@@ -15,8 +15,7 @@ import java.awt.geom.AffineTransform;
  * @author muhammed.anwar
  */
 public class Java2DGraphics implements Graphics
-{
-    
+{    
     private Graphics2D g;
     public Java2DGraphics(Graphics2D g) //Takes the Java2D Graphics2D context
     {
@@ -43,7 +42,7 @@ public class Java2DGraphics implements Graphics
      */
     @Override  
     public void drawString(String text, float x, float y) {
-        g.drawString(text, x, y);
+        g.drawString(text, x, y);        
     }
 
     /**
@@ -231,6 +230,19 @@ public class Java2DGraphics implements Graphics
     @Override
     public void setThickness(int thickness) {
         g.setStroke(new BasicStroke(thickness));
+    }
+
+    @Override
+    /**
+     * Sets the drawing clip of the graphics context. Drawing does not occur
+     * outside the clip
+     * @param x - x-position of the clipping rectangle
+     * @param y - y-position of the clipping rectangle
+     * @param width - width of the clipping rectangle
+     * @param height - height of the clipping rectangle
+     */
+    public void setClip(int x, int y, int width, int height) {
+        g.setClip(x,y,width,height);
     }
     
 }

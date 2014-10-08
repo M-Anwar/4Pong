@@ -40,6 +40,10 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     public static final int WIDTH =1024;
     public static final int HEIGHT = 720;
     
+    //The dimensions of the actual pong game (defined here for convenience)
+    public static final int GAMEWIDTH = HEIGHT-10;
+    public static final int GAMEHEIGHT = HEIGHT-10;
+    
     //Game loop speeds
     public static final int NORMAL =    100000000;
     public static final int SLOMO =     1000000000;
@@ -50,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     private Thread thread;
     private boolean running;
     private int FPS = 60;
+    private float actualFPS;
     private long targetTime = 1000/FPS;
     
     //Graphics Variables
@@ -110,6 +115,8 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
             catch(Exception e) {e.printStackTrace();}
             
             delta = System.nanoTime()- start;
+            actualFPS = (1000000000/(float)delta);
+            
         }        
     }
     public void update(long delta)
@@ -128,6 +135,12 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         g.setColor(Color.BLACK.getRGB());
         g.fillRect(0, 0, WIDTH, HEIGHT);  
         gsm.draw(g);
+        
+        /*
+        g.setColor(Color.BLACK.getRGB());
+        g.fillRect(0, 0, 300, 40);
+        g.setColor(Color.WHITE.getRGB());
+        g.drawString("FPS: "+ actualFPS, 10, 20);*/
                 
     }
     public void drawToScreen()

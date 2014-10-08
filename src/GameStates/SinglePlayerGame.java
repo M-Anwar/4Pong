@@ -27,9 +27,7 @@ import java.util.ArrayList;
  * @author muhammed.anwar
  */
 public class SinglePlayerGame extends GameState{
-
-    Java2DImage i;
-    Graphics g2;
+    
     public SinglePlayerGame(GameStateManager gsm) {
         super(gsm);
         init();
@@ -37,8 +35,7 @@ public class SinglePlayerGame extends GameState{
 
     @Override
     public void init() {
-        i = new Java2DImage(new BufferedImage(HEIGHT, HEIGHT, BufferedImage.TYPE_INT_ARGB));
-        g2 = new Java2DGraphics((Graphics2D)i.image.getGraphics());
+       
         buttons = new ArrayList<GameButton>();
         buttons.add(new GameButton("X",GamePanel.WIDTH-40,40));
         buttons.get(0).addButtonListener(new ButtonListener(){          
@@ -57,11 +54,26 @@ public class SinglePlayerGame extends GameState{
 
     @Override
     public void draw(Graphics g) {             
-        g2.drawString("Hello World", 10, 10);
-        g.setFont("Arial", Graphics.BOLD, 40);
-        g.setColor(Color.WHITE.getRGB());
-        g.drawString("WELCOME TO SINGLE PLAYER PONG", 50, GamePanel.HEIGHT/2);
-        g.drawImage(0, 0, i);
+        
+        //Draw Score Card
+        g.setFont("Arial", Graphics.BOLD, 25);
+        g.setColor(Color.WHITE.getRGB());        
+        g.drawString("Score:",GamePanel.GAMEWIDTH+20,70);
+        g.setFont("Arial",Graphics.PLAIN,15);
+        g.setColor(Color.GREEN.getRGB());
+        g.drawString("Player 1:",GamePanel.GAMEWIDTH+40,90);
+        g.setColor(Color.WHITE.getRGB());        
+        g.drawString("CPU 1:",GamePanel.GAMEWIDTH+40,110);
+        g.drawString("CPU 2:",GamePanel.GAMEWIDTH+40,130);
+        g.drawString("CPU 3:",GamePanel.GAMEWIDTH+40,150);
+                         
+        //Sets the game area
+        g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
+        g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
+        g.translate(5, 5);
+        
+        g.translate(-5, -5);
+        g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         super.draw(g);
     }    
 

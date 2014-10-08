@@ -29,19 +29,19 @@ public class IntroState extends GameState
     
     public IntroState(GameStateManager gsm) {
         super(gsm);
-        init();
+        init();        
     }
 
     @Override
     public void init() {       
-        b = new ArrayList<MenuBall>();
+        b = new ArrayList<MenuBall>();       
         
         int startY = 380;
         buttons.add(new GameButton("Play Game",90,startY));
         buttons.add(new GameButton("Multi-Player",90,startY+60));
         buttons.add(new GameButton("Options",90,startY+120));
         buttons.add(new GameButton("Exit",90,startY+175));
-        for (int i =0; i <10; i ++){
+        for (int i =0; i <1; i ++){
             b.add(new MenuBall(40,40));       
         }
         
@@ -89,7 +89,7 @@ public class IntroState extends GameState
         g.setFont("Arial", Graphics.BOLD, 180);       
         g.drawString("4 P O N G", WIDTH/2 - g.getFontDimension("4 P O N G")[0]/2, 250);
         g.setFont("Arial", Graphics.PLAIN, 20);
-        g.drawString("Muhammed A. , Jason X.", WIDTH-g.getFontDimension("Muhammed A. , Jason X.")[0]-100, 300);
+        g.drawString("Muhammed A. , Jason X. , Trevor W.", WIDTH-g.getFontDimension("Muhammed A. , Jason X., Trevor W.")[0]-100, 300);
         
         //Draw Instructions and welcome details
         g.setFont("Arial", Graphics.BOLD, 45);

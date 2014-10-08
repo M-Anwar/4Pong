@@ -68,7 +68,7 @@ public class Options extends GameState{
     public void draw(Graphics g) {        
         g.setColor(Color.WHITE.getRGB());
         g.setFont("Arial", Graphics.BOLD, 30);
-        g.drawString("Play Speed Options:", 30, 50);
+        g.drawString("Play Speed Options:", 30, 50);       
         super.draw(g);
     }
 
