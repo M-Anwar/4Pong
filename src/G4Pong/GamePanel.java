@@ -134,8 +134,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     {
         g.setColor(Color.BLACK.getRGB());
         g.fillRect(0, 0, WIDTH, HEIGHT);  
-        gsm.draw(g);
-        
+        gsm.draw(g);        
         /*
         g.setColor(Color.BLACK.getRGB());
         g.fillRect(0, 0, 300, 40);
