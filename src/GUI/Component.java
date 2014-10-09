@@ -78,7 +78,7 @@ public class Component
         if(velocity.length2()>9){            
             velocity.thisScale(0.5f);
             velocity.thisScale(delta,delta);       
-            position.add(velocity);
+            position.thisAdd(velocity);
             this.isEnabled = false;
         }else
         {

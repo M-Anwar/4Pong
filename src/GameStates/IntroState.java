@@ -9,7 +9,10 @@ package GameStates;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
+import Engine.Mouse;
+import Engine.Vector2D;
 import Entity.MenuBall;
+import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
 import GUI.ButtonListener;
@@ -26,7 +29,7 @@ import java.util.Random;
 public class IntroState extends GameState
 {    
     ArrayList<MenuBall> b;
-    
+    float angle;
     public IntroState(GameStateManager gsm) {
         super(gsm);
         init();        
@@ -41,8 +44,8 @@ public class IntroState extends GameState
         buttons.add(new GameButton("Multi-Player",90,startY+60));
         buttons.add(new GameButton("Options",90,startY+120));
         buttons.add(new GameButton("Exit",90,startY+175));
-        for (int i =0; i <1; i ++){
-            b.add(new MenuBall(40,40));       
+        for (int i =0; i <10; i ++){
+            b.add(new MenuBall(GamePanel.WIDTH/2,GamePanel.HEIGHT/2));       
         }
         
         buttons.get(3).addButtonListener(new ButtonListener(){          
@@ -97,12 +100,21 @@ public class IntroState extends GameState
         g.setFont("Arial",Graphics.PLAIN, 20);
         g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 450);
         g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);
+               
+        Vector2D p1 = new Vector2D(Mouse.x, Mouse.y);
+        Vector2D p2 = new Vector2D(GamePanel.WIDTH/2, GamePanel.HEIGHT/2);        
+        p1.thisSubtract(p2);
+        angle = p1.angle();    
+        
         super.draw(g);
     }
 
     @Override
     public void handleInput() {
-        
+        if (Mouse.isPressed() ==true)
+        {            
+            b.add(new MenuBall(GamePanel.WIDTH/2,GamePanel.HEIGHT/2,angle,10));
+        }
     }
     
 }

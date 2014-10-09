@@ -8,9 +8,11 @@ package GameStates;
 
 import Engine.GameState;
 import Engine.GameStateManager;
+import Engine.Geometry.Rectangle;
 import Engine.Graphics;
 import Engine.Java2DGraphics;
 import Engine.Java2DImage;
+import Engine.Vector2D;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
  */
 public class SinglePlayerGame extends GameState{
     
+    Rectangle r;
     public SinglePlayerGame(GameStateManager gsm) {
         super(gsm);
         init();
@@ -43,13 +46,13 @@ public class SinglePlayerGame extends GameState{
                gsm.setState(GameStateManager.INTRO_STATE);
             }                
         });
+        r = new Rectangle(GamePanel.GAMEWIDTH/2-50, GamePanel.GAMEHEIGHT/2-15,100,30);
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-        handleInput();
-         
+        handleInput();         
     }
 
     @Override
@@ -71,6 +74,31 @@ public class SinglePlayerGame extends GameState{
         g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
         g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
         g.translate(5, 5);
+        
+        g.drawRect(r.x, r.y, r.width, r.height);
+        Vector2D n = r.getCorners().get(Rectangle.TOPRIGHT).subtract(r.getCorners().get(Rectangle.TOPLEFT));
+        Vector2D n1 = n.getPerpendicular();
+        n1.normalize();
+        n1.thisScale(10);
+        g.drawLine(r.x+r.width/2, r.y, r.x+r.width/2 +n1.x, r.y + n1.y);
+        
+        n = r.getCorners().get(Rectangle.BOTTOMRIGHT).subtract(r.getCorners().get(Rectangle.TOPRIGHT));
+        n1 = n.getPerpendicular();
+        n1.normalize();
+        n1.thisScale(10);
+        g.drawLine(r.x+r.width, r.y+r.height/2, r.x+r.width +n1.x, r.y +r.height/2+ n1.y);
+        
+        n = r.getCorners().get(Rectangle.BOTTOMLEFT).subtract(r.getCorners().get(Rectangle.BOTTOMRIGHT));
+        n1 = n.getPerpendicular();
+        n1.normalize();
+        n1.thisScale(10);
+        g.drawLine(r.x+r.width/2, r.y+r.height, r.x+r.width/2 +n1.x, r.y +r.height+ n1.y);
+        
+        n = r.getCorners().get(Rectangle.TOPLEFT).subtract(r.getCorners().get(Rectangle.BOTTOMLEFT));
+        n1 = n.getPerpendicular();
+        n1.normalize();
+        n1.thisScale(10);
+        g.drawLine(r.x, r.y+r.height/2, r.x+n1.x, r.y +r.height/2+ n1.y);
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);

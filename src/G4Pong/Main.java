@@ -22,8 +22,7 @@ import javax.swing.JFrame;
 public class Main extends JFrame{
     
     public Main()
-    {
-        
+    {        
          this.setTitle("4Pong");
          this.add(new GamePanel());            
          this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,8 +39,7 @@ public class Main extends JFrame{
             this.setCursor(c);
         } catch (IOException ex) {
             
-        }
-         
+        }         
     }
     public static void main(String[] args) {        
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -49,6 +47,5 @@ public class Main extends JFrame{
                 new Main().setVisible(true);                
             }
         });  
-    }
-    
+    }    
 }

@@ -115,8 +115,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
             catch(Exception e) {e.printStackTrace();}
             
             delta = System.nanoTime()- start;
-            actualFPS = (1000000000/(float)delta);
-            
+            actualFPS = (1000000000/(float)delta);            
         }        
     }
     public void update(long delta)
@@ -135,6 +134,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         g.setColor(Color.BLACK.getRGB());
         g.fillRect(0, 0, WIDTH, HEIGHT);  
         gsm.draw(g);        
+        
         /*
         g.setColor(Color.BLACK.getRGB());
         g.fillRect(0, 0, 300, 40);
