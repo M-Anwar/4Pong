@@ -9,10 +9,19 @@ package Engine;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javax.imageio.ImageIO;
+import java.util.*;
+import java.io.PrintWriter;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Basic Utilities that are useful for IO functionalities.
@@ -37,10 +46,22 @@ public class Utils
      * Write to a string to a local text file
      * @param path - the path of the local file to write to
      * @param txt - the text to write to the file
+     * @throws Exception - Throws Exception if writeToFile fails 
      */
-    public static void writeToFile(String path, String txt)
+    public static void writeToFile(String path, String txt) throws Exception
     {
         //TODO ADD FUNCTIONALITY - Jason
+        PrintWriter writer = null;
+        try{
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(path, true)));
+            writer.println(txt);
+        }finally{
+            if(writer!= null){
+                writer.close();
+            }
+        }
+        
+        
     }   
         
     /******UTILS TO BE IMPLEMENTED********/
