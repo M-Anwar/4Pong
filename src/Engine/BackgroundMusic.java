@@ -6,9 +6,9 @@
 package Engine;
 
 /**
- * An interface that is used to implement the music
+ * An interface that is used to implement the Background music
  * @author Jason Xu
  */
-public class Music {
-    
+public interface BackgroundMusic {
+    public int createBackgroundMusic();
 }
