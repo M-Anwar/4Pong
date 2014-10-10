@@ -24,8 +24,8 @@ public class GameStateManager
     public static final int INTRO_STATE = -1;
     public static final int SINGLE_PLAYER_STATE = 0;
     public static final int OPTION_STATE = 1;
-    public static final int PLAYING_STATE = 2;
-    public static final int LEVEL_SELECT_STATE = 3;
+    public static final int TEST_STATE = 3;
+    
 
     public GameStateManager() {
         currentState = INTRO_STATE;
@@ -39,6 +39,8 @@ public class GameStateManager
                     gameState = new SinglePlayerGame(this);
             else if(state == OPTION_STATE)
                     gameState = new Options(this);
+            else if(state == TEST_STATE){}
+                    
     }
 
     public void setState(int state) {

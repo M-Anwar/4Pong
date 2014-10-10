@@ -47,7 +47,7 @@ public class SinglePlayerGame extends GameState{
                gsm.setState(GameStateManager.INTRO_STATE);
             }                
         });
-        r = new Rectangle(GamePanel.GAMEWIDTH/2-50, GamePanel.GAMEHEIGHT/2-15,100,30);
+        r = new Rectangle(GamePanel.GAMEWIDTH/2-50, GamePanel.GAMEHEIGHT/2-50,100,100);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SinglePlayerGame extends GameState{
         float x = WIDTH-ImageLoader.LOGO.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.LOGO.getHeight(), ImageLoader.LOGO);
         x-=ImageLoader.EXPADDLE.getWidth();
-        g.drawImage(x, HEIGHT-ImageLoader.EXPADDLE.getHeight(), ImageLoader.EXPADDLE,100,100);
+        g.drawImage(x, HEIGHT-ImageLoader.EXPADDLE.getHeight(), ImageLoader.EXPADDLE);
          x-=ImageLoader.SPEED.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.SPEED.getHeight(), ImageLoader.SPEED);
          x-=ImageLoader.SHIELD.getWidth();
