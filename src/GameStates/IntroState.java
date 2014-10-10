@@ -11,6 +11,7 @@ import Engine.GameStateManager;
 import Engine.Graphics;
 import Engine.Mouse;
 import Engine.Vector2D;
+import Entity.ImageLoader;
 import Entity.MenuBall;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
@@ -99,7 +100,8 @@ public class IntroState extends GameState
         g.drawString("Welcome",WIDTH/2-100,420);
         g.setFont("Arial",Graphics.PLAIN, 20);
         g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 450);
-        g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);
+        g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);        
+        
                
         Vector2D p1 = new Vector2D(Mouse.x, Mouse.y);
         Vector2D p2 = new Vector2D(GamePanel.WIDTH/2, GamePanel.HEIGHT/2);        

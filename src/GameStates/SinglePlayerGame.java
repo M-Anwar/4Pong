@@ -13,6 +13,7 @@ import Engine.Graphics;
 import Engine.Java2DGraphics;
 import Engine.Java2DImage;
 import Engine.Vector2D;
+import Entity.ImageLoader;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
@@ -102,6 +103,16 @@ public class SinglePlayerGame extends GameState{
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
+        float x = WIDTH-ImageLoader.LOGO.getWidth();
+        g.drawImage(x, HEIGHT-ImageLoader.LOGO.getHeight(), ImageLoader.LOGO);
+        x-=ImageLoader.EXPADDLE.getWidth();
+        g.drawImage(x, HEIGHT-ImageLoader.EXPADDLE.getHeight(), ImageLoader.EXPADDLE,100,100);
+         x-=ImageLoader.SPEED.getWidth();
+        g.drawImage(x, HEIGHT-ImageLoader.SPEED.getHeight(), ImageLoader.SPEED);
+         x-=ImageLoader.SHIELD.getWidth();
+        g.drawImage(x, HEIGHT-ImageLoader.SHIELD.getHeight(), ImageLoader.SHIELD);
+         x-=ImageLoader.CURVE.getWidth();
+        g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);
         super.draw(g);
     }    
 
