@@ -1,4 +1,3 @@
-<<<<<<< HEAD:src/Engine/BackgroundMusic.java
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,21 +11,6 @@ package Engine;
  */
 public interface BackgroundMusic {
     public int createBackgroundMusic();
-}
-=======
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Engine;
-
-/**
- * An interface that is used to implement the music
- * @author Jason Xu
- */
-public class Music 
-{
     /*
         Hi Jason its Muhammed here. Here are a few helpful sites to get you
         started on how to make an Audio engine.
@@ -193,4 +177,3 @@ public class Music
     
     */
 }
->>>>>>> origin/master:src/Engine/Music.java
