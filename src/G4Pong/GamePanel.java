@@ -37,8 +37,8 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMotionListener, KeyListener
 {
     //Width and Height of the Panel
-    public static final int WIDTH =1920;
-    public static final int HEIGHT = 1080;
+    public static final int WIDTH =1280;
+    public static final int HEIGHT = 720;
     
     //The dimensions of the actual pong game (defined here for convenience)
     public static final int GAMEWIDTH = HEIGHT-10;
