@@ -31,6 +31,8 @@ public class GameButton extends Component
         this.width = this.txtWidth + border;   
         listener = null;       
     }
+
+
     public void addButtonListener(ButtonListener l){
         this.listener = l;
     }

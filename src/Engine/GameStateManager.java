@@ -10,6 +10,7 @@ import G4Pong.GamePanel;
 import GameStates.IntroState;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
+import GameStates.TestBench;
 import java.awt.Color;
 
 /**
@@ -39,7 +40,8 @@ public class GameStateManager
                     gameState = new SinglePlayerGame(this);
             else if(state == OPTION_STATE)
                     gameState = new Options(this);
-            else if(state == TEST_STATE){}
+            else if(state == TEST_STATE)
+                    gameState = new TestBench(this);
                     
     }
 

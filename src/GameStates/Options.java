@@ -32,7 +32,8 @@ public class Options extends GameState{
         buttons.add(new GameButton("Normal-Motion",60 + buttons.get(0).getWidth(), 100));
         buttons.add(new GameButton("Fast-Motion",70 + buttons.get(0).getWidth()+ buttons.get(1).getWidth(), 100));
         buttons.add(new GameButton("Return to Menu",50,GamePanel.HEIGHT-50));
-       
+        buttons.add(new GameButton("Test Bench",50,150));
+        
         buttons.get(0).addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 GamePanel.setPlaySpeed(GamePanel.SLOMO);
@@ -54,6 +55,13 @@ public class Options extends GameState{
         buttons.get(3).addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 gsm.setState(GameStateManager.INTRO_STATE);
+            }
+        
+        });
+        
+        buttons.get(4).addButtonListener(new ButtonListener(){            
+            public void buttonClicked() {
+                gsm.setState(GameStateManager.TEST_STATE);
             }
         
         });
