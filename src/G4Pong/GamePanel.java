@@ -93,18 +93,19 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = (Graphics2D) image.getGraphics();        
         g = new Java2DGraphics(g2d);
-        running = true;	
-        gsm = new GameStateManager();
+        running = true;	        
         gameAudio = new JavaAudio();
             try {
             //Load Audio here - Might be changed to a loader in the future
                 gameAudio.load("/res/blip.wav", "BLIP");
                 gameAudio.load("/res/forcebewith.wav","FORCE");
                 gameAudio.load("/res/button2.wav","BUTTON");
+                gameAudio.load("/res/bgmusic1.wav","MENU");
             } catch (Exception ex) {
                 System.out.println("Unable to load audio: " + ex.getMessage());
             }
-            
+        
+        gsm = new GameStateManager();
     }    
     
     @Override

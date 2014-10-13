@@ -43,7 +43,7 @@ public class TestBench extends GameState
             @Override
             public void buttonClicked() {               
                 try {                    
-                   GamePanel.getAudio().play("BUTTON");
+                   GamePanel.getAudio().play("BLIP");
                 } catch (Exception ex) {
                     Logger.getLogger(TestBench.class.getName()).log(Level.SEVERE, null, ex);
                 }              

@@ -38,8 +38,11 @@ public class IntroState extends GameState
 
     @Override
     public void init() {       
-        b = new ArrayList<MenuBall>();       
-        
+        b = new ArrayList<MenuBall>();    
+        if(GamePanel.getAudio().isPlaying("MENU")==false){
+            GamePanel.getAudio().loop("MENU");
+            GamePanel.getAudio().play("MENU");
+        }
         int startY = 380;
         buttons.add(new GameButton("Play Game",90,startY));
         buttons.add(new GameButton("Multi-Player",90,startY+60));
@@ -61,12 +64,13 @@ public class IntroState extends GameState
         });
         buttons.get(1).addButtonListener(new ButtonListener(){          
             public void buttonClicked() {                
-               Random r = new Random();
+               Random r = new Random();              
                buttons.get(1).moveTo(r.nextInt(WIDTH), r.nextInt(HEIGHT));
             }                
         });
         buttons.get(0).addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
+                GamePanel.getAudio().stop("MENU");
                gsm.setState(GameStateManager.SINGLE_PLAYER_STATE);
             }                
         });
