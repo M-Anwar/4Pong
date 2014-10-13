@@ -113,6 +113,8 @@ public class JavaBackgroundMusic implements BackgroundMusic{
         Clip clip = Music.get(key);
         clip.setLoopPoints(start, end);
         clip.setFramePosition(frames);
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+        System.out.println("Here");
     }
     
     @Override
