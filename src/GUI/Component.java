@@ -14,7 +14,7 @@ import Engine.Vector2D;
 import G4Pong.GamePanel;
 import java.awt.Color;
 /**
- *
+ * The basic component for all GUI elements
  * @author muhammed.anwar
  */
 public class Component 
@@ -24,7 +24,12 @@ public class Component
     protected Vector2D finalPosition;
     
     protected float txtWidth;
-    protected float txtHeight;    
+    protected float txtHeight; 
+    
+    protected float width;
+    protected float height;
+    
+    protected float border = 25;
     
     private String font = "Arial";
     private String text; 
@@ -102,9 +107,14 @@ public class Component
     {
         this.finalPosition.x = x;
         this.finalPosition.y = y;
+    }    
+    
+     public boolean isHovering(int x, int y) {       
+        return x > this.position.x-border/2 && x < this.position.x-border/2+ width && 
+                y > this.position.y+border/2-this.height  && y < this.position.y +border/2;        
     }
-    
-    
+    public float getWidth(){return this.width;}
+    public float getHeight(){return this.height;}
     
     
             

@@ -32,17 +32,18 @@ import java.util.ArrayList;
 public class SinglePlayerGame extends GameState{
     
     Rectangle r;
+    private GameButton btnExit;
     public SinglePlayerGame(GameStateManager gsm) {
         super(gsm);
         init();
     }
 
     @Override
-    public void init() {
-       
-        buttons = new ArrayList<GameButton>();
-        buttons.add(new GameButton("X",GamePanel.WIDTH-40,40));
-        buttons.get(0).addButtonListener(new ButtonListener(){          
+    public void init() 
+    {      
+        btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
+        addComponent(btnExit);
+        btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
                gsm.setState(GameStateManager.INTRO_STATE);
             }                

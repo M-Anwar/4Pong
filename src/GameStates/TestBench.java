@@ -8,11 +8,9 @@ package GameStates;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
-import Engine.Audio.JavaAudio;
 import G4Pong.GamePanel;
 import GUI.ButtonListener;
 import GUI.GameButton;
-import java.awt.Color;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +20,8 @@ import java.util.logging.Logger;
  */
 public class TestBench extends GameState
 {  
+    private GameButton btnClose;
+    private GameButton btnMusic;
     
     public TestBench(GameStateManager gsm) {
         super(gsm);
@@ -30,16 +30,19 @@ public class TestBench extends GameState
 
     @Override
     public void init() {
-        buttons.add(new GameButton("X", GamePanel.WIDTH - 100, 100));
-        buttons.add(new GameButton("Backgroud Music", 100, 100));
+        btnClose = new GameButton("X", GamePanel.WIDTH - 100, 100);
+        btnMusic = new GameButton("Backgroud Music", 100, 100);
+        
+        addComponent(btnClose);
+        addComponent(btnMusic);
        
-        buttons.get(0).addButtonListener(new ButtonListener(){//X button to go back to options
+        btnClose.addButtonListener(new ButtonListener(){//X button to go back to options
             @Override
             public void buttonClicked() {
                 gsm.setState(GameStateManager.OPTION_STATE);
             }
         });
-        buttons.get(1).addButtonListener(new ButtonListener(){//BackgroundMusic button
+        btnMusic.addButtonListener(new ButtonListener(){//BackgroundMusic button
             @Override
             public void buttonClicked() {               
                 try {                    

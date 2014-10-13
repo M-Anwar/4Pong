@@ -18,21 +18,34 @@ import java.util.ArrayList;
 public abstract class GameState 
 {
     protected GameStateManager gsm;
-    protected ArrayList<GameButton> buttons;
+    private ArrayList<Component> components;
     public GameState(GameStateManager gsm) {
             this.gsm = gsm;
-            buttons = new ArrayList<GameButton>();
+            components = new ArrayList<>();
             
     }
 
     public abstract void init();
     public void update(float delta){
-        for(Component c: buttons)
+        for(Component c: components)
             c.update(delta);
     }
     public void draw(Graphics g){
-        for(Component c: buttons)
+        for(Component c: components)
             c.draw(g);
     }
     public abstract void handleInput();
+    
+    
+    /**
+     * Add a specific component to the game state
+     * @param p the component to add
+     */
+    public void addComponent(Component p){components.add(p);}
+    
+    /**
+     * Returns an arraylist of current components in the gameState
+     * @return an ArrayList of components
+     */
+    public ArrayList<Component> getComponents(){return this.components;}
 }

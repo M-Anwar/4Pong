@@ -31,6 +31,12 @@ public class IntroState extends GameState
 {    
     ArrayList<MenuBall> b;
     float angle;
+    
+    GameButton btnPlay;
+    GameButton btnMulti;
+    GameButton btnOptions;
+    GameButton btnExit;
+    
     public IntroState(GameStateManager gsm) {
         super(gsm);
         init();        
@@ -44,31 +50,37 @@ public class IntroState extends GameState
             GamePanel.getAudio().play("MENU");
         }
         int startY = 380;
-        buttons.add(new GameButton("Play Game",90,startY));
-        buttons.add(new GameButton("Multi-Player",90,startY+60));
-        buttons.add(new GameButton("Options",90,startY+120));
-        buttons.add(new GameButton("Exit",90,startY+175));
+        
+        btnPlay=new GameButton("Play Game",90,startY);
+        btnMulti=new GameButton("Multi-Player",90,startY+60);
+        btnOptions=new GameButton("Options",90,startY+120);
+        btnExit=new GameButton("Exit",90,startY+175);
+                
+        addComponent(btnPlay);
+        addComponent(btnMulti);
+        addComponent(btnOptions);
+        addComponent(btnExit);
         for (int i =0; i <10; i ++){
             b.add(new MenuBall(GamePanel.WIDTH/2,GamePanel.HEIGHT/2));       
         }
         
-        buttons.get(3).addButtonListener(new ButtonListener(){          
+        btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
                System.exit(0);
             }                
         });
-         buttons.get(2).addButtonListener(new ButtonListener(){          
+         btnOptions.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
                gsm.setState(GameStateManager.OPTION_STATE);
             }                
         });
-        buttons.get(1).addButtonListener(new ButtonListener(){          
+        btnMulti.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {                
                Random r = new Random();              
-               buttons.get(1).moveTo(r.nextInt(WIDTH), r.nextInt(HEIGHT));
+               btnMulti.moveTo(r.nextInt(WIDTH), r.nextInt(HEIGHT));
             }                
         });
-        buttons.get(0).addButtonListener(new ButtonListener(){          
+        btnPlay.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
                 GamePanel.getAudio().stop("MENU");
                gsm.setState(GameStateManager.SINGLE_PLAYER_STATE);

@@ -105,4 +105,19 @@ public interface Audio {
     * @param key the key that is associated with the sound
     */
     public void close(String key);  
+    
+    /**
+     * Mutes all currently playing music
+     * @param enable - true to mute everything, false to unmute new playing audio
+     */
+    public void setMute(boolean enable);
+    
+    /**
+     * Check the status of the mute
+     * @return true if the audio is muted, false if audio is not muted
+     */
+    public boolean isMute();
+    
+    
+    
 }

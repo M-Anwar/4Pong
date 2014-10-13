@@ -128,8 +128,22 @@ public class JavaAudio implements Audio{
     public void close(String key){
         this.stop(key);
         music.get(key).close();
-    }
+    }   
 
+    @Override
+    public void setMute(boolean enable) {
+        if(enable == true){
+            for (Clip c: music.values()){
+                if(c.isRunning())
+                    c.stop();
+            }
+        }
+        mute = enable;
+    }
+    
+    @Override
+    public boolean isMute(){return mute;}
+    
 
 
 

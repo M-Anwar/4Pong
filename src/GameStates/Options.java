@@ -20,6 +20,13 @@ import java.awt.Color;
  */
 public class Options extends GameState{
 
+    private GameButton btnSlow;
+    private GameButton btnNormal;
+    private GameButton btnFast;
+    private GameButton btnReturn;
+    private GameButton btnTestBench;
+    private GameButton btnMusicMute;
+    
     public Options(GameStateManager gsm) {
         super(gsm);
         init();
@@ -28,40 +35,63 @@ public class Options extends GameState{
     @Override
     public void init() 
     {
-        buttons.add(new GameButton("Slow-Motion",50,100));
-        buttons.add(new GameButton("Normal-Motion",60 + buttons.get(0).getWidth(), 100));
-        buttons.add(new GameButton("Fast-Motion",70 + buttons.get(0).getWidth()+ buttons.get(1).getWidth(), 100));
-        buttons.add(new GameButton("Return to Menu",50,GamePanel.HEIGHT-50));
-        buttons.add(new GameButton("Jason's Test Bench",50,160));
+        String mute;
+        if(GamePanel.getAudio().isMute()) mute ="Un-Mute Music";
+        else mute = "Mute Music";
+        btnSlow = new GameButton("Slow-Motion",50,100);
+        btnNormal = new GameButton("Normal-Motion",60 + btnSlow.getWidth(), 100);
+        btnFast = new GameButton("Fast-Motion",70 + btnSlow.getWidth()+ btnNormal.getWidth(), 100);
+        btnReturn = new GameButton("Return to Menu",50,GamePanel.HEIGHT-50);
+        btnTestBench = new GameButton("Jason's Test Bench",50,340);      
+        btnMusicMute = new GameButton(mute,50,220);
         
-        buttons.get(0).addButtonListener(new ButtonListener(){            
+        addComponent(btnSlow);
+        addComponent(btnNormal);
+        addComponent(btnFast);
+        addComponent(btnReturn);
+        addComponent(btnTestBench);
+        addComponent(btnMusicMute);
+        
+        btnSlow.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 GamePanel.setPlaySpeed(GamePanel.SLOMO);
             }
         
         });
-        buttons.get(1).addButtonListener(new ButtonListener(){            
+        btnNormal.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 GamePanel.setPlaySpeed(GamePanel.NORMAL);
             }
         
         });
-        buttons.get(2).addButtonListener(new ButtonListener(){            
+        btnFast.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 GamePanel.setPlaySpeed(GamePanel.FAST);
             }
         
         });
-        buttons.get(3).addButtonListener(new ButtonListener(){            
+        btnReturn.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 gsm.setState(GameStateManager.INTRO_STATE);
             }
         
         });
         
-        buttons.get(4).addButtonListener(new ButtonListener(){            
+        btnTestBench.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 gsm.setState(GameStateManager.TEST_STATE);
+            }
+        
+        });
+        btnMusicMute.addButtonListener(new ButtonListener(){           
+            public void buttonClicked() {
+               GamePanel.getAudio().setMute(!GamePanel.getAudio().isMute());
+               if(GamePanel.getAudio().isMute())
+                   btnMusicMute.setText("Un-Mute Music");
+                else{
+                   btnMusicMute.setText("Mute Music");
+                   GamePanel.getAudio().play("MENU");
+               }
             }
         
         });
@@ -77,7 +107,9 @@ public class Options extends GameState{
     public void draw(Graphics g) {        
         g.setColor(Color.WHITE.getRGB());
         g.setFont("Arial", Graphics.BOLD, 30);
-        g.drawString("Play Speed Options:", 30, 50);       
+        g.drawString("Play Speed Options:", 30, 50);     
+        g.drawString("Audio Options:",30,160);
+        g.drawString("Test Benches: ",30,280);
         super.draw(g);
     }
 
