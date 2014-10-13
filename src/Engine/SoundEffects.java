@@ -12,5 +12,5 @@ import java.net.URL;
  * @author Jason Xu
  */
 public interface SoundEffects {
-    public void bounceSound();
+    
 }
