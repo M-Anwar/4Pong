@@ -28,9 +28,7 @@ import java.util.logging.Logger;
  * @author muhammed.anwar
  */
 public class Utils 
-{
-    /******UTILS TO BE IMPLEMENTED********/
-    
+{    
     /**
      * Return a BufferedReader object that represents a text file being read. 
      * The file is located in the CLASSPATH of the project
@@ -49,8 +47,7 @@ public class Utils
      * @throws Exception - Throws Exception if writeToFile fails 
      */
     public static void writeToFile(String path, String txt) throws Exception
-    {
-        //TODO ADD FUNCTIONALITY - Jason
+    {        
         PrintWriter writer = null;
         try{
             writer = new PrintWriter(new BufferedWriter(new FileWriter(path, true)));
@@ -59,12 +56,10 @@ public class Utils
             if(writer!= null){
                 writer.close();
             }
-        }
-        
-        
+        }        
     }   
         
-    /******UTILS TO BE IMPLEMENTED********/
+   
     
     /**
      * Load an image resource from the classpath of the project

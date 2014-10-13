@@ -6,6 +6,8 @@
 
 package G4Pong;
 
+import Engine.Audio.Audio;
+import Engine.Audio.JavaAudio;
 import Engine.GameStateManager;
 import Engine.Graphics;
 import Engine.Java2DGraphics;
@@ -28,6 +30,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
@@ -64,6 +68,9 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     //The game state manager resposible for delegating drawing and updating
     GameStateManager gsm;
     
+    //Audio Engine Handle
+    private static Audio gameAudio;
+    
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
@@ -88,6 +95,16 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         g = new Java2DGraphics(g2d);
         running = true;	
         gsm = new GameStateManager();
+        gameAudio = new JavaAudio();
+            try {
+            //Load Audio here - Might be changed to a loader in the future
+                gameAudio.load("/res/blip.wav", "BLIP");
+                gameAudio.load("/res/forcebewith.wav","FORCE");
+                gameAudio.load("/res/button2.wav","BUTTON");
+            } catch (Exception ex) {
+                System.out.println("Unable to load audio: " + ex.getMessage());
+            }
+            
     }    
     
     @Override
@@ -155,6 +172,11 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
      */
     public static void setPlaySpeed(int playSpeed){speed = playSpeed;}
     
+    /**
+     * Returns the audio engine of the game
+     * @return 
+     */
+    public static Audio getAudio(){return gameAudio;}
     
     //Mouse Events
     @Override

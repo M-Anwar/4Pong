@@ -8,6 +8,7 @@ package GUI;
 
 import Engine.Graphics;
 import Engine.Mouse;
+import G4Pong.GamePanel;
 import java.awt.Color;
 
 /**
@@ -43,7 +44,8 @@ public class GameButton extends Component
         isHovered = isHovering(Mouse.x,Mouse.y);
         if(isHovered){
             if(Mouse.isPressed()){
-               if(listener!=null){                  
+               if(listener!=null){              
+                   GamePanel.getAudio().play("BUTTON");
                    listener.buttonClicked();
                }
             }
