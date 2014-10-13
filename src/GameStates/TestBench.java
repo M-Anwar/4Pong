@@ -8,10 +8,13 @@ package GameStates;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
+import Engine.JavaBackgroundMusic;
 import G4Pong.GamePanel;
 import GUI.ButtonListener;
 import GUI.GameButton;
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,10 +22,13 @@ import java.awt.Color;
  */
 public class TestBench extends GameState
 {
-
+    String pacmanMusic = "C:/Users/Jason Xu/Documents/GitHub/4Pong/src/res/forcebewith.wav";
+    JavaBackgroundMusic music;
     public TestBench(GameStateManager gsm) {
         super(gsm);
         init();
+        music = new JavaBackgroundMusic();
+        
     }
 
     @Override
@@ -40,7 +46,15 @@ public class TestBench extends GameState
 
             @Override
             public void buttonClicked() {
+               music.init();
+                try {
+                    music.load(pacmanMusic, "Background");
+                    music.play("Background");
+                } catch (Exception ex) {
+                    Logger.getLogger(TestBench.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 
+               
             }
         });
     }

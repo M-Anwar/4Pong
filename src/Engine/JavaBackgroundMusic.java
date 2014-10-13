@@ -8,11 +8,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import sun.audio.AudioData;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
+
 /**
  *
  * @author Jason Xu
@@ -30,6 +38,7 @@ public class JavaBackgroundMusic implements BackgroundMusic{
     
     @Override
     public void load(String path, String key) throws Exception{
+        //System.out.println(path);
         if(Music.containsKey(key)) return;
         Clip clip;
         try{
@@ -46,6 +55,9 @@ public class JavaBackgroundMusic implements BackgroundMusic{
         }finally{
             
         }
+        
+       
+        
     }
     
     @Override
