@@ -8,6 +8,7 @@ package GameStates;
 
 import Engine.GameState;
 import Engine.GameStateManager;
+import Engine.Geometry.CollisionResult;
 import Engine.Graphics;
 import Engine.Mouse;
 import Engine.Vector2D;
@@ -61,7 +62,7 @@ public class IntroState extends GameState
         addComponent(btnOptions);
         addComponent(btnExit);
         for (int i =0; i <10; i ++){
-            b.add(new MenuBall(GamePanel.WIDTH/2,GamePanel.HEIGHT/2));       
+            b.add(new MenuBall(GamePanel.WIDTH/2+i,GamePanel.HEIGHT/2));       
         }
         
         btnExit.addButtonListener(new ButtonListener(){          
@@ -91,16 +92,35 @@ public class IntroState extends GameState
     @Override
     public void update(float delta) {
        super.update(delta);
-        handleInput();
-        
-        for(MenuBall ball: b)
+        handleInput();        
+        boolean collides;
+
+        for (int i =0; i <b.size(); i ++)
+        {            
+            collides = false;
+            MenuBall ball = b.get(i);            
+            
+            for (int j = i+1; j< b.size(); j ++)
+            {
+                CollisionResult s = ball.circleShape.collides(b.get(j).circleShape);
+                if (s!=null){                                       
+                        ball.circleShape.setPosition(ball.circleShape.getPosition().add(s.mts));
+                        Vector2D temp = new Vector2D(ball.velocity);
+                        ball.velocity = b.get(j).velocity;
+                        b.get(j).velocity= temp;
+                }
+                
+            }           
             ball.update(delta);
+        }
         
     }
 
     @Override
-    public void draw(Graphics g) {        
-        for(MenuBall ball: b)
+    public void draw(Graphics g) {   
+        
+        boolean collides = false;
+         for(MenuBall ball: b)
             ball.draw(g);
         //Drawing code goes here
         g.setColor(Color.WHITE.getRGB());
@@ -117,8 +137,19 @@ public class IntroState extends GameState
         g.setFont("Arial",Graphics.PLAIN, 20);
         g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 450);
         g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);        
+       
+        //For giggles :D
+//        for (int i =0; i <b.size(); i ++)
+//        {             
+//            MenuBall ball = b.get(i);            
+//            for (int j = i+1; j< b.size(); j ++)
+//            {
+//                 g.drawLine(ball.circleShape.getPosition().x, ball.circleShape.getPosition().y,
+//                        b.get(j).circleShape.getPosition().x, b.get(j).circleShape.getPosition().y);                        
+//                }                      
+//        }              
         
-               
+        
         Vector2D p1 = new Vector2D(Mouse.x, Mouse.y);
         Vector2D p2 = new Vector2D(GamePanel.WIDTH/2, GamePanel.HEIGHT/2);        
         p1.thisSubtract(p2);
