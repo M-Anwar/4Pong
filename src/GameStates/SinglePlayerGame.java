@@ -86,6 +86,8 @@ public class SinglePlayerGame extends GameState{
             g.setColor(Color.RED.getRGB());
         else 
             g.setColor(Color.WHITE.getRGB());
+        
+        
 //        rect.setRotation((float)Math.toRadians(rotation));
 //        g.fillOval(rect.getPosition().x-3, rect.getPosition().y-3, 6, 6);
 //        
@@ -96,14 +98,14 @@ public class SinglePlayerGame extends GameState{
                 rect2.getWidth(), rect2.getHeight());
 //        g.rotate(-rect.getRotation(), rect.getPosition().x, rect.getPosition().y);
         
-//        Vector2D[] verts = rect.getVertices();  
-//        Vector2D[] norms = rect.getNormals();        
+//        Vector2D[] verts = rect1.getVertices();  
+//        Vector2D[] norms = rect1.getNormals();        
 //       for (int i =0; i <verts.length; i ++)
 //       {
 //           g.drawLine(verts[i].x, verts[i].y, verts[(i+1)%verts.length].x, verts[(i+1)%verts.length].y);          
 //           norms[i].thisScale(20);
-//           norms[i].thisAdd(rect.getPosition());         
-//           g.drawLine(rect.getPosition().x, rect.getPosition().y, norms[i].x, norms[i].y);
+//           norms[i].thisAdd(rect1.getPosition());         
+//           g.drawLine(rect1.getPosition().x, rect1.getPosition().y, norms[i].x, norms[i].y);
 //       }
        
         

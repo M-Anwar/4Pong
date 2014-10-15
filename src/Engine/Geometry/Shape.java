@@ -88,6 +88,7 @@ public abstract class Shape {
                 return null;
             }                
         }
+        //Polygon on Polygon Collision
         if(this.getType() == ShapeType.POLYGON && s.getType() == ShapeType.POLYGON)
         {
             //Apply SAT for convex polygons
@@ -95,56 +96,74 @@ public abstract class Shape {
             Vector2D [] axis2 = s.getNormals();
             Vector2D [] vertex1 = this.getVertices();
             Vector2D [] vertex2 = s.getVertices();
+            float minOverlap = Float.MAX_VALUE;
+            Vector2D smallest =null;
             
             //Project onto First set of axes
             for (int i =0; i < axis1.length; i ++)
             {
-                float [] maxMin1 = projectOntoAxis(vertex1,axis1[i]);
-                System.out.println("Axis: " + axis1[i].toString());
-                System.out.println(Arrays.toString(maxMin1));
-                float [] maxMin2 = projectOntoAxis(vertex2,axis1[i]);
-                if(projectionOverlap(maxMin1,maxMin2) < 0) return null;                
+                Projection proj1 = projectOntoAxis(vertex1,axis1[i]);                
+                Projection proj2 = projectOntoAxis(vertex2,axis1[i]);
+                float overlap = proj1.getOverlap(proj2);
+                if(overlap>0){
+                    if(overlap < minOverlap){
+                        minOverlap = overlap;
+                        smallest = axis1[i];
+                    }
+                }
+                else return null;   
             }
             
             //Project onto second set of axes
             for (int i =0; i < axis2.length; i ++)
             {
-                float [] maxMin1 = projectOntoAxis(vertex1,axis2[i]);
-                float [] maxMin2 = projectOntoAxis(vertex2,axis2[i]);
-                if(projectionOverlap(maxMin1,maxMin2) < 0) return null;
+                Projection proj1 = projectOntoAxis(vertex1,axis2[i]);
+                Projection proj2 = projectOntoAxis(vertex2,axis2[i]);
+                float overlap = proj1.getOverlap(proj2);
+                if(overlap>0){
+                    if(overlap < minOverlap){
+                        minOverlap = overlap;
+                        smallest = axis2[i];
+                    }
+                }
+                else return null;               
             }
-            return new CollisionResult();
+            CollisionResult result = new CollisionResult();
+            result.mts = new Vector2D(smallest).scale(minOverlap);
+            result.normal = new Vector2D(smallest);
+            return result;
         }
         return null;
-    }
-    private float projectionOverlap(float[] minMax1, float [] minMax2)
-    {
-        //max1 > min2 
-        if (minMax1[1] > minMax2[0]){
-            return minMax1[1]-minMax2[0];
-        }
-        //max2 > min1
-        else if(minMax2[1] > minMax1[0]){
-            return minMax2[1]-minMax1[0];
-        }
-        
-        return -1;
-    }
-    private float[] projectOntoAxis(Vector2D[] vertices, Vector2D axis)
-    {
-        //[0] -> min : [1] -> max
-        float [] minMax = new float[2];
-        minMax[0] = Float.MAX_VALUE;
-        minMax[1] = Float.MIN_VALUE;
+    }    
+    private Projection projectOntoAxis(Vector2D[] vertices, Vector2D axis)
+    {       
+        Projection proj = new Projection();
+        proj.min = Float.MAX_VALUE;
+        proj.max = Float.MIN_VALUE;
         for (int i =0; i <vertices.length; i ++)
         {
-            float proj = vertices[i].dot(axis);
-            if(proj < minMax[0]) minMax[0] = proj;
-            else if (proj > minMax[1]) minMax[1] = proj;            
+            float projec = vertices[i].dot(axis);
+            if(projec < proj.min) proj.min = projec;
+            else if (projec > proj.max) proj.max = projec;            
         }
-        return minMax;
+        return proj;
     }
     
     
+    
+}
+class Projection
+{
+    public float min;
+    public float max;
+    
+    public float getOverlap(Projection p2){
+        float overlap1 = this.max - p2.min;
+        float overlap2 = p2.max - this.min;
+        System.out.println(overlap1 + ":"+overlap2);
+        if(overlap1 > 0) return overlap1;
+        //else if(overlap2 > 0) return overlap2;
+        return -1;
+    }
     
 }

@@ -90,6 +90,7 @@ public class Options extends GameState{
                    btnMusicMute.setText("Un-Mute Music");
                 else{
                    btnMusicMute.setText("Mute Music");
+                   GamePanel.getAudio().loop("MENU");
                    GamePanel.getAudio().play("MENU");
                }
             }

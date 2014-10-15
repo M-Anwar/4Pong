@@ -60,4 +60,17 @@ public class Rectangle extends Shape
     public float getWidth(){return this.width;}
     public float getHeight(){return this.height;}
     
+    /*Setter Methods*/    
+    public void setWidth(float width){ setDimension(width, height);}
+    public void setHeight(float height){ setDimension(width, height);}
+    public void setDimension(float width, float height)
+    {
+        vertices[0] = new Vector2D(-width/2,-height/2);
+        vertices[1] = new Vector2D(width/2, -height/2);
+        vertices[2] = new Vector2D(width/2, height/2);
+        vertices[3] = new Vector2D(-width/2, height/2);
+        this.radius = vertices[0].length();   
+        this.width = width;
+        this.height = height;
+    }
 }

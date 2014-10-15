@@ -26,7 +26,8 @@ public class Circle extends Shape {
         this(new Vector2D(x,y),radius);
     }
             
-            
+    public void setRadius(float rad){ this.radius = rad; }
+    
     @Override
     public void setRotation(float rot) { 
         this.rotation = rot;
