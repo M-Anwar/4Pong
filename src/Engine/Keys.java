@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
  */
 public class Keys
 {
-    public static final int NUM_KEYS = 10;
+    public static final int NUM_KEYS = 11;
 	
     public static boolean keyState[] = new boolean[NUM_KEYS];
     public static boolean prevKeyState[] = new boolean[NUM_KEYS];

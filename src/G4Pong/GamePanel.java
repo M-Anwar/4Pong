@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     
     //Game loop speeds
     public static final int NORMAL =    100000000;
-    public static final int SLOMO =     1000000000;
+    public static final int SLOMO =     500000000;
     public static final int FAST =      10000000;
     
     //Game-loop variables
@@ -101,6 +101,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
                 gameAudio.load("/res/forcebewith.wav","FORCE");
                 gameAudio.load("/res/button2.wav","BUTTON");
                 gameAudio.load("/res/bgmusic1.wav","MENU");
+                gameAudio.setMute(true);
             } catch (Exception ex) {
                 System.out.println("Unable to load audio: " + ex.getMessage());
             }

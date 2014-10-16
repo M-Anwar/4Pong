@@ -7,62 +7,74 @@
 package Engine.Geometry;
 
 import Engine.Vector2D;
-import java.util.HashMap;
 
 /**
- * Represents an axis aligned bounding box. 
+ * A simple rectangle class with position, height and width. The position
+ * is defined as the center of the rectangle.
  * @author muhammed.anwar
  */
-public class Rectangle 
+public class Rectangle extends Shape
 {
-    public static final String TOPLEFT = "TOPLEFT";
-    public static final String TOPRIGHT = "TOPRIGHT";
-    public static final String BOTTOMLEFT = "BOTTOMLEFT";
-    public static final String BOTTOMRIGHT = "BOTTOMRIGHT";
-    
-    public float x;
-    public float y; 
-    public float width;
-    public float height;
+    private float width; 
+    private float height;
     
     public Rectangle(float x, float y, float width, float height)
     {
-        this.x = x; 
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this(new Vector2D(x,y),width,height);
     }
     public Rectangle(Vector2D pos, float width, float height)
     {
-        this.x = pos.x;
-        this.y = pos.y;
+        //pos.thisAdd(width/2, height/2);
+        this.setPosition(pos);
+        this.vertices = new Vector2D[4];
+        vertices[0] = new Vector2D(-width/2,-height/2);
+        vertices[1] = new Vector2D(width/2, -height/2);
+        vertices[2] = new Vector2D(width/2, height/2);
+        vertices[3] = new Vector2D(-width/2, height/2);
+        this.setRotation(0);
+        this.radius = vertices[0].length();   
+        this.width = width;
+        this.height = height;
+        this.type = ShapeType.POLYGON;
+    }
+    @Override
+    public void setRotation(float rot) {
+        this.rotation = rot;
+    }
+
+    @Override
+    public float getRadius() {
+        return this.radius;
+    }
+
+    @Override
+    public Vector2D[] getVertices() {
+        Vector2D[] newVerts  = new Vector2D[vertices.length];
+        for (int i =0; i <vertices.length; i++)
+        {
+            newVerts[i] = vertices[i].rotate(rotation);
+            newVerts[i].thisAdd(this.getPosition());
+        }      
+        return newVerts;
+    }
+    public float getWidth(){return this.width;}
+    public float getHeight(){return this.height;}
+    
+    /*Setter Methods*/    
+    public void setWidth(float width){ setDimension(width, height);}
+    public void setHeight(float height){ setDimension(width, height);}
+    public void setDimension(float width, float height)
+    {
+        vertices[0] = new Vector2D(-width/2,-height/2);
+        vertices[1] = new Vector2D(width/2, -height/2);
+        vertices[2] = new Vector2D(width/2, height/2);
+        vertices[3] = new Vector2D(-width/2, height/2);
+        this.radius = vertices[0].length();   
         this.width = width;
         this.height = height;
     }
-    public Rectangle(float xmin, float ymin, float xmax, float ymax, float d)
-    {
-        this.x = xmin;
-        this.y = ymin;
-        this.width = xmax - xmin;
-        this.height = ymax - ymin;
-    }
-    
-    public void setPosition(Vector2D v){
-        this.x = v.x;
-        this.y = v.y;
-    }
-    public void setPosition(float x, float y){
-        this.x = x;
-        this.y = y;
-    }
-    
-    public HashMap<String, Vector2D> getCorners()
-    {
-        HashMap<String,Vector2D> corners = new HashMap<>();
-        corners.put(TOPLEFT, new Vector2D(x,y));
-        corners.put(TOPRIGHT, new Vector2D(x+width,y));
-        corners.put(BOTTOMLEFT, new Vector2D(x,y+height));
-        corners.put(BOTTOMRIGHT, new Vector2D(x+width,y+height));        
-        return corners;      
+    public String toString(){
+        return "[ x: " + this.getPosition().x + " y: " + this.getPosition().y +
+                "][w: " + this.getWidth() + " h: " + this.getHeight() + "]";
     }
 }

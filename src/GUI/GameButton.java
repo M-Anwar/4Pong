@@ -65,9 +65,9 @@ public class GameButton extends Component
         else
             g.setColor(Color.BLACK.getRGB());
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
-        g.fillRect(this.position.x-border/2, this.position.y-border/2-this.txtHeight, width, height);
+        g.fillRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
         g.setColor(Color.WHITE.getRGB());
-        g.drawRect(this.position.x-border/2, this.position.y-border/2-this.txtHeight, width, height);
+        g.drawRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
         
         g.drawString(this.getText(), this.position.x, this.position.y);                
     }

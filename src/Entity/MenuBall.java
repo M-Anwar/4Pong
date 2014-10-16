@@ -6,6 +6,7 @@
 
 package Entity;
 
+import Engine.Geometry.Circle;
 import Engine.Graphics;
 import Engine.Mouse;
 import Engine.Vector2D;
@@ -18,51 +19,63 @@ import java.util.Random;
  * @author muhammed.anwar
  */
 public class MenuBall 
-{   
-    Vector2D position;
-    Vector2D velocity;
+{       
+    public Vector2D velocity;
+    public Circle circleShape;
+    public int color;
+    
     int radius = 50;
     public MenuBall(float x, float y)
     {
         Random r = new Random();
-        this.position = new Vector2D(x,y);
+        setColor(1);
+        circleShape = new Circle(x,y,radius/2);        
         this.velocity = new Vector2D(r.nextFloat()*10+10,r.nextFloat()*10,1f); 
         
     }
      public MenuBall(float x, float y, float angle, float speed)
     {
         Random r = new Random();
-        this.position = new Vector2D(x,y);
+        setColor(1);
+        circleShape = new Circle(x,y,radius/2);   
         this.velocity = new Vector2D(speed,angle,1f);   
     }
+    public void setColor (int i)
+    {
+        if (i ==1 )
+        {
+            color = new Color(146,208,80).getRGB();
+        }
+        else
+        {
+            color = Color.RED.getRGB();
+        }
+    }
     public void update(float delta){        
-               
-        if((position.x -radius/2)<0){ position.x = radius/2; velocity.thisBounceNormal(new Vector2D(1,0));}
-        if((position.x +radius/2)>GamePanel.WIDTH){ position.x = GamePanel.WIDTH-radius/2;velocity.thisBounceNormal(new Vector2D(-1,0));}
-        if((position.y -radius/2)<0){position.y = radius/2;velocity.thisBounceNormal(new Vector2D(0,1));}
-        if((position.y +radius/2)>GamePanel.HEIGHT){ position.y = GamePanel.HEIGHT-radius/2;velocity.thisBounceNormal(new Vector2D(0,-1));}
+        Vector2D position = circleShape.getPosition();
+        if((position.x -radius/2)<0){ circleShape.setXPosition(radius/2); velocity.thisBounceNormal(new Vector2D(1,0));}
+        if((position.x +radius/2)>GamePanel.WIDTH){ circleShape.setXPosition(GamePanel.WIDTH-radius/2);velocity.thisBounceNormal(new Vector2D(-1,0));}
+        if((position.y -radius/2)<0){circleShape.setYPosition(radius/2);velocity.thisBounceNormal(new Vector2D(0,1));}
+        if((position.y +radius/2)>GamePanel.HEIGHT){ circleShape.setYPosition(GamePanel.HEIGHT-radius/2);velocity.thisBounceNormal(new Vector2D(0,-1));}
         Vector2D c = new Vector2D(position.x - Mouse.x, position.y -Mouse.y);
         if (c.length() < 100){
-            c.normalize();
+            c.thisNormalize();
             c.thisScale(1);
             velocity.thisAdd(c);
         }
         
         if (velocity.length() > 20)
         {
-            velocity.normalize();
+            velocity.thisNormalize();
             velocity.thisScale(10);
         }
-        this.position.thisAdd(velocity.scale(delta)); 
+        position.thisAdd(velocity.scale(delta)); 
     }
-    private void move(float delta)
-    {
-        this.position.thisAdd(velocity.scale(delta));
-    }
+    
     public void draw(Graphics g)
     {   
-        g.setColor(new Color(146,208,80).getRGB());
-        g.fillOval(position.x-radius/2, position.y-radius/2,radius, radius);
+        g.setColor(color);
+        g.fillOval(circleShape.getPosition().x-radius/2, circleShape.getPosition().y-radius/2,radius, radius);
         g.setColor(Color.WHITE.getRGB());         
     }
     

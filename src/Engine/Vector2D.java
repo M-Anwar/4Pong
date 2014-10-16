@@ -163,12 +163,20 @@ public class Vector2D
      * Normalizes the current vector by dividing each component by the length.
      * (i.e makes the current vector a unit vector)
      */
-    public void normalize()
+    public void thisNormalize()
     {
         this.x = this.x/length();
         this.y = this.y/length();
     }
     
+    /**
+     * Normalizes the current vector by dividing each component by the length.
+     * (i.e makes the current vector a unit vector)
+     * @return new normalized vector
+     */
+    public Vector2D normalize(){
+        return new Vector2D(this.x/length(), this.y/length());
+    }
     /**
      * Checks the equality between the current vector and another vector
      * @param v - the other vector to check equality with
