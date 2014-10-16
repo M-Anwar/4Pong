@@ -6,6 +6,7 @@
 
 package Engine.Geometry;
 
+import Engine.Graphics;
 import Engine.Vector2D;
 import java.util.Arrays;
 
@@ -69,7 +70,7 @@ public abstract class Shape {
      * @param s the other shape to detect collision with
      * @return the collision result of the check
      */
-    public CollisionResult collides(Shape s)
+    public CollisionResult collides(Shape s, Graphics g)
     {
         //Circle on Circle Collision
         if (this.getType() == ShapeType.CIRCLE && s.getType() == ShapeType.CIRCLE)
@@ -103,9 +104,10 @@ public abstract class Shape {
             for (int i =0; i < axis1.length; i ++)
             {
                 Projection proj1 = projectOntoAxis(vertex1,axis1[i]);                
-                Projection proj2 = projectOntoAxis(vertex2,axis1[i]);
+                Projection proj2 = projectOntoAxis(vertex2,axis1[i]);     
                 float overlap = proj1.getOverlap(proj2);
-                if(overlap>0){
+                g.drawString(proj1.toString() + " --- "+ proj2.toString() + " :        " +overlap +" :      " +axis1[i], 10,100+20*i);
+                if(overlap>=0){
                     if(overlap < minOverlap){
                         minOverlap = overlap;
                         smallest = axis1[i];
@@ -118,17 +120,22 @@ public abstract class Shape {
             for (int i =0; i < axis2.length; i ++)
             {
                 Projection proj1 = projectOntoAxis(vertex1,axis2[i]);
-                Projection proj2 = projectOntoAxis(vertex2,axis2[i]);
+                Projection proj2 = projectOntoAxis(vertex2,axis2[i]);                
                 float overlap = proj1.getOverlap(proj2);
-                if(overlap>0){
-                    if(overlap < minOverlap){
+                g.drawString(proj1.toString() + " --- "+ proj2.toString() + " :        " +overlap+" :      " +axis1[i], 10,200+20*i);
+                if(overlap>=0){
+                    if(overlap <minOverlap){
                         minOverlap = overlap;
                         smallest = axis2[i];
                     }
                 }
                 else return null;               
             }
+            g.drawString(smallest.toString(),10, 300);
             CollisionResult result = new CollisionResult();
+            //Make sure the MTS is pointing the right way 
+            if (s.getPosition().subtract(this.getPosition()).dot(smallest)<0)
+                minOverlap *=-1;
             result.mts = new Vector2D(smallest).scale(minOverlap);
             result.normal = new Vector2D(smallest);
             return result;
@@ -139,7 +146,7 @@ public abstract class Shape {
     {       
         Projection proj = new Projection();
         proj.min = Float.MAX_VALUE;
-        proj.max = Float.MIN_VALUE;
+        proj.max = -Float.MAX_VALUE;
         for (int i =0; i <vertices.length; i ++)
         {
             float projec = vertices[i].dot(axis);
@@ -147,9 +154,7 @@ public abstract class Shape {
             else if (projec > proj.max) proj.max = projec;            
         }
         return proj;
-    }
-    
-    
+    }   
     
 }
 class Projection
@@ -158,12 +163,15 @@ class Projection
     public float max;
     
     public float getOverlap(Projection p2){
-        float overlap1 = this.max - p2.min;
-        float overlap2 = p2.max - this.min;
-        System.out.println(overlap1 + ":"+overlap2);
-        if(overlap1 > 0) return overlap1;
-        //else if(overlap2 > 0) return overlap2;
+        if(p2.min >= this.min && p2.min <=this.max){            
+            return this.max - p2.min;
+        }else if(this.min >= p2.min && this.min <= p2.max){            
+           return p2.max - this.min;
+        }
         return -1;
+    }
+    public String toString(){
+        return "min: " + min + " max: " +max;
     }
     
 }

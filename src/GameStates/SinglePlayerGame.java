@@ -8,6 +8,7 @@ package GameStates;
 
 import Engine.GameState;
 import Engine.GameStateManager;
+import Engine.Geometry.CollisionResult;
 import Engine.Geometry.Rectangle;
 import Engine.Graphics;
 import Engine.Java2DGraphics;
@@ -82,21 +83,33 @@ public class SinglePlayerGame extends GameState{
         g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
         g.translate(5, 5);
         
-        if (rect1.collides(rect2)!=null)
+        g.drawString(rect1.toString(),10,20);
+        g.drawString(rect2.toString(),10,40);
+      
+        CollisionResult s;
+        if ((s=rect2.collides(rect1,g))!=null){
             g.setColor(Color.RED.getRGB());
+           g.drawString("MTS: "+s.mts.toString(), rect1.getPosition().x, rect1.getPosition().y-rect1.getHeight());
+           g.drawLine(rect1.getPosition().x,rect1.getPosition().y, rect1.getPosition().x + s.mts.x ,rect1.getPosition().y + s.mts.y);
+           g.setColor(Color.GREEN.getRGB());
+           g.drawRect(rect1.getPosition().add(s.mts).x-rect1.getWidth()/2, rect1.getPosition().add(s.mts).y-rect1.getHeight()/2,rect1.getWidth(), rect1.getHeight());
+           g.setColor(Color.RED.getRGB());
+           rect1.setPosition(rect1.getPosition().add(s.mts));
+        }
         else 
             g.setColor(Color.WHITE.getRGB());
         
         
-//        rect.setRotation((float)Math.toRadians(rotation));
+        rect2.setRotation((float)Math.toRadians(rotation));
 //        g.fillOval(rect.getPosition().x-3, rect.getPosition().y-3, 6, 6);
 //        
-//        g.rotate(rect.getRotation(), rect.getPosition().x, rect.getPosition().y);
+        
          g.drawRect(rect1.getPosition().x-rect1.getWidth()/2, rect1.getPosition().y-rect1.getHeight()/2,
                 rect1.getWidth(), rect1.getHeight());
+         g.rotate(rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
          g.drawRect(rect2.getPosition().x-rect2.getWidth()/2, rect2.getPosition().y-rect2.getHeight()/2,
                 rect2.getWidth(), rect2.getHeight());
-//        g.rotate(-rect.getRotation(), rect.getPosition().x, rect.getPosition().y);
+         g.rotate(-rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
         
 //        Vector2D[] verts = rect1.getVertices();  
 //        Vector2D[] norms = rect1.getNormals();        
@@ -128,6 +141,7 @@ public class SinglePlayerGame extends GameState{
     @Override
     public void handleInput() {
         if (Keys.isDown(Keys.UP)) this.rotation++;
+        if (Keys.isDown(Keys.DOWN)) this.rotation--;
         if (Keys.isDown(Keys.W)) this.rect2.getPosition().thisAdd(0, -1);
         if (Keys.isDown(Keys.S)) this.rect2.getPosition().thisAdd(0, 1);
         if (Keys.isDown(Keys.A)) this.rect2.getPosition().thisAdd(-1, 0);

@@ -102,7 +102,7 @@ public class IntroState extends GameState
             
             for (int j = i+1; j< b.size(); j ++)
             {
-                CollisionResult s = ball.circleShape.collides(b.get(j).circleShape);
+                CollisionResult s = ball.circleShape.collides(b.get(j).circleShape,null);
                 if (s!=null){                                       
                         ball.circleShape.setPosition(ball.circleShape.getPosition().add(s.mts));
                         Vector2D temp = new Vector2D(ball.velocity);

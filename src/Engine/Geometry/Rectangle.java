@@ -73,4 +73,8 @@ public class Rectangle extends Shape
         this.width = width;
         this.height = height;
     }
+    public String toString(){
+        return "[ x: " + this.getPosition().x + " y: " + this.getPosition().y +
+                "][w: " + this.getWidth() + " h: " + this.getHeight() + "]";
+    }
 }
