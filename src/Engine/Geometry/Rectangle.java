@@ -6,6 +6,7 @@
 
 package Engine.Geometry;
 
+import Engine.Graphics;
 import Engine.Vector2D;
 
 /**
@@ -76,5 +77,19 @@ public class Rectangle extends Shape
     public String toString(){
         return "[ x: " + this.getPosition().x + " y: " + this.getPosition().y +
                 "][w: " + this.getWidth() + " h: " + this.getHeight() + "]";
+    }
+
+    @Override
+    public void debugDraw(Graphics g) {
+       Vector2D[] verts = this.getVertices();  
+       Vector2D[] norms = this.getNormals();        
+       for (int i =0; i <verts.length; i ++)
+       {
+           g.drawLine(verts[i].x, verts[i].y, verts[(i+1)%verts.length].x, verts[(i+1)%verts.length].y);          
+           norms[i].thisScale(20);
+           norms[i].thisAdd(this.getPosition());         
+           g.drawLine(this.getPosition().x, this.getPosition().y, norms[i].x, norms[i].y);
+       }
+       
     }
 }

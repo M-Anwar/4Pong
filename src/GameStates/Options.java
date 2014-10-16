@@ -25,6 +25,7 @@ public class Options extends GameState{
     private GameButton btnFast;
     private GameButton btnReturn;
     private GameButton btnTestBench;
+    private GameButton btnMTestBench;
     private GameButton btnMusicMute;
     
     public Options(GameStateManager gsm) {
@@ -42,7 +43,8 @@ public class Options extends GameState{
         btnNormal = new GameButton("Normal-Motion",60 + btnSlow.getWidth(), 100);
         btnFast = new GameButton("Fast-Motion",70 + btnSlow.getWidth()+ btnNormal.getWidth(), 100);
         btnReturn = new GameButton("Return to Menu",50,GamePanel.HEIGHT-50);
-        btnTestBench = new GameButton("Jason's Test Bench",50,340);      
+        btnTestBench = new GameButton("Jason's Test Bench",50,340);    
+        btnMTestBench = new GameButton("Muhammed's Test Bench", 70+btnTestBench.getWidth(),340);
         btnMusicMute = new GameButton(mute,50,220);
         
         addComponent(btnSlow);
@@ -50,6 +52,7 @@ public class Options extends GameState{
         addComponent(btnFast);
         addComponent(btnReturn);
         addComponent(btnTestBench);
+        addComponent(btnMTestBench);
         addComponent(btnMusicMute);
         
         btnSlow.addButtonListener(new ButtonListener(){            
@@ -80,6 +83,12 @@ public class Options extends GameState{
         btnTestBench.addButtonListener(new ButtonListener(){            
             public void buttonClicked() {
                 gsm.setState(GameStateManager.TEST_STATE);
+            }
+        
+        });
+        btnMTestBench.addButtonListener(new ButtonListener(){            
+            public void buttonClicked() {
+                gsm.setState(GameStateManager.MTEST_STATE);
             }
         
         });

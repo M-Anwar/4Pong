@@ -6,6 +6,7 @@
 
 package Engine.Geometry;
 
+import Engine.Graphics;
 import Engine.Vector2D;
 
 /**
@@ -41,6 +42,11 @@ public class Circle extends Shape {
     @Override
     public Vector2D[] getVertices() {
         return null;
+    }
+
+    @Override
+    public void debugDraw(Graphics g) {
+        g.drawOval(this.getPosition().x-radius, this.getPosition().y-radius, radius*2, radius*2);
     }
 
    

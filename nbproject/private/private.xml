@@ -3,13 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/Engine/GameState.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/Engine/Geometry/Rectangle.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/Engine/GameStateManager.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/Engine/Geometry/Shape.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/G4Pong/Test.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/GameStates/IntroState.java</file>
-            <file>file:/C:/Users/muhammed.anwar/Dropbox/calithingz/4Pong/src/GameStates/SinglePlayerGame.java</file>
+            <file>file:/C:/Users/ali.allahverdi/Dropbox/calithingz/4Pong/src/GameStates/SinglePlayerGame.java</file>
+            <file>file:/C:/Users/ali.allahverdi/Dropbox/calithingz/4Pong/src/Engine/Geometry/Rectangle.java</file>
+            <file>file:/C:/Users/ali.allahverdi/Dropbox/calithingz/4Pong/src/Engine/Geometry/Shape.java</file>
+            <file>file:/C:/Users/ali.allahverdi/Dropbox/calithingz/4Pong/src/GameStates/IntroState.java</file>
         </group>
     </open-files>
 </project-private>
