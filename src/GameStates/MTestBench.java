@@ -14,8 +14,8 @@ import Engine.Geometry.Rectangle;
 import Engine.Graphics;
 import Engine.Keys;
 import G4Pong.GamePanel;
-import GUI.ButtonListener;
-import GUI.GameButton;
+import Engine.GUI.ButtonListener;
+import Engine.GUI.GameButton;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.logging.Level;
@@ -64,6 +64,8 @@ public class MTestBench extends GameState
         
         if (state ==1){
             //<editor-fold defaultstate="collapsed" desc="SAT Polygon vs. Circle Test">
+            g.setColor(new Color(77,77,77).getRGB());
+            g.fillRect(0, 0, GamePanel.WIDTH, 80);
             g.setColor(Color.WHITE.getRGB());
             g.setFont("Arial",Graphics.BOLD,25);
             g.drawString("Separating Axis Theorem: Circle vs. Polygon", 10, 40);
@@ -83,7 +85,7 @@ public class MTestBench extends GameState
             if((s=rect.collides(circle2))!=null){
                 circle2.setPosition(circle2.getPosition().add(s.mts));
             }
-//</editor-fold>
+            //</editor-fold>
         }
         else if (state ==2)
         {

@@ -6,44 +6,29 @@
 
 package Entity;
 
+import Engine.Geometry.Shape;
 import Engine.Vector2D;
 
 /**
  * Base class for all other game objects
+ * The game object encapsulates entity information about any object that can 
+ * be drawn on screen.  
  * @author muhammed.anwar
  */
 public class GameObject
-{
-    protected Vector2D position;
-    protected Vector2D velocity;
-    
-    protected float width;
-    protected float height;
-    
-    protected int color;
-    protected int colorBorder;
-    
-    protected GameObject(){}
-    
-    public void setPosition(Vector2D pos) {
-        this.position = pos;
+{   
+    protected Vector2D velocity;        
+    protected Shape bounds;
+    protected float angularVelocity;       
+  
+    public void setAngularVelocity(float ang){
+        this.angularVelocity = ang;
     }
-
-    public void setPosition(GameObject o) {
-        this.position = o.getPosition();
-    }
-
     public void setVelocity(Vector2D v) {
         this.velocity = v;
-    }
-
-    public void setDimensions(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
-    public Vector2D getPosition(){return position;}
+    }    
+    
+    public float getAngularVelocity(){return angularVelocity;}
     public Vector2D getVelocity(){return velocity;}    
-    public float getWidth() { return width; }
-    public float getHeight() { return height; }
+   
 }
