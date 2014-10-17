@@ -34,8 +34,8 @@ import java.util.ArrayList;
 public class SinglePlayerGame extends GameState{    
    
     private GameButton btnExit;
-    private Rectangle rect1;
-    private Rectangle rect2;
+    private ArrayList<Rectangle> rects;
+    
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
         super(gsm);
@@ -45,8 +45,11 @@ public class SinglePlayerGame extends GameState{
     @Override
     public void init() 
     {      
-        rect1 = new Rectangle(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2 , 80,20);
-        rect2 = new Rectangle(150, 250 , 80,20);
+        rects = new ArrayList<>();
+        for(int i =0; i <10; i ++){
+            rects.add(new Rectangle(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2-100+i*40 , 80,20));
+        }       
+        
         btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
@@ -81,46 +84,40 @@ public class SinglePlayerGame extends GameState{
         //Sets the game area
         g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
         g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
-        g.translate(5, 5);
-        
-        g.drawString(rect1.toString(),10,20);
-        g.drawString(rect2.toString(),10,40);
+        g.translate(5, 5);       
+     
       
         CollisionResult s;
-        if ((s=rect2.collides(rect1,g))!=null){
-            g.setColor(Color.RED.getRGB());
-           g.drawString("MTS: "+s.mts.toString(), rect1.getPosition().x, rect1.getPosition().y-rect1.getHeight());
-           g.drawLine(rect1.getPosition().x,rect1.getPosition().y, rect1.getPosition().x + s.mts.x ,rect1.getPosition().y + s.mts.y);
-           g.setColor(Color.GREEN.getRGB());
-           g.drawRect(rect1.getPosition().add(s.mts).x-rect1.getWidth()/2, rect1.getPosition().add(s.mts).y-rect1.getHeight()/2,rect1.getWidth(), rect1.getHeight());
-           g.setColor(Color.RED.getRGB());
-           rect1.setPosition(rect1.getPosition().add(s.mts));
+        for(int i =0; i <rects.size(); i++){
+            Rectangle r1 = rects.get(i);
+            for(int j = 0; j<rects.size(); j++){
+                if(j!=i){
+                    Rectangle r2 = rects.get(j);
+                    if ((s=r1.collides(r2))!=null){                               
+                       r2.setPosition(r2.getPosition().add(s.mts));
+                    }                
+                }
+            }
         }
-        else 
-            g.setColor(Color.WHITE.getRGB());
-        
-        
-        rect2.setRotation((float)Math.toRadians(rotation));
-//        g.fillOval(rect.getPosition().x-3, rect.getPosition().y-3, 6, 6);
-//        
-        
-         g.drawRect(rect1.getPosition().x-rect1.getWidth()/2, rect1.getPosition().y-rect1.getHeight()/2,
-                rect1.getWidth(), rect1.getHeight());
+                
+        Rectangle rect2= rects.get(0);
+        rect2.setRotation((float)Math.toRadians(rotation));        
          g.rotate(rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
          g.drawRect(rect2.getPosition().x-rect2.getWidth()/2, rect2.getPosition().y-rect2.getHeight()/2,
                 rect2.getWidth(), rect2.getHeight());
          g.rotate(-rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
         
-//        Vector2D[] verts = rect1.getVertices();  
-//        Vector2D[] norms = rect1.getNormals();        
-//       for (int i =0; i <verts.length; i ++)
-//       {
-//           g.drawLine(verts[i].x, verts[i].y, verts[(i+1)%verts.length].x, verts[(i+1)%verts.length].y);          
-//           norms[i].thisScale(20);
-//           norms[i].thisAdd(rect1.getPosition());         
-//           g.drawLine(rect1.getPosition().x, rect1.getPosition().y, norms[i].x, norms[i].y);
-//       }
-       
+         int i =0;
+         for(Rectangle rect1: rects){
+            if(i!=0){ 
+
+            g.drawRect(rect1.getPosition().x-rect1.getWidth()/2, rect1.getPosition().y-rect1.getHeight()/2,
+                   rect1.getWidth(), rect1.getHeight());
+            }
+            i++;
+         }
+        
+        
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
@@ -142,10 +139,10 @@ public class SinglePlayerGame extends GameState{
     public void handleInput() {
         if (Keys.isDown(Keys.UP)) this.rotation++;
         if (Keys.isDown(Keys.DOWN)) this.rotation--;
-        if (Keys.isDown(Keys.W)) this.rect2.getPosition().thisAdd(0, -1);
-        if (Keys.isDown(Keys.S)) this.rect2.getPosition().thisAdd(0, 1);
-        if (Keys.isDown(Keys.A)) this.rect2.getPosition().thisAdd(-1, 0);
-        if (Keys.isDown(Keys.D)) this.rect2.getPosition().thisAdd(1, 0);
+        if (Keys.isDown(Keys.W)) this.rects.get(0).getPosition().thisAdd(0, -2);
+        if (Keys.isDown(Keys.S)) this.rects.get(0).getPosition().thisAdd(0, 2);
+        if (Keys.isDown(Keys.A)) this.rects.get(0).getPosition().thisAdd(-2, 0);
+        if (Keys.isDown(Keys.D)) this.rects.get(0).getPosition().thisAdd(2, 0);
     }
     
 }

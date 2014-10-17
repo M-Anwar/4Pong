@@ -18,12 +18,12 @@ import java.util.logging.Logger;
  *
  * @author Jason Xu
  */
-public class TestBench extends GameState
+public class JasonTestBench extends GameState
 {  
     private GameButton btnClose;
     private GameButton btnMusic;
     
-    public TestBench(GameStateManager gsm) {
+    public JasonTestBench(GameStateManager gsm) {
         super(gsm);
         init();       
     }
@@ -48,7 +48,7 @@ public class TestBench extends GameState
                 try {                    
                    GamePanel.getAudio().play("FORCE");
                 } catch (Exception ex) {
-                    Logger.getLogger(TestBench.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(JasonTestBench.class.getName()).log(Level.SEVERE, null, ex);
                 }              
             }
         });        

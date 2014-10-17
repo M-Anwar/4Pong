@@ -8,9 +8,10 @@ package Engine;
 
 import G4Pong.GamePanel;
 import GameStates.IntroState;
+import GameStates.JasonTestBench;
+import GameStates.MTestBench;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
-import GameStates.TestBench;
 import java.awt.Color;
 
 /**
@@ -26,6 +27,7 @@ public class GameStateManager
     public static final int SINGLE_PLAYER_STATE = 0;
     public static final int OPTION_STATE = 1;
     public static final int TEST_STATE = 3;
+    public static final int MTEST_STATE = 4;
     
 
     public GameStateManager() {
@@ -41,7 +43,9 @@ public class GameStateManager
             else if(state == OPTION_STATE)
                     gameState = new Options(this);
             else if(state == TEST_STATE)
-                    gameState = new TestBench(this);
+                    gameState =new JasonTestBench(this);
+            else if(state == MTEST_STATE)
+                    gameState =new MTestBench(this);
                     
     }
 
