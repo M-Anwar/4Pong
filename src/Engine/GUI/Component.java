@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package GUI;
+package Engine.GUI;
 
 import Engine.Graphics;
 import Engine.Keys;
