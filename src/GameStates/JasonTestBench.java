@@ -9,8 +9,8 @@ import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
 import G4Pong.GamePanel;
-import Engine.GUI.ButtonListener;
-import Engine.GUI.GameButton;
+import GUI.ButtonListener;
+import GUI.GameButton;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

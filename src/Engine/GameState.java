@@ -6,8 +6,8 @@
 
 package Engine;
 
-import Engine.GUI.Component;
-import Engine.GUI.GameButton;
+import GUI.Component;
+import GUI.GameButton;
 import java.util.ArrayList;
 
 /**
