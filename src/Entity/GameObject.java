@@ -7,7 +7,10 @@
 package Entity;
 
 import Engine.Geometry.Shape;
+<<<<<<< HEAD
 import Engine.Graphics;
+=======
+>>>>>>> 54618b32292977d659f5f0f7895e4e022116112a
 import Engine.Vector2D;
 
 /**
@@ -16,9 +19,15 @@ import Engine.Vector2D;
  * be drawn on screen.  
  * @author muhammed.anwar
  */
+<<<<<<< HEAD
 public abstract class GameObject
 {   
    protected Vector2D velocity;        
+=======
+public class GameObject
+{   
+    protected Vector2D velocity;        
+>>>>>>> 54618b32292977d659f5f0f7895e4e022116112a
     protected Shape bounds;
     protected float angularVelocity;       
   
@@ -28,6 +37,7 @@ public abstract class GameObject
     public void setVelocity(Vector2D v) {
         this.velocity = v;
     }    
+<<<<<<< HEAD
     public void setPosition(Vector2D v){
         this.bounds.setPosition(v);
     }
@@ -44,5 +54,10 @@ public abstract class GameObject
     public Vector2D getPosition(){return this.bounds.getPosition();}
     public Shape getShape(){return this.bounds;}
     public float getRotation(){return this.bounds.getRotation();}   
+=======
+    
+    public float getAngularVelocity(){return angularVelocity;}
+    public Vector2D getVelocity(){return velocity;}    
+>>>>>>> 54618b32292977d659f5f0f7895e4e022116112a
    
 }
