@@ -6,6 +6,9 @@
 
 package GameStates;
 
+import Engine.GUI.ButtonListener;
+import Engine.GUI.Component;
+import Engine.GUI.GameButton;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Geometry.CollisionResult;
@@ -16,12 +19,10 @@ import Engine.Java2DImage;
 import Engine.Keys;
 import Engine.Vector2D;
 import Entity.ImageLoader;
+import Entity.Paddle;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
-import Engine.GUI.ButtonListener;
-import Engine.GUI.Component;
-import Engine.GUI.GameButton;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -34,7 +35,10 @@ import java.util.ArrayList;
 public class SinglePlayerGame extends GameState{    
    
     private GameButton btnExit;
-    private ArrayList<Rectangle> rects;
+    private Paddle player;
+    private Paddle player2;
+    private Paddle player3;
+    private Paddle player4;
     
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
@@ -45,10 +49,10 @@ public class SinglePlayerGame extends GameState{
     @Override
     public void init() 
     {      
-        rects = new ArrayList<>();
-        for(int i =0; i <10; i ++){
-            rects.add(new Rectangle(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2-100+i*40 , 80,20));
-        }       
+        player = new Paddle(Paddle.PaddlePosition.BOTTOM);
+        player2 = new Paddle(Paddle.PaddlePosition.RIGHT);
+        player3 = new Paddle(Paddle.PaddlePosition.TOP);
+        player4= new Paddle(Paddle.PaddlePosition.LEFT);
         
         btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
         addComponent(btnExit);
@@ -62,6 +66,10 @@ public class SinglePlayerGame extends GameState{
     @Override
     public void update(float delta) {
         super.update(delta);
+        player.update(delta);
+        player2.update(delta);
+        player3.update(delta);
+        player4.update(delta);
         handleInput();                 
         
     }
@@ -86,38 +94,10 @@ public class SinglePlayerGame extends GameState{
         g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
         g.translate(5, 5);       
      
-      
-        CollisionResult s;
-        for(int i =0; i <rects.size(); i++){
-            Rectangle r1 = rects.get(i);
-            for(int j = 0; j<rects.size(); j++){
-                if(j!=i){
-                    Rectangle r2 = rects.get(j);
-                    if ((s=r1.collides(r2))!=null){                               
-                       r2.setPosition(r2.getPosition().add(s.mts));
-                    }                
-                }
-            }
-        }
-                
-        Rectangle rect2= rects.get(0);
-        rect2.setRotation((float)Math.toRadians(rotation));        
-         g.rotate(rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
-         g.drawRect(rect2.getPosition().x-rect2.getWidth()/2, rect2.getPosition().y-rect2.getHeight()/2,
-                rect2.getWidth(), rect2.getHeight());
-         g.rotate(-rect2.getRotation(), rect2.getPosition().x, rect2.getPosition().y);
-        
-         int i =0;
-         for(Rectangle rect1: rects){
-            if(i!=0){ 
-
-            g.drawRect(rect1.getPosition().x-rect1.getWidth()/2, rect1.getPosition().y-rect1.getHeight()/2,
-                   rect1.getWidth(), rect1.getHeight());
-            }
-            i++;
-         }
-        
-        
+        player.draw(g);
+        player2.draw(g); 
+        player3.draw(g);
+        player4.draw(g);
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
@@ -137,12 +117,7 @@ public class SinglePlayerGame extends GameState{
 
     @Override
     public void handleInput() {
-        if (Keys.isDown(Keys.UP)) this.rotation++;
-        if (Keys.isDown(Keys.DOWN)) this.rotation--;
-        if (Keys.isDown(Keys.W)) this.rects.get(0).getPosition().thisAdd(0, -2);
-        if (Keys.isDown(Keys.S)) this.rects.get(0).getPosition().thisAdd(0, 2);
-        if (Keys.isDown(Keys.A)) this.rects.get(0).getPosition().thisAdd(-2, 0);
-        if (Keys.isDown(Keys.D)) this.rects.get(0).getPosition().thisAdd(2, 0);
+        
     }
     
 }
