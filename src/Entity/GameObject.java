@@ -6,44 +6,48 @@
 
 package Entity;
 
+import Engine.Geometry.Shape;
+import Engine.Graphics;
 import Engine.Vector2D;
 
 /**
  * Base class for all other game objects
+ * The game object encapsulates entity information about any object that can 
+ * be drawn on screen.  
  * @author muhammed.anwar
  */
-public class GameObject
-{
-    protected Vector2D position;
-    protected Vector2D velocity;
-    
-    protected float width;
-    protected float height;
-    
-    protected int color;
-    protected int colorBorder;
-    
-    protected GameObject(){}
-    
-    public void setPosition(Vector2D pos) {
-        this.position = pos;
-    }
 
-    public void setPosition(GameObject o) {
-        this.position = o.getPosition();
-    }
+public abstract class GameObject
+{         
+   protected Vector2D velocity;        
 
+    protected Shape bounds;
+    protected float angularVelocity;       
+  
+    public void setAngularVelocity(float ang){
+        this.angularVelocity = ang;
+    }
     public void setVelocity(Vector2D v) {
         this.velocity = v;
-    }
+    }    
 
-    public void setDimensions(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public void setPosition(Vector2D v){
+        this.bounds.setPosition(v);
     }
-
-    public Vector2D getPosition(){return position;}
+    public void setRotation(float angle){
+        this.bounds.setRotation(angle);        
+    }
+    
+    public abstract void update(float delta);
+    public abstract void draw(Graphics g);
+    
+    
+    public float getAngularVelocity(){return angularVelocity;}
     public Vector2D getVelocity(){return velocity;}    
-    public float getWidth() { return width; }
-    public float getHeight() { return height; }
-}
+    public Vector2D getPosition(){return this.bounds.getPosition();}
+    public Shape getShape(){return this.bounds;}
+    public float getRotation(){return this.bounds.getRotation();}    
+}  
+
+   
+
