@@ -10,6 +10,7 @@ import G4Pong.GamePanel;
 import GameStates.IntroState;
 import GameStates.JasonTestBench;
 import GameStates.MTestBench;
+import GameStates.MultiPlayerGame;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
 import java.awt.Color;
@@ -28,6 +29,7 @@ public class GameStateManager
     public static final int OPTION_STATE = 1;
     public static final int TEST_STATE = 3;
     public static final int MTEST_STATE = 4;
+    public static final int MULTI_PLAYER_STATE = 5;
     
 
     public GameStateManager() {
@@ -46,6 +48,8 @@ public class GameStateManager
                     gameState =new JasonTestBench(this);
             else if(state == MTEST_STATE)
                     gameState =new MTestBench(this);
+            else if(state == MULTI_PLAYER_STATE)
+                    gameState = new MultiPlayerGame(this);
                     
     }
 
