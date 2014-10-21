@@ -79,6 +79,7 @@ public class IntroState extends GameState
             public void buttonClicked() {                
                Random r = new Random();              
                btnMulti.moveTo(r.nextInt(WIDTH), r.nextInt(HEIGHT));
+               gsm.setState(GameStateManager.MULTI_PLAYER_STATE);
             }                
         });
         btnPlay.addButtonListener(new ButtonListener(){          

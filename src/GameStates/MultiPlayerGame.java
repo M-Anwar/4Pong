@@ -5,6 +5,8 @@
  */
 package GameStates;
 
+import Engine.GUI.ButtonListener;
+import Engine.GUI.GameButton;
 import Engine.GUI.TextBox;
 import Engine.GameState;
 import Engine.GameStateManager;
@@ -17,7 +19,9 @@ import G4Pong.GamePanel;
  */
 public class MultiPlayerGame extends GameState{
     
-    TextBox name;
+    private TextBox name;
+    private GameButton btnExit;
+    private GameButton btnConnect;
     public MultiPlayerGame(GameStateManager gsm) {
         super(gsm);
         init();
@@ -25,8 +29,25 @@ public class MultiPlayerGame extends GameState{
     
     @Override
     public void init(){
-        name = new TextBox("", 300, 300);
-        System.out.println("Here");
+        name = new TextBox("Enter Username", 300, 300);
+        //addComponent(name); BUG WHERE IF THIS ISNT COMMENTED OUT THEN IT DOUBLE ENTERS IN A KEYINPUT
+
+        btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
+        addComponent(btnExit);
+        btnExit.addButtonListener(new ButtonListener(){          
+            public void buttonClicked() {
+               gsm.setState(GameStateManager.INTRO_STATE);
+            }                
+        });
+        
+        btnConnect = new GameButton("Connect",350,360);
+        addComponent(btnConnect);
+        btnConnect.addButtonListener(new ButtonListener(){          
+            public void buttonClicked() {
+               //gsm.setState(GameStateManager.INTRO_STATE);
+                System.out.println("Clicked!!");
+            }                
+        }); 
     }
     
     @Override

@@ -4,8 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Entity/GameObject.java</file>
-            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/SinglePlayerGame.java</file>
+            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/GUI/TextBox.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Image.java</file>
+            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/SinglePlayerGame.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/GameStateManager.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/JasonTestBench.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/StringBuilder.java</file>
@@ -20,6 +21,8 @@
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/G4Pong/Main.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Entity/MenuBall.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Graphics.java</file>
+            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Entity/Ball.java</file>
+            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/MultiPlayerGame.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Geometry/Shape.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Geometry/Circle.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Java2DGraphics.java</file>
@@ -28,6 +31,7 @@
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Keys.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/Options.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Network/Server.java</file>
+            <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Entity/Paddle.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/GameStates/IntroState.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/Java2DImage.java</file>
             <file>file:/C:/Users/Jason%20Xu/Documents/GitHub/4Pong/src/Engine/GUI/ButtonListener.java</file>
