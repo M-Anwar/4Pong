@@ -84,8 +84,8 @@ public class Paddle extends GameObject
         
         if(Keys.isDown(Keys.W)){this.velocity.thisAdd(new Vector2D(0,-2));}
         if(Keys.isDown(Keys.S)){this.velocity.thisAdd(new Vector2D(0,2));}
-        if(Keys.isDown(Keys.A)){this.velocity.thisAdd(new Vector2D(-5,0));}
-        if(Keys.isDown(Keys.D)){this.velocity.thisAdd(new Vector2D(5,0));}
+        if(Keys.isDown(Keys.A)){this.velocity.thisAdd(new Vector2D(-8,0));}
+        if(Keys.isDown(Keys.D)){this.velocity.thisAdd(new Vector2D(8,0));}
         
     }
     private Rectangle getBounds(PaddlePosition pos)

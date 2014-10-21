@@ -18,6 +18,7 @@ import Engine.Java2DGraphics;
 import Engine.Java2DImage;
 import Engine.Keys;
 import Engine.Vector2D;
+import Entity.Ball;
 import Entity.ImageLoader;
 import Entity.Paddle;
 import G4Pong.GamePanel;
@@ -39,6 +40,8 @@ public class SinglePlayerGame extends GameState{
     private Paddle player2;
     private Paddle player3;
     private Paddle player4;
+    private ArrayList<Paddle> players;
+    private Ball ball;    
     
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
@@ -53,6 +56,13 @@ public class SinglePlayerGame extends GameState{
         player2 = new Paddle(Paddle.PaddlePosition.RIGHT);
         player3 = new Paddle(Paddle.PaddlePosition.TOP);
         player4= new Paddle(Paddle.PaddlePosition.LEFT);
+        players = new ArrayList<>();
+        players.add(player);
+        players.add(player2);
+        players.add(player3);
+        players.add(player4);
+        
+        ball = new Ball();
         
         btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
         addComponent(btnExit);
@@ -70,6 +80,9 @@ public class SinglePlayerGame extends GameState{
         player2.update(delta);
         player3.update(delta);
         player4.update(delta);
+        ball.update(delta);
+        
+      
         handleInput();                 
         
     }
@@ -98,6 +111,21 @@ public class SinglePlayerGame extends GameState{
         player2.draw(g); 
         player3.draw(g);
         player4.draw(g);
+        ball.draw(g);
+               
+        CollisionResult s;
+        
+        for(Paddle p: players){
+            if((s=p.getShape().collides(ball.getShape()))!=null)
+            {               
+                ball.getPosition().thisAdd(s.mts); 
+                float amount = ball.getVelocity().dot(p.getVelocity()); //relative velocity
+                ball.setAngularVelocity(amount/50);
+                ball.getVelocity().thisBounceNormal(s.normal);
+                ball.getVelocity().thisAdd(p.getVelocity());
+                
+            }
+        }
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
