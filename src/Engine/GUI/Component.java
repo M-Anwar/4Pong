@@ -14,40 +14,36 @@ import Engine.Vector2D;
 import G4Pong.GamePanel;
 import java.awt.Color;
 /**
- * The basic component for all GUI elements
+ * The basic component for all GUI elements.
+ * Manages the basic animation for all the elements in terms of positioning.
+ * Contains basic bounding box information, including AABB positioning, width and
+ * height.
+ * 
+ * Position defines the top left corner of the component regardless of any border.
+ * All extended class must abide by this, or else undefined positioning will occur.
+ * 
  * @author muhammed.anwar
  */
-public class Component 
+public abstract class Component 
 {
     protected Vector2D velocity;
     protected Vector2D position;
     protected Vector2D finalPosition;
-    
-    protected float txtWidth;
-    protected float txtHeight; 
-    
+       
     protected float width;
-    protected float height;
+    protected float height;    
     
-    protected float border = 25;
-    
-    private String font = "Arial";
-    private String text; 
+    private String font = "Arial";   
     protected int fontSize = 30;
     private boolean isEnabled;  
+    private boolean isFocused;
     
-    public Component(String text, float x, float y)
-    {
-        setText(text);
+    public Component(float x, float y, float width, float height)
+    {        
         this.finalPosition = new Vector2D(x,y);
         init();        
     }
-    public Component(float x, float y)
-    {
-        setText(" ");
-        this.finalPosition = new Vector2D(x,y);
-        init();
-    }
+    public Component(Vector2D v, float width, float height){this(v.x,v.y, width, height);}
     private void init(){
         velocity = new Vector2D();
         if (finalPosition.x < GamePanel.WIDTH/2){
@@ -56,24 +52,26 @@ public class Component
         else{
             position = new Vector2D(GamePanel.WIDTH,finalPosition.y);
         }        
-    }
-    public Component(String text, Vector2D v){ this(text,v.x,v.y);}
-    public Component(Vector2D v){this(v.x,v.y);}
+    }   
+            
+    public abstract void dispose();        
     
-    public void setText(String text){
-        this.text = text;
-        this.txtWidth = StringBuilder.getWidth(text,font,fontSize);
-        this.txtHeight = StringBuilder.getHeight(text, font, fontSize);
-    }
-    public String getText(){return text;}
     public void setFont(String font, int size){
         this.font = font; 
-        this.fontSize = size;
-        setText(this.getText());
-        
-    }
+        this.fontSize = size;              
+    }    
+    public void setFocus(boolean foc){this.isFocused = foc;}
+    
     public String getFont(){return this.font;}
+    public float getFontSize(){return this.fontSize;}
+    public float getWidth(){return this.width;}
+    public float getHeight(){return this.height;}     
     public boolean isEnabled(){return this.isEnabled;}
+    public boolean isFocused(){return this.isFocused;}
+    public boolean isHovering(int x, int y) {       
+        return x > this.position.x && x < this.position.x+ width && 
+                y > this.position.y  && y < this.position.y + height;        
+    }
     
     public void update(float delta)
     {
@@ -91,6 +89,15 @@ public class Component
             position.y = finalPosition.y;
             this.isEnabled = true;
         }               
+        if(isHovering(Mouse.x,Mouse.y)){
+            if(Mouse.isPressed()){
+               setFocus(true);
+            }
+        }else{
+            if(Mouse.isPressed()){
+               setFocus(false);
+            }
+        }
     }
     public void draw(Graphics g)
     {
@@ -98,9 +105,9 @@ public class Component
             g.setColor(Color.WHITE.getRGB());   
         else
             g.setColor(Color.RED.getRGB());
-        g.setFont(font, Graphics.BOLD, fontSize);
-        g.drawString(text, position.x, position.y);
-        g.drawRect(position.x-5, position.y-txtHeight-5, txtWidth+10, txtHeight+10);
+        g.setFont(font, Graphics.BOLD, fontSize);       
+        g.drawString("Component", position.x, position.y);
+        g.drawRect(position.x, position.y, width, height);
         
     }
     public void moveTo(float x, float y)
@@ -108,15 +115,4 @@ public class Component
         this.finalPosition.x = x;
         this.finalPosition.y = y;
     }    
-    
-     public boolean isHovering(int x, int y) {       
-        return x > this.position.x-border/2 && x < this.position.x-border/2+ width && 
-                y > this.position.y+border/2-this.height  && y < this.position.y +border/2;        
-    }
-    public float getWidth(){return this.width;}
-    public float getHeight(){return this.height;}
-    
-    
-            
-    
 }

@@ -10,6 +10,7 @@ import Engine.Graphics;
 import Engine.Mouse;
 import G4Pong.GamePanel;
 import java.awt.Color;
+import Engine.StringBuilder;
 
 /**
  * A simple button which supports click events
@@ -19,13 +20,18 @@ public class GameButton extends Component
 {   
     private boolean isHovered;    
     protected ButtonListener listener;
+    protected float border = 25;
+    
+    //The Data stored in the button
+    protected String buttonText;
     
     public GameButton(String text, float x, float y) {       
-        super(text, x, y);
+        super(x,y,10,10);
+        setText(text);
         this.setFont("Arial", 30);       
         
-        this.height = this.txtHeight + border;
-        this.width = this.txtWidth + border;   
+        this.height = StringBuilder.getHeight(text,getFont(), (int)getFontSize()) + border;
+        this.width = StringBuilder.getWidth(text,getFont(), (int)getFontSize()) + border;   
         listener = null;       
     }
 
@@ -46,16 +52,19 @@ public class GameButton extends Component
                }
             }
         }
-    }
-    @Override
+    }   
     public void setText(String text)
     {
-        super.setText(text);
-        this.width = this.txtWidth +border;
-        this.height = this.txtHeight + border;               
+        buttonText = text;
+        this.height = StringBuilder.getHeight(text, getFont(), (int)getFontSize()) + border;
+        this.width = StringBuilder.getWidth(text, getFont(), (int)getFontSize()) + border;               
+    }
+    public void setFont(String font, int size){
+       super.setFont(font, size);
+       setText(buttonText);
     }
     
-   
+    public String getText(){return this.buttonText;}   
     
     @Override
     public void draw(Graphics g)
@@ -65,11 +74,15 @@ public class GameButton extends Component
         else
             g.setColor(Color.BLACK.getRGB());
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
-        g.fillRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
+        g.fillRect(this.position.x, this.position.y, width, height);
         g.setColor(Color.WHITE.getRGB());
-        g.drawRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
+        g.drawRect(this.position.x, this.position.y, width, height);
         
-        g.drawString(this.getText(), this.position.x, this.position.y);                
+        g.drawString(this.getText(), this.position.x+border/2, this.position.y+height-border/2);                
+    }
+
+    @Override
+    public void dispose() {        
     }
     
 }

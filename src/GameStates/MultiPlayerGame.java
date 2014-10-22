@@ -23,8 +23,7 @@ public class MultiPlayerGame extends GameState{
     private GameButton btnExit;
     private GameButton btnConnect;
     public MultiPlayerGame(GameStateManager gsm) {
-        super(gsm);
-        init();
+        super(gsm);       
     }
     
     @Override
@@ -36,7 +35,7 @@ public class MultiPlayerGame extends GameState{
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               gsm.setState(GameStateManager.INTRO_STATE);
+               setState(GameStateManager.INTRO_STATE);
             }                
         });
         
@@ -44,7 +43,7 @@ public class MultiPlayerGame extends GameState{
         addComponent(btnConnect);
         btnConnect.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               //gsm.setState(GameStateManager.INTRO_STATE);
+               //setState(GameStateManager.INTRO_STATE);
                 System.out.println("Clicked!!");
             }                
         }); 
@@ -52,14 +51,12 @@ public class MultiPlayerGame extends GameState{
     
     @Override
     public void update(float delta){
-        super.update(delta);
         name.update(delta);
     }
     
     @Override
     public void draw(Graphics g){
         name.draw(g);
-        super.draw(g);
     }
     
     @Override

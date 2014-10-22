@@ -24,8 +24,7 @@ public class JasonTestBench extends GameState
     private GameButton btnMusic;
     
     public JasonTestBench(GameStateManager gsm) {
-        super(gsm);
-        init();       
+        super(gsm);               
     }
 
     @Override
@@ -39,7 +38,7 @@ public class JasonTestBench extends GameState
         btnClose.addButtonListener(new ButtonListener(){//X button to go back to options
             @Override
             public void buttonClicked() {
-                gsm.setState(GameStateManager.OPTION_STATE);
+                setState(GameStateManager.OPTION_STATE);
             }
         });
         btnMusic.addButtonListener(new ButtonListener(){//BackgroundMusic button
@@ -57,12 +56,10 @@ public class JasonTestBench extends GameState
     
     public void update(float delta)
     {
-        super.update(delta);
     }
     public void draw(Graphics g){
         
         
-        super.draw(g);
     }
     @Override
     public void handleInput() {

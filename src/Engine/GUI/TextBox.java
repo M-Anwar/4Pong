@@ -11,20 +11,40 @@ import Engine.Keys;
 import java.awt.Color;
 
 /**
- *
- * @author Jason Xu
+ * A basic text box which supports many basic text box operations.
+ * The textbox does not support:
+ *  - arbritrary text position (i.e there is no caret
+ *    that represents the current editing position of the text [technically limited]).
+ *  - Copy/Paste from clipboard.
+ *  - Selection Highlighting (no selected text)
+ *  - Multiple fonts and font sizes.
+ *  - Integrated images of any kind
+ * 
+ * The textbox does support:
+ *  - Multiline text
+ *  - Resizing component window (i.e scroll bars as viewport).
+ *  - Basic event reporting, such as enter key pressed or text changed events.    
+ *  - Maximum character count.
+ * 
+ * @version 1.0
+ * @author Jason Xu and Muhammed Anwar
+ * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
+ * Version History: 
+ * Version 1.0 - Basic Skeleton of the text box with simple inputs. * 
  */
 public class TextBox extends Component{
     public boolean isHovered;
     public boolean isClicked = false;
     public String message = "";
+    protected float border = 25;
     
     public TextBox(String text, float x, float y) {
-        super(text, x, y);
+        super(x, y,10,10);
+        message = text;
         this.setFont("Arial", 30);       
         
-        this.height = this.txtHeight + border;
-        this.width = this.txtWidth + border;
+        //this.height = this.txtHeight + border;
+        //this.width = this.txtWidth + border;
         
        
     }
@@ -55,10 +75,10 @@ public class TextBox extends Component{
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
         g.fillRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
         g.setColor(Color.WHITE.getRGB());
-        //g.drawRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
-        g.drawLine(this.position.x-border/2, this.position.x-border/2+25, this.position.x-border/2 + width, this.position.x-border/2+25);
+        g.drawRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
+        g.drawLine(this.position.x-border/2, this.position.y-border/2+25, this.position.x-border/2 + width, this.position.y-border/2+25);
         
-        g.drawString(this.getText(), this.position.x, this.position.y);                
+        g.drawString(message, this.position.x, this.position.y);                
     }
     
     public void handleInput(){
@@ -77,17 +97,14 @@ public class TextBox extends Component{
         if(Keys.isPressed(Keys.D)){
             message = message + "D";
         }
-        setText(message);
+       // setText(message);
         
         
         
+    }    
+
+    @Override
+    public void dispose() {
     }
     
-    @Override
-    public void setText(String text)
-    {
-        super.setText(text);
-        //this.width = this.txtWidth +border; Commented this out to get rid of bug where it would resize on first click
-        //this.height = this.txtHeight + border;               
-    }
 }

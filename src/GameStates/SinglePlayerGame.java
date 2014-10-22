@@ -45,8 +45,7 @@ public class SinglePlayerGame extends GameState{
     
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
-        super(gsm);
-        init();
+        super(gsm);       
     }
 
     @Override
@@ -64,18 +63,17 @@ public class SinglePlayerGame extends GameState{
         
         ball = new Ball();
         
-        btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
+        btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               gsm.setState(GameStateManager.INTRO_STATE);
+               setState(GameStateManager.INTRO_STATE);
             }                
         });        
     }
 
     @Override
     public void update(float delta) {
-        super.update(delta);
         player.update(delta);
         player2.update(delta);
         player3.update(delta);
@@ -140,7 +138,6 @@ public class SinglePlayerGame extends GameState{
         g.drawImage(x, HEIGHT-ImageLoader.SHIELD.getHeight(), ImageLoader.SHIELD);
          x-=ImageLoader.CURVE.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);
-        super.draw(g);
     }    
 
     @Override

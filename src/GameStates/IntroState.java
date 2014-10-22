@@ -40,7 +40,6 @@ public class IntroState extends GameState
     
     public IntroState(GameStateManager gsm) {
         super(gsm);
-        init();        
     }
 
     @Override
@@ -50,7 +49,7 @@ public class IntroState extends GameState
             GamePanel.getAudio().loop("MENU");
             GamePanel.getAudio().play("MENU");
         }
-        int startY = 380;
+        int startY = 340;
         
         btnPlay=new GameButton("Play Game",90,startY);
         btnMulti=new GameButton("Multi-Player",90,startY+60);
@@ -72,27 +71,26 @@ public class IntroState extends GameState
         });
          btnOptions.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               gsm.setState(GameStateManager.OPTION_STATE);
+               setState(GameStateManager.OPTION_STATE);
             }                
         });
         btnMulti.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {                
                Random r = new Random();              
                btnMulti.moveTo(r.nextInt(WIDTH), r.nextInt(HEIGHT));
-               gsm.setState(GameStateManager.MULTI_PLAYER_STATE);
+               setState(GameStateManager.MULTI_PLAYER_STATE);
             }                
         });
         btnPlay.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
                 GamePanel.getAudio().stop("MENU");
-               gsm.setState(GameStateManager.SINGLE_PLAYER_STATE);
+               setState(GameStateManager.SINGLE_PLAYER_STATE);
             }                
         });
     }
 
     @Override
     public void update(float delta) {
-       super.update(delta);
         handleInput();        
         boolean collides;
 
@@ -154,9 +152,7 @@ public class IntroState extends GameState
         Vector2D p1 = new Vector2D(Mouse.x, Mouse.y);
         Vector2D p2 = new Vector2D(GamePanel.WIDTH/2, GamePanel.HEIGHT/2);        
         p1.thisSubtract(p2);
-        angle = p1.angle();    
-        
-        super.draw(g);
+        angle = p1.angle();       
     }
 
     @Override

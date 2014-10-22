@@ -35,18 +35,17 @@ public class MTestBench extends GameState
     int state = 1;
     
     public MTestBench(GameStateManager gsm) {
-        super(gsm);
-        init();       
+        super(gsm);               
     }
 
     @Override
     public void init() {        
-        btnClose = new GameButton("X", GamePanel.WIDTH - 50, 50);       
+        btnClose = new GameButton("X", GamePanel.WIDTH - 50, 20);       
         addComponent(btnClose);      
         btnClose.addButtonListener(new ButtonListener(){//X button to go back to options
             @Override
             public void buttonClicked() {
-                gsm.setState(GameStateManager.OPTION_STATE);
+                setState(GameStateManager.OPTION_STATE);
             }
         });        
         rect = new Rectangle(GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-200, 80,20);        
@@ -57,7 +56,6 @@ public class MTestBench extends GameState
     
     public void update(float delta)
     {
-        super.update(delta);
         handleInput();
     }
     public void draw(Graphics g){
@@ -91,7 +89,6 @@ public class MTestBench extends GameState
         {
             
         }
-        super.draw(g);
     }
     @Override
     public void handleInput() {

@@ -59,11 +59,11 @@ public class GameStateManager
     }
 
     public void update(float delta) {
-            if(gameState != null) gameState.update(delta);
+            if(gameState != null) gameState.internalUpdate(delta);
     }
 
     public void draw(Graphics g) {
-            if(gameState != null) gameState.draw(g);
+            if(gameState != null) gameState.render(g);
             else {
                     g.setColor(Color.BLACK.getRGB());
                     g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);

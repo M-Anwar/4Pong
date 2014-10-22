@@ -242,7 +242,9 @@ public class Java2DGraphics implements Graphics
      * @param height - height of the clipping rectangle
      */
     public void setClip(int x, int y, int width, int height) {
-        g.setClip(x,y,width,height);
+        g.setClip(x,y,width,height);       
     }
+    
+    
     
 }

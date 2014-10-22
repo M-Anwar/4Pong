@@ -17,25 +17,43 @@ import java.util.ArrayList;
  */
 public abstract class GameState 
 {
-    protected GameStateManager gsm;
+    private GameStateManager gsm;
     private ArrayList<Component> components;
     public GameState(GameStateManager gsm) {
-            this.gsm = gsm;
-            components = new ArrayList<>();
-            
+        this.gsm = gsm;
+        components = new ArrayList<>();
+        init();            
     }
 
     public abstract void init();
-    public void update(float delta){
+    public abstract void update(float delta);
+    public abstract void draw(Graphics g);
+    public abstract void handleInput();
+    
+    public void internalUpdate(float delta){
+        update(delta);
         for(Component c: components)
             c.update(delta);
     }
-    public void draw(Graphics g){
+    public void render(Graphics g){
+        draw(g);
         for(Component c: components)
             c.draw(g);
     }
-    public abstract void handleInput();
     
+    /**
+     * Switch the current gameState.
+     * Will immediately switch the current game state to another one.
+     * The parameter should be taken from the list of static values in 
+     * GameStateManager.
+     * @param state GameStateManager.INTRO etc, the int representing the state.
+     */
+    public void setState(int state)
+    {
+        for(Component c: components)
+            c.dispose();
+        this.gsm.setState(state);
+    }   
     
     /**
      * Add a specific component to the game state
