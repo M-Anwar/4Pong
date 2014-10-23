@@ -12,59 +12,42 @@ import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
 import G4Pong.GamePanel;
-import Engine.Network.Client;
 
 /**
  *
  * @author Jason Xu
  */
-public class MultiPlayerGame extends GameState{
-    
-    private TextBox name;
+public class MultiPlayerChat extends GameState{
+    private TextBox chat;
     private GameButton btnExit;
-    private GameButton btnConnect;
-    private Client client;
-    public MultiPlayerGame(GameStateManager gsm) {
+
+    public MultiPlayerChat(GameStateManager gsm) {
         super(gsm);       
     }
     
     @Override
     public void init(){
-        name = new TextBox("Enter Username", 300, 300);
-        addComponent(name);
+        chat = new TextBox(280, 500);
+        addComponent(chat);
         btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               setState(GameStateManager.INTRO_STATE);
+               setState(GameStateManager.MULTI_PLAYER_STATE);
             }                
         });
-        
-        btnConnect = new GameButton("Connect",300,360);
-        addComponent(btnConnect);
-        btnConnect.addButtonListener(new ButtonListener(){          
-            public void buttonClicked() {
-                setState(GameStateManager.MULTIPLAYER_CHAT_STATE);
-                //client = new Client();
-                //client.init();
-            }                
-        }); 
     }
-    
+
     @Override
-    public void update(float delta){
-       
+    public void update(float delta) {
     }
-    
+
     @Override
-    public void draw(Graphics g){
-        
+    public void draw(Graphics g) {
     }
-    
+
     @Override
     public void handleInput() {
-        
+    
     }
-    
-    
 }

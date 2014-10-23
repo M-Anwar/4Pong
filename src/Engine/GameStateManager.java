@@ -10,6 +10,7 @@ import G4Pong.GamePanel;
 import GameStates.IntroState;
 import GameStates.JasonTestBench;
 import GameStates.MTestBench;
+import GameStates.MultiPlayerChat;
 import GameStates.MultiPlayerGame;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
@@ -30,6 +31,7 @@ public class GameStateManager
     public static final int TEST_STATE = 3;
     public static final int MTEST_STATE = 4;
     public static final int MULTI_PLAYER_STATE = 5;
+    public static final int MULTIPLAYER_CHAT_STATE = 6;
     
 
     public GameStateManager() {
@@ -50,7 +52,9 @@ public class GameStateManager
                     gameState =new MTestBench(this);
             else if(state == MULTI_PLAYER_STATE)
                     gameState = new MultiPlayerGame(this);
-                    
+            else if(state == MULTIPLAYER_CHAT_STATE)
+                    gameState = new MultiPlayerChat(this);
+
     }
 
     public void setState(int state) {

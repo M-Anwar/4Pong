@@ -40,13 +40,20 @@ public class TextBox extends Component implements KeyListener{
     protected float border = 25;
     private boolean caretVisible =false;
     private float caretTime=0;
+    private boolean firstTime = true;
     
     public TextBox(String text, float x, float y) {
         super(x, y,StringBuilder.getWidth(text, "Arial", 20)+25,StringBuilder.getHeight(text, "Arial", 20)+25);
-        message =text;
+        message = text;
         Keys.addKeyListener(this);
         this.setFont("Arial", 20);     
        
+    }
+    
+    public TextBox(float x, float y){
+        super(x, y , 500, 50);
+        Keys.addKeyListener(this);
+        this.setFont("Arial", 20);
     }
      @Override
     public void update(float delta){
@@ -76,6 +83,10 @@ public class TextBox extends Component implements KeyListener{
         g.drawString(message, this.position.x +border/2, this.position.y+height-border/2);   
         if(caretVisible && isFocused())
         {
+            if(firstTime){
+                message = "";
+                firstTime = false;
+            }
             g.drawLine(this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +border/2,
                        this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +height -border/2);
         }
