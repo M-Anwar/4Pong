@@ -201,11 +201,11 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     @Override
     public void keyPressed(KeyEvent ke) {
         Keys.keySet(ke.getKeyCode(),true);
+        Keys.keyTyped(ke);
     }
     @Override
     public void keyReleased(KeyEvent ke) {
-         Keys.keySet(ke.getKeyCode(),false);
-         Keys.keyTyped(ke);
+         Keys.keySet(ke.getKeyCode(),false);         
     }
     
     public void mouseEntered(MouseEvent me) {}    
