@@ -29,7 +29,7 @@ public class MultiPlayerGame extends GameState{
     @Override
     public void init(){
         name = new TextBox("Enter Username", 300, 300);
-        //addComponent(name); BUG WHERE IF THIS ISNT COMMENTED OUT THEN IT DOUBLE ENTERS IN A KEYINPUT
+        addComponent(name); //BUG WHERE IF THIS ISNT COMMENTED OUT THEN IT DOUBLE ENTERS IN A KEYINPUT
 
         btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
         addComponent(btnExit);

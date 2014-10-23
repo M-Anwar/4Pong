@@ -27,7 +27,7 @@ import java.awt.Color;
  *  - Maximum character count.
  * 
  * @version 1.0
- * @author Jason Xu and Muhammed Anwar
+ * @author Jason Xu- pls, no steal my credit muhammed
  * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
  * Version History: 
  * Version 1.0 - Basic Skeleton of the text box with simple inputs. * 
@@ -39,7 +39,7 @@ public class TextBox extends Component{
     protected float border = 25;
     
     public TextBox(String text, float x, float y) {
-        super(x, y,10,10);
+        super(x, y, 10, 10);
         message = text;
         this.setFont("Arial", 30);       
         
@@ -52,15 +52,17 @@ public class TextBox extends Component{
     public void update(float delta){
         super.update(delta);
         isHovered = isHovering(Mouse.x, Mouse.y);
+        if(isHovered)System.out.println(isHovered);
         if(isHovered && Mouse.isPressed()){ //Case where It is currently hovering over the TextBox and clicks on it
             isClicked = true;
-            handleInput();
+            System.out.println("Here");
+            //handleInput();
         }
         else if(!isHovered && Mouse.isPressed()){ //Case where it is not hovering over the textbox and clicks on something
             isClicked = false;
         }
         else if(!Mouse.isPressed() && isClicked){ // Case where mouse has not been clicked and the textbox was clicked previously
-            handleInput();
+            //handleInput();
         }
         
     }
@@ -68,6 +70,7 @@ public class TextBox extends Component{
     @Override
     public void draw(Graphics g)
     {           
+        System.out.println(isHovered);
         if(isHovered)
             g.setColor(new Color(0,176,240).getRGB());
         else
