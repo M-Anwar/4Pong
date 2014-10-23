@@ -41,6 +41,8 @@ public abstract class Component
     public Component(float x, float y, float width, float height)
     {        
         this.finalPosition = new Vector2D(x,y);
+        this.width = width;
+        this.height = height;
         init();        
     }
     public Component(Vector2D v, float width, float height){this(v.x,v.y, width, height);}
@@ -73,6 +75,11 @@ public abstract class Component
                 y > this.position.y  && y < this.position.y + height;        
     }
     
+    /**
+     * All objects extended from this class which override this method, need to 
+     * call super.update(delta), in order to apply basic state checking.
+     * @param delta - time between updates
+     */
     public void update(float delta)
     {
         velocity.x = this.finalPosition.x - this.position.x;
@@ -106,10 +113,17 @@ public abstract class Component
         else
             g.setColor(Color.RED.getRGB());
         g.setFont(font, Graphics.BOLD, fontSize);       
-        g.drawString("Component", position.x, position.y);
+        g.drawString("Component", position.x, position.y-height+5);
         g.drawRect(position.x, position.y, width, height);
         
     }
+    
+    /**
+     * Move the component to another part of the screen. This will animate the
+     * component linearly to the new location
+     * @param x - the x location 
+     * @param y - the y location
+     */
     public void moveTo(float x, float y)
     {
         this.finalPosition.x = x;
