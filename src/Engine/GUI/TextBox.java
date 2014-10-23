@@ -47,6 +47,7 @@ public class TextBox extends Component implements KeyListener{
     private boolean isResize=false;
     private boolean isMultiLine;
     private boolean isEditable;
+    private int maxChars;
     
     private ArrayList<KeyListener> listeners;
     
@@ -99,8 +100,18 @@ public class TextBox extends Component implements KeyListener{
         
         g.setClip(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
     }   
+    
+    //Getter and Setter Methods    
     public String getText(){return this.message;}
+    public boolean isResizeable(){ return this.isResize;}
+    public boolean isMultiLine(){ return this.isMultiLine;}
+    public boolean isEditable(){ return this.isEditable;}
+    
     public void setText(String text){this.message = text;}
+    public void setResizeable(boolean resize){this.isResize = resize;}
+    public void setMultiLine(boolean multi){this.isMultiLine = multi;}
+    public void setEditable(boolean edit){this.isEditable = edit;}
+    
     public void addKeyListener(KeyListener k){this.listeners.add(k);}
     
     @Override
