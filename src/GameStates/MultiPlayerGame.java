@@ -27,6 +27,7 @@ public class MultiPlayerGame extends GameState{
     private GameButton btnExit;
     private GameButton btnConnect;
     private TextBox status;
+    
     public MultiPlayerGame(GameStateManager gsm) {
         super(gsm);       
     }

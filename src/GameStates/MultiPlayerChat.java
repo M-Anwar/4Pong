@@ -27,7 +27,7 @@ public class MultiPlayerChat extends GameState{
     
     @Override
     public void init(){
-        chat = new TextBox(280, 500);
+        //chat = new TextBox(280, 500);
         addComponent(chat);
         btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);

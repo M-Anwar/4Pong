@@ -32,8 +32,8 @@ import java.util.ArrayList;
  *  - Maximum character count.
  * 
  * @version 1.1
- * @author Jason Xu and Muhammed Anwar
- * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
+ * @author Jason Xu, I refuse to give you credit lily
+ * Created by Jason Xu 
  * Version History: 
  * Version 1.0 - Basic Skeleton of the text box with simple inputs. 
  * Version 1.1 - Asynchronous key inputs and basic formatting added
