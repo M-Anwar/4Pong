@@ -14,7 +14,7 @@ import java.awt.Color;
 
 /**
  *
- * @author ali.allahverdi
+ * @author muhammed.anwar
  */
 public class Ball extends GameObject
 {

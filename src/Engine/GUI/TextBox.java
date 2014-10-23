@@ -5,11 +5,13 @@
  */
 package Engine.GUI;
 
+import Engine.Geometry.Rectangle;
 import Engine.Graphics;
 import Engine.KeyListener;
 import Engine.Keys;
 import Engine.Mouse;
 import Engine.StringBuilder;
+import G4Pong.GamePanel;
 import java.awt.Color;
 import java.util.ArrayList;
 
@@ -33,7 +35,8 @@ import java.util.ArrayList;
  * @author Jason Xu and Muhammed Anwar
  * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
  * Version History: 
- * Version 1.0 - Basic Skeleton of the text box with simple inputs. * 
+ * Version 1.0 - Basic Skeleton of the text box with simple inputs. 
+ * Version 1.1 - Asynchronous key inputs and basic formatting added
  */
 public class TextBox extends Component implements KeyListener{
     private boolean isHovered;    
@@ -41,7 +44,7 @@ public class TextBox extends Component implements KeyListener{
     protected float border = 25;
     private boolean caretVisible =false;
     private float caretTime=0;
-    private boolean isResize;
+    private boolean isResize=false;
     private boolean isMultiLine;
     private boolean isEditable;
     
@@ -70,10 +73,14 @@ public class TextBox extends Component implements KeyListener{
     @Override
     public void draw(Graphics g)
     {           
+        g.setClip((int)this.position.x, (int)this.position.y, (int)width+1, (int)height+1);
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
         int stringWidth = g.getFontDimension(message)[0];
-        if (stringWidth+25 > width){
-            width = stringWidth+25;
+        
+        if(isResize){            
+            if (stringWidth+25 > width){
+                width = stringWidth+25;
+            }
         }
         if(isHovered)
             g.setColor(new Color(0,176,240).getRGB());
@@ -89,6 +96,8 @@ public class TextBox extends Component implements KeyListener{
             g.drawLine(this.position.x +border/2+1 + stringWidth, this.position.y +border/2,
                        this.position.x +border/2+1 + stringWidth, this.position.y +height -border/2);
         }
+        
+        g.setClip(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
     }   
     public String getText(){return this.message;}
     public void setText(String text){this.message = text;}

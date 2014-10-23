@@ -6,6 +6,8 @@
 
 package Engine;
 
+import Engine.Geometry.Rectangle;
+
 /**
  * An interface for a generic graphics object. Defines methods for
  * simple drawing.
@@ -195,6 +197,16 @@ public interface Graphics
      * @param height - height of the clipping rectangle
      */
     public void setClip(int x, int y, int width, int height);
-//</editor-fold>  
+//</editor-fold>     
+    //<editor-fold defaultstate="collapsed" desc="getClip">
+    /**
+     * Returns the rectangle representing the current drawing clip of the object
+     * The rectangle position defines the top left corner of the clip
+     * and the width and height are normal.
+     * @return a Rectangle object representing the clipping region.
+     * @see Engine.Geometry.Rectangle
+     */
+    public Rectangle getClip();
+//</editor-fold>
  
 }
