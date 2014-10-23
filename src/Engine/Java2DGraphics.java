@@ -1,5 +1,6 @@
 package Engine;
 
+import Engine.Geometry.Rectangle;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -244,6 +245,13 @@ public class Java2DGraphics implements Graphics
     public void setClip(int x, int y, int width, int height) {
         g.setClip(x,y,width,height);       
     }
+
+    @Override    
+    public Rectangle getClip() {
+        java.awt.Rectangle rect = g.getClipBounds();
+        if(rect ==null)return null;
+        return new Rectangle(rect.x,rect.y,rect.width,rect.height);
+   }
     
     
     

@@ -11,7 +11,10 @@ import Engine.Vector2D;
 
 /**
  * A simple rectangle class with position, height and width. The position
- * is defined as the center of the rectangle.
+ * is defined as the center of the rectangle. This convention is used when
+ * doing collision detection with other object, however one could use it to just
+ * store generic rectangle data, however then one must not rely on using any of the
+ * collision constructs.
  * @author muhammed.anwar
  */
 public class Rectangle extends Shape
