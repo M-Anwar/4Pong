@@ -6,8 +6,10 @@
 package Engine.GUI;
 
 import Engine.Graphics;
-import Engine.Mouse;
+import Engine.KeyListener;
 import Engine.Keys;
+import Engine.Mouse;
+import Engine.StringBuilder;
 import java.awt.Color;
 
 /**
@@ -27,87 +29,78 @@ import java.awt.Color;
  *  - Maximum character count.
  * 
  * @version 1.0
- * @author Jason Xu- pls, no steal my credit muhammed
+ * @author Jason Xu and Muhammed Anwar
  * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
  * Version History: 
  * Version 1.0 - Basic Skeleton of the text box with simple inputs. * 
  */
-public class TextBox extends Component{
-    public boolean isHovered;
-    public boolean isClicked = false;
-    public String message = "";
+public class TextBox extends Component implements KeyListener{
+    private boolean isHovered;    
+    protected String message = "";
     protected float border = 25;
+    private boolean caretVisible =false;
+    private float caretTime=0;
     
     public TextBox(String text, float x, float y) {
-        super(x, y, 10, 10);
-        message = text;
-        this.setFont("Arial", 30);       
-        
-        //this.height = this.txtHeight + border;
-        //this.width = this.txtWidth + border;
-        
+        super(x, y,StringBuilder.getWidth(text, "Arial", 20)+25,StringBuilder.getHeight(text, "Arial", 20)+25);
+        message =text;
+        Keys.addKeyListener(this);
+        this.setFont("Arial", 20);     
        
     }
      @Override
     public void update(float delta){
         super.update(delta);
-        isHovered = isHovering(Mouse.x, Mouse.y);
-        if(isHovered)System.out.println(isHovered);
-        if(isHovered && Mouse.isPressed()){ //Case where It is currently hovering over the TextBox and clicks on it
-            isClicked = true;
-            System.out.println("Here");
-            //handleInput();
+        isHovered = isHovering(Mouse.x, Mouse.y);   
+        if (StringBuilder.getWidth(message, getFont(), (int)getFontSize())+25 > width){
+            width = StringBuilder.getWidth(message, getFont(), (int)getFontSize())+25;
         }
-        else if(!isHovered && Mouse.isPressed()){ //Case where it is not hovering over the textbox and clicks on something
-            isClicked = false;
+        caretTime +=delta;
+        if(caretTime >=5){
+            caretTime =0;
+            caretVisible = !caretVisible;
         }
-        else if(!Mouse.isPressed() && isClicked){ // Case where mouse has not been clicked and the textbox was clicked previously
-            //handleInput();
-        }
-        
     }
     
     @Override
     public void draw(Graphics g)
     {           
-        System.out.println(isHovered);
         if(isHovered)
             g.setColor(new Color(0,176,240).getRGB());
         else
             g.setColor(Color.BLACK.getRGB());
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
-        g.fillRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
+        g.fillRect(this.position.x, this.position.y, width, height);
         g.setColor(Color.WHITE.getRGB());
-        g.drawRect(this.position.x-border/2, this.position.y+border/2-this.height, width, height);
-        g.drawLine(this.position.x-border/2, this.position.y-border/2+25, this.position.x-border/2 + width, this.position.y-border/2+25);
-        
-        g.drawString(message, this.position.x, this.position.y);                
-    }
-    
-    public void handleInput(){
-        if(message.length() >= 10)return; //Impose a limit of 10 Characters
-        
-        if(Keys.isPressed(Keys.W)){
-            message = message + "W";
-            System.out.println("Here");
+        g.drawRect(this.position.x, this.position.y, width, height);        
+        g.drawString(message, this.position.x +border/2, this.position.y+height-border/2);   
+        if(caretVisible && isFocused())
+        {
+            g.drawLine(this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +border/2,
+                       this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +height -border/2);
         }
-        if(Keys.isPressed(Keys.S)){
-            message = message + "S";
-        }
-        if(Keys.isPressed(Keys.A)){
-            message = message + "A";
-        }
-        if(Keys.isPressed(Keys.D)){
-            message = message + "D";
-        }
-       // setText(message);
-        
-        
-        
-    }    
+    }   
+    public String getText(){return this.message;}
+    public void setText(String text){this.message = text;}
 
     @Override
     public void dispose() {
+        Keys.removeKeyListener(this);
+    }
+
+    @Override
+    public void KeyTyped(int keyCode, char keyChar) {
+        if(this.isFocused()){            
+            if(keyCode == Keys.VK_BACK_SPACE){
+                if(message.length()>=1)
+                    message = message.substring(0, message.length()-1);
+            }
+            else if(keyCode == Keys.VK_SHIFT){/*Nothing*/}
+            else{
+                
+                message = message+ keyChar;
+            }
+        }
     }
     
 }

@@ -29,9 +29,8 @@ public class MultiPlayerGame extends GameState{
     @Override
     public void init(){
         name = new TextBox("Enter Username", 300, 300);
-        addComponent(name); //BUG WHERE IF THIS ISNT COMMENTED OUT THEN IT DOUBLE ENTERS IN A KEYINPUT
-
-        btnExit = new GameButton("X",GamePanel.WIDTH-40,40);
+        addComponent(name);
+        btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
@@ -39,24 +38,23 @@ public class MultiPlayerGame extends GameState{
             }                
         });
         
-        btnConnect = new GameButton("Connect",350,360);
+        btnConnect = new GameButton("Connect",300,360);
         addComponent(btnConnect);
         btnConnect.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
-               //setState(GameStateManager.INTRO_STATE);
-                System.out.println("Clicked!!");
+                System.out.println(name.getText());
             }                
         }); 
     }
     
     @Override
     public void update(float delta){
-        name.update(delta);
+       
     }
     
     @Override
     public void draw(Graphics g){
-        name.draw(g);
+        
     }
     
     @Override

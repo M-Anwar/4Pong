@@ -11,5 +11,5 @@ package Engine;
  * @author muhammed.anwar
  */
 public interface KeyListener {
-    public void KeyTyped();
+    public void KeyTyped(int keyCode, char keyChar);
 }
