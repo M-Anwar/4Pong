@@ -11,6 +11,7 @@ import Engine.Keys;
 import Engine.Mouse;
 import Engine.StringBuilder;
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * A basic text box which supports many basic text box operations.
@@ -28,7 +29,7 @@ import java.awt.Color;
  *  - Basic event reporting, such as enter key pressed or text changed events.    
  *  - Maximum character count.
  * 
- * @version 1.0
+ * @version 1.1
  * @author Jason Xu and Muhammed Anwar
  * Created by Jason Xu since version 1.0, revised by Muhammed Anwar
  * Version History: 
@@ -40,21 +41,25 @@ public class TextBox extends Component implements KeyListener{
     protected float border = 25;
     private boolean caretVisible =false;
     private float caretTime=0;
+    private boolean isResize;
+    private boolean isMultiLine;
+    private boolean isEditable;
+    
+    private ArrayList<KeyListener> listeners;
     
     public TextBox(String text, float x, float y) {
-        super(x, y,StringBuilder.getWidth(text, "Arial", 20)+25,StringBuilder.getHeight(text, "Arial", 20)+25);
+        super(x, y,StringBuilder.getWidth(text, "Arial", 30)+25,StringBuilder.getHeight(text, "Arial", 30)+25);
         message =text;
         Keys.addKeyListener(this);
-        this.setFont("Arial", 20);     
+        listeners = new ArrayList<>();
+        this.setFont("Arial", 30);     
        
     }
      @Override
     public void update(float delta){
         super.update(delta);
         isHovered = isHovering(Mouse.x, Mouse.y);   
-        if (StringBuilder.getWidth(message, getFont(), (int)getFontSize())+25 > width){
-            width = StringBuilder.getWidth(message, getFont(), (int)getFontSize())+25;
-        }
+        
         caretTime +=delta;
         if(caretTime >=5){
             caretTime =0;
@@ -65,24 +70,30 @@ public class TextBox extends Component implements KeyListener{
     @Override
     public void draw(Graphics g)
     {           
+        g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
+        int stringWidth = g.getFontDimension(message)[0];
+        if (stringWidth+25 > width){
+            width = stringWidth+25;
+        }
         if(isHovered)
             g.setColor(new Color(0,176,240).getRGB());
         else
             g.setColor(Color.BLACK.getRGB());
-        g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);
+        
         g.fillRect(this.position.x, this.position.y, width, height);
         g.setColor(Color.WHITE.getRGB());
         g.drawRect(this.position.x, this.position.y, width, height);        
         g.drawString(message, this.position.x +border/2, this.position.y+height-border/2);   
         if(caretVisible && isFocused())
-        {
-            g.drawLine(this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +border/2,
-                       this.position.x +border/2+1 + StringBuilder.getWidth(message, getFont(), (int)getFontSize()), this.position.y +height -border/2);
+        {           
+            g.drawLine(this.position.x +border/2+1 + stringWidth, this.position.y +border/2,
+                       this.position.x +border/2+1 + stringWidth, this.position.y +height -border/2);
         }
     }   
     public String getText(){return this.message;}
     public void setText(String text){this.message = text;}
-
+    public void addKeyListener(KeyListener k){this.listeners.add(k);}
+    
     @Override
     public void dispose() {
         Keys.removeKeyListener(this);
@@ -90,15 +101,17 @@ public class TextBox extends Component implements KeyListener{
 
     @Override
     public void KeyTyped(int keyCode, char keyChar) {
-        if(this.isFocused()){            
+        if(this.isFocused()){    
+            for(KeyListener k: listeners){
+                k.KeyTyped(keyCode, keyChar);
+            }
             if(keyCode == Keys.VK_BACK_SPACE){
                 if(message.length()>=1)
                     message = message.substring(0, message.length()-1);
-            }
+            }            
             else if(keyCode == Keys.VK_SHIFT){/*Nothing*/}
-            else{
-                
-                message = message+ keyChar;
+            else{                
+                message = message+ keyChar;                
             }
         }
     }
