@@ -32,12 +32,19 @@ import java.util.ArrayList;
  *  - Basic event reporting, such as enter key pressed or text changed events.    
  *  - Maximum character count.
  * 
- * @version 1.1
- * @author Jason Xu, I refuse to give you credit lily
+ * TODO:
+ *  - ADD EXTENSIVE DOCUMENTATION TO THE CODE - NEEDS MAJOR REFACTORING IN THE FUTURE
+ *      
+ * BUGS TO BE FIXED:
+ *  - text box always scrolls to the very right every time. So in multiline 
+ *      text boxes the window does not scroll to the caret position.
+ * @version 2.0
+ * @author Jason Xu, Muhammed Anwar
  * Created by Jason Xu 
  * Version History: 
  * Version 1.0 - Basic Skeleton of the text box with simple inputs. 
  * Version 1.1 - Asynchronous key inputs and basic formatting added
+ * Version 2.0 - Added Scrolling feature to component.
  */
 public class TextBox extends Component implements KeyListener, Scrollable{
     private boolean isHovered;    
@@ -49,10 +56,12 @@ public class TextBox extends Component implements KeyListener, Scrollable{
     private boolean isResize=false;
     private boolean isMultiLine= false;
     private boolean isEditable =true;
-    private int maxChars;
+    private int maxChars=0;
     
     private float prefferedHeight;
     private float prefferedWidth;
+    private boolean scrollHorEnd;
+    private boolean scrollVerEnd;
     
     private ScrollBar scroll;
     
@@ -60,7 +69,7 @@ public class TextBox extends Component implements KeyListener, Scrollable{
     private ArrayList<ButtonListener> mouseListeners;
     
     public TextBox(String text, float x, float y) {
-        super(x, y,StringBuilder.getWidth(text, "Arial", 30)+25,StringBuilder.getHeight(text, "Arial", 30)+25);
+        super(x, y,StringBuilder.getWidth(text, "Arial", 30)+35,StringBuilder.getHeight(text, "Arial", 30)+25);
         message =text;        
         this.setFont("Arial", 30);            
         init();
@@ -81,7 +90,7 @@ public class TextBox extends Component implements KeyListener, Scrollable{
      @Override
     public void update(float delta){
         super.update(delta);
-        scroll.update(delta);
+        scroll.update(0);
         isHovered = isHovering(Mouse.x, Mouse.y);   
         if(isHovered){
             if(Mouse.isPressed()){
@@ -105,7 +114,7 @@ public class TextBox extends Component implements KeyListener, Scrollable{
         g.setFont(this.getFont(), Graphics.BOLD, this.fontSize);        
         //Border and background
         if(isHovered && isEditable())
-            g.setColor(new Color(0,176,240).getRGB());
+            g.setColor(new Color(119,147,60).getRGB());
         else
             g.setColor(Color.BLACK.getRGB());        
         g.fillRect(this.position.x, this.position.y, width, height);
@@ -122,25 +131,26 @@ public class TextBox extends Component implements KeyListener, Scrollable{
             parts = new String[]{message};
         }
         for(int i=0; i <parts.length;i++){
-            g.drawString(parts[i], this.position.x +border/2, this.position.y+stringHeight+(stringHeight+10)*i+border/2);   
+            g.drawString(parts[i], this.position.x +scroll.getHorizontalOffset()+border/2, this.position.y + scroll.getVerticalOffset()+stringHeight+(stringHeight+10)*i+border/2);   
             tempWidth = g.getFontDimension(parts[i])[0];
             if(i == parts.length-1){
-                caretPos.x = this.position.x + border/2+1 + tempWidth;
-                caretPos.y = this.position.y+stringHeight+(stringHeight+10)*(i-1)+10+border/2;
+                caretPos.x = this.position.x + scroll.getHorizontalOffset()+border/2+1 + tempWidth;
+                caretPos.y = this.position.y+ scroll.getVerticalOffset()+stringHeight+(stringHeight+10)*(i-1)+10+border/2;
             }
             if(tempWidth>stringWidth){
                 stringWidth = tempWidth;
             }
         }       
-        this.prefferedWidth = stringWidth;
+        this.prefferedWidth = stringWidth+border;
         this.prefferedHeight = (stringHeight+10)* parts.length + border/2;
+        if(scrollHorEnd){scroll.setHorizontalToEnd();scrollHorEnd = false;}
+        if(scrollVerEnd){scroll.setVerticalToEnd(); scrollVerEnd = false;}
         //Dimensions 
         if(isResize){            
             if (stringWidth+border > width){
                 width = stringWidth+border;
             }
         }
-        //g.drawRect(position.x+border/2, position.y, prefferedWidth, prefferedHeight);
         //Caret Positioning -> Always at the end
         if(caretVisible && isFocused() && isEditable()){           
             g.drawLine(caretPos.x, caretPos.y, caretPos.x, caretPos.y + stringHeight);
@@ -156,11 +166,12 @@ public class TextBox extends Component implements KeyListener, Scrollable{
     public boolean isEditable(){ return this.isEditable;}
     
     public void resizeHeight(){this.height = StringBuilder.getHeight(message, getFont(), (int)getFontSize())+border;}
-    public void appendText(String message){this.message +=message;}
-    public void setText(String text){this.message = text;}
+    public void appendText(String message){this.message +=message;this.scrollVerEnd =true;}
+    public void setText(String text){this.message = text;this.scrollHorEnd = true; this.scrollVerEnd =true;}
     public void setResizeable(boolean resize){this.isResize = resize;}
     public void setMultiLine(boolean multi){this.isMultiLine = multi;}
     public void setEditable(boolean edit){this.isEditable = edit;}
+    public void setMaxChars(int max){this.maxChars = max;}
     public void setWidth(float width){this.width = width;}
     public void setHeight(float height){this.height = height;}
     public void addKeyListener(KeyListener k){this.listeners.add(k);}
@@ -180,10 +191,13 @@ public class TextBox extends Component implements KeyListener, Scrollable{
             if(keyCode == Keys.VK_BACK_SPACE){
                 if(message.length()>=1)
                     message = message.substring(0, message.length()-1);
-            }            
+            }                        
             else if(keyCode == Keys.VK_SHIFT){/*Nothing*/}              
             else{                
-                message = message+ keyChar;                
+                if(this.maxChars > 0 && message.length()>=maxChars) return;
+                message = message+ keyChar;                  
+                scroll.setVerticalToEnd();  
+                scroll.setHorizontalToEnd();
             }            
         }
     }

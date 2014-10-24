@@ -37,8 +37,7 @@ public class MTestBench extends GameState
     Circle circle2;
     
     private TextBox chatInput;
-    private TextBox chatLog;
-    private TextBox multi;
+    private TextBox chatLog;    
     private boolean firstClick = true;
     
     int state;
@@ -65,7 +64,7 @@ public class MTestBench extends GameState
         newCircle = new Circle(GamePanel.WIDTH/2, GamePanel.HEIGHT/2,40);
         
         if(state ==2){
-            chatInput = new TextBox("Enter text here...",10,85);
+            chatInput = new TextBox("Enter text here...",10,390);
             chatInput.setFocus(true);
             chatInput.setMultiLine(false);
             chatInput.setWidth(400);
@@ -91,19 +90,15 @@ public class MTestBench extends GameState
                 }
             });
             
-            chatLog= new TextBox(10,130,400,300);            
+            chatLog= new TextBox(10,85,400,300);            
             chatLog.setFont("Arial", 12);
-            chatLog.setResizeable(true);
             chatLog.setEditable(false);
             chatLog.setMultiLine(true);
-            
-            multi = new TextBox(420,130,400,GamePanel.HEIGHT-140);
-            multi.setFont("Arial", 30);
-            multi.setMultiLine(true);
-            
+            chatLog.setText("WELCOME TO 4 P O N G chat lobby:\n");
+                     
             addComponent(chatInput);
             addComponent(chatLog);
-            addComponent(multi);
+            
         }
     }
     

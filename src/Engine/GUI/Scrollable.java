@@ -9,7 +9,7 @@ package Engine.GUI;
 import Engine.Vector2D;
 
 /**
- *
+ * Any component that wants to be properly scrolled should implement this interface * 
  * @author muhammed.anwar
  */
 public interface Scrollable {
