@@ -11,6 +11,7 @@ import Engine.GUI.GameButton;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
+import Entity.ImageLoader;
 import G4Pong.GamePanel;
 
 /**
@@ -45,7 +46,7 @@ public class TrevorTestBench extends GameState{
 
     @Override
     public void draw(Graphics g) {
-        
+        g.drawImage(0, 0, ImageLoader.TREVOR, GamePanel.WIDTH, GamePanel.HEIGHT);
     }
 
     @Override

@@ -35,15 +35,16 @@ public class MultiPlayerGame extends GameState{
     @Override
     public void init(){
         name = new TextBox("Enter Username", 300, 360);
-        name.setFocus(true);
+        name.setFocus(true);        
         name.addKeyListener(new KeyListener(){
             public void KeyTyped(int keyCode, char keyChar) {
                 if(keyCode == Keys.VK_ENTER){
-                    System.out.println(name.getText());
+                    System.out.println("'" + name.getText()+ "'");
                 }
             }        
         });
         addComponent(name);
+        
         btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          

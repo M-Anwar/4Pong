@@ -6,16 +6,19 @@
 
 package GameStates;
 
+import Engine.GUI.ButtonListener;
+import Engine.GUI.GameButton;
+import Engine.GUI.TextBox;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Geometry.Circle;
 import Engine.Geometry.CollisionResult;
 import Engine.Geometry.Rectangle;
 import Engine.Graphics;
+import Engine.KeyListener;
 import Engine.Keys;
+import Entity.ImageLoader;
 import G4Pong.GamePanel;
-import Engine.GUI.ButtonListener;
-import Engine.GUI.GameButton;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.logging.Level;
@@ -32,14 +35,22 @@ public class MTestBench extends GameState
     Circle circle;
     Circle newCircle;
     Circle circle2;
-    int state = 1;
+    
+    private TextBox chatInput;
+    private TextBox chatLog;
+    private TextBox multi;
+    private boolean firstClick = true;
+    
+    int state;
     
     public MTestBench(GameStateManager gsm) {
         super(gsm);               
     }
 
     @Override
-    public void init() {        
+    public void init() {    
+        state = 2;
+        
         btnClose = new GameButton("X", GamePanel.WIDTH - 50, 20);       
         addComponent(btnClose);      
         btnClose.addButtonListener(new ButtonListener(){//X button to go back to options
@@ -52,12 +63,56 @@ public class MTestBench extends GameState
         circle = new Circle(GamePanel.WIDTH/2-50, GamePanel.HEIGHT/2,40);
         circle2 = new Circle(GamePanel.WIDTH/2+50, GamePanel.HEIGHT/2,40);
         newCircle = new Circle(GamePanel.WIDTH/2, GamePanel.HEIGHT/2,40);
+        
+        if(state ==2){
+            chatInput = new TextBox("Enter text here...",10,85);
+            chatInput.setFocus(true);
+            chatInput.setMultiLine(false);
+            chatInput.setWidth(400);
+            chatInput.setFont("Arial", 12);
+            chatInput.resizeHeight();
+            
+            chatInput.addKeyListener(new KeyListener(){
+                @Override
+                public void KeyTyped(int keyCode, char keyChar) {
+                    if(keyCode == Keys.VK_ENTER){
+                        chatLog.appendText(chatInput.getText());
+                        chatInput.setText("");
+                    }               
+                }            
+            });
+            chatInput.addMouseListener(new ButtonListener(){                          
+                @Override
+                public void buttonClicked() {
+                    if(firstClick){
+                        firstClick = false;
+                        chatInput.setText("");
+                    }
+                }
+            });
+            
+            chatLog= new TextBox(10,130,400,300);            
+            chatLog.setFont("Arial", 12);
+            chatLog.setResizeable(true);
+            chatLog.setEditable(false);
+            chatLog.setMultiLine(true);
+            
+            multi = new TextBox(420,130,400,GamePanel.HEIGHT-140);
+            multi.setFont("Arial", 30);
+            multi.setMultiLine(true);
+            
+            addComponent(chatInput);
+            addComponent(chatLog);
+            addComponent(multi);
+        }
     }
     
+    @Override
     public void update(float delta)
     {
         handleInput();
     }
+    @Override
     public void draw(Graphics g){
         
         if (state ==1){
@@ -87,7 +142,14 @@ public class MTestBench extends GameState
         }
         else if (state ==2)
         {
-            
+            g.drawImage(0, 0, ImageLoader.BACKGROUND, GamePanel.WIDTH,GamePanel.HEIGHT);
+            g.setColor(new Color(77,77,77).getRGB());
+            g.fillRect(0, 0, GamePanel.WIDTH, 80);
+            g.setColor(Color.WHITE.getRGB());
+            g.setFont("Arial",Graphics.BOLD,25);
+            g.drawString("Text Box Test bench", 10, 40);
+            g.setFont("Arial",Graphics.PLAIN,15);
+            g.drawString("Basic Chat infrastructure - has two text boxes which communicate with each other", 10, 60);
         }
     }
     @Override

@@ -19,4 +19,6 @@ public class ImageLoader {
     public static Image SPEED = Utils.loadJava2DImage("/res/speed.png");
     public static Image SHIELD = Utils.loadJava2DImage("/res/shield.png");
     public static Image CURVE = Utils.loadJava2DImage("/res/curve.png");
+    public static Image BACKGROUND = Utils.loadJava2DImage("/res/background.jpg");
+    public static Image TREVOR = Utils.loadJava2DImage("/res/trevor.jpg");
 }
