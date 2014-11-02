@@ -173,7 +173,7 @@ public class Java2DGraphics implements Graphics
      */
     @Override
     public void translate(double x, double y) {
-        g.translate(x, y);
+        g.translate(x, y);        
     }
 
     /**

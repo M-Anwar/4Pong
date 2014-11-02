@@ -19,29 +19,18 @@ import Engine.Vector2D;
 
 public abstract class GameObject
 {         
-   protected Vector2D velocity;        
-
+    protected Vector2D velocity;    
     protected Shape bounds;
     protected float angularVelocity;       
   
-    public void setAngularVelocity(float ang){
-        this.angularVelocity = ang;
-    }
-    public void setVelocity(Vector2D v) {
-        this.velocity = v;
-    }    
-
-    public void setPosition(Vector2D v){
-        this.bounds.setPosition(v);
-    }
-    public void setRotation(float angle){
-        this.bounds.setRotation(angle);        
-    }
+    public void setAngularVelocity(float ang){this.angularVelocity = ang;}
+    public void setVelocity(Vector2D v) {this.velocity = v;} 
+    public void setPosition(Vector2D v){this.bounds.setPosition(v);}
+    public void setRotation(float angle){this.bounds.setRotation(angle);}
     
     public abstract void update(float delta);
     public abstract void draw(Graphics g);
-    
-    
+        
     public float getAngularVelocity(){return angularVelocity;}
     public Vector2D getVelocity(){return velocity;}    
     public Vector2D getPosition(){return this.bounds.getPosition();}

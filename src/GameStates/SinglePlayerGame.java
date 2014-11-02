@@ -128,6 +128,7 @@ public class SinglePlayerGame extends GameState{
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         
+        /*
         float x = WIDTH-ImageLoader.LOGO.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.LOGO.getHeight(), ImageLoader.LOGO);
         x-=ImageLoader.EXPADDLE.getWidth();
@@ -137,7 +138,7 @@ public class SinglePlayerGame extends GameState{
          x-=ImageLoader.SHIELD.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.SHIELD.getHeight(), ImageLoader.SHIELD);
          x-=ImageLoader.CURVE.getWidth();
-        g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);
+        g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);*/
     }    
 
     @Override

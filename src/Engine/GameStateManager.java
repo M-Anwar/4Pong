@@ -8,13 +8,13 @@ package Engine;
 
 import G4Pong.GamePanel;
 import GameStates.IntroState;
-import GameStates.JasonTestBench;
-import GameStates.MTestBench;
+import GameStates.TestBench.JasonTestBench;
+import GameStates.TestBench.MTestBench;
 import GameStates.MultiPlayerChat;
 import GameStates.MultiPlayerGame;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
-import GameStates.TrevorTestBench;
+import GameStates.TestBench.TrevorTestBench;
 import java.awt.Color;
 
 /**
@@ -37,7 +37,7 @@ public class GameStateManager
     
 
     public GameStateManager() {
-        currentState = INTRO_STATE;
+        currentState = MTEST_STATE;
         loadState(currentState);
     }
 

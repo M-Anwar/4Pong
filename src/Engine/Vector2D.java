@@ -165,8 +165,9 @@ public class Vector2D
      */
     public void thisNormalize()
     {
-        this.x = this.x/length();
-        this.y = this.y/length();
+        float length = length();
+        this.x = this.x/length;
+        this.y = this.y/length;
     }
     
     /**
@@ -214,8 +215,9 @@ public class Vector2D
      */
     public void thisRotate(float radians)
     {
+        float temp = this.x;
         this.x = x*(float)Math.cos(radians) - y*(float) Math.sin(radians);
-        this.y = x*(float)Math.sin(radians) + y*(float) Math.cos(radians);
+        this.y = temp*(float)Math.sin(radians) + y*(float) Math.cos(radians);
     }
     
     /**

@@ -28,6 +28,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -149,9 +150,9 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     }
     
     public void draw()
-    {
-        g.setColor(Color.BLACK.getRGB());
-        g.fillRect(0, 0, WIDTH, HEIGHT);  
+    { 
+        g.setColor(Color.BLACK.getRGB());       
+        g.fillRect(0, 0, WIDTH, HEIGHT);                
         gsm.draw(g);        
         
         /*
