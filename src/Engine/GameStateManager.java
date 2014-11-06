@@ -18,7 +18,12 @@ import GameStates.TestBench.TrevorTestBench;
 import java.awt.Color;
 
 /**
- *
+ * A manager class which delegates the act of drawing and updating the screen.
+ * The manager controls the current state of the program and can switch between
+ * different states.
+ * 
+ * TODO: Refactoring to allow users to register their own GameState classes
+ * instead of having to change it manually in the actual Engine package.
  * @author muhammed.anwar
  */
 public class GameStateManager 

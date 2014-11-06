@@ -11,7 +11,7 @@ import Engine.Vector2D;
 import java.util.Arrays;
 
 /**
- * A Generic shape definition used for collision detection. 
+ * A Generic shape definition used for collision detection and shape representation. 
  * When defining a polygon a local coordinate system is used. Refer to the 
  * geometry documentation for more details on how to define a general polygon.
  * The vertices should be defined when the polygon has 0 rotation. 
@@ -25,6 +25,7 @@ import java.util.Arrays;
  * retrieving vertex information or normal information). The rotation can be
  * applied immediately to the local variables or indirectly through getter methods.
  * @author muhammed.anwar
+ *  With helpful contributions from Narayan Jat (collision normals!!).
  */
 public abstract class Shape {
     
@@ -281,6 +282,41 @@ public abstract class Shape {
         return proj;
     }
     
+    /**
+     * Returns whether or not the given point is contained in the current shape
+     * @param point The point to check against
+     * @return true if the point is contained, false if not. If the point is on
+     * the edge of the shape the return might be true or false.
+     */
+    public boolean containsPoint(Vector2D point)
+    {
+        /*Algorithm provided by http://alienryderflex.com/polygon/ without 
+         pre-calc. Works for both concave and convex polygons and circles.*/
+        if(this.type == ShapeType.POLYGON){
+            Vector2D[] vertices = this.getVertices();
+            int i, j = vertices.length-1;
+            boolean oddnodes = false;
+            for(i=0; i < vertices.length; i++)
+            {
+                if( (vertices[i].y < point.y && vertices[j].y >= point.y || vertices[j].y < point.y && vertices[i].y >= point.y) 
+                        &&(vertices[i].x <=point.x || vertices[j].x <=point.x)){
+                    oddnodes ^=(vertices[i].x +(point.y-vertices[i].y)/(vertices[j].y-vertices[i].y)*(vertices[j].x-vertices[i].x) <point.x);
+                }
+                j = i;
+            }            
+            return oddnodes;
+        }
+        /* If the point is at a distance smaller then the radius of the cirle,
+        then it is contained.
+        */
+        if(this.type == ShapeType.CIRCLE){
+            float rad = this.getRadius();
+            Vector2D pos = this.getPosition();
+            if(point.subtract(pos).length2() < rad*rad) return true;
+            else return false;
+        }       
+        return false;
+    }
 }
 class Projection
 {

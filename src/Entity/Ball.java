@@ -23,7 +23,7 @@ public class Ball extends GameObject
     {
         this.bounds = new Circle(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2,10);
         this.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2,GamePanel.GAMEHEIGHT/2));
-        this.setVelocity(new Vector2D(20,20));        
+        this.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));        
         this.setAngularVelocity(5);
     }
     @Override

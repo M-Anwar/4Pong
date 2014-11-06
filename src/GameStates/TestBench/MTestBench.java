@@ -18,6 +18,7 @@ import Engine.Geometry.Rectangle;
 import Engine.Graphics;
 import Engine.KeyListener;
 import Engine.Keys;
+import Engine.Mouse;
 import Engine.Vector2D;
 import Entity.ImageLoader;
 import G4Pong.GamePanel;
@@ -122,18 +123,12 @@ public class MTestBench extends GameState
     public void draw(Graphics g){
         
         if (state ==1){
-            //<editor-fold defaultstate="collapsed" desc="SAT Polygon vs. Circle Test">
-            g.setColor(new Color(77,77,77).getRGB());
-            g.fillRect(0, 0, GamePanel.WIDTH, 80);
+            //<editor-fold defaultstate="collapsed" desc="SAT Polygon vs. Circle Test"> 
             g.setColor(Color.WHITE.getRGB());
-            g.setFont("Arial",Graphics.BOLD,25);
-            g.drawString("Separating Axis Theorem: Circle vs. Polygon", 10, 40);
-            g.setFont("Arial",Graphics.PLAIN,15);
-            g.drawString("W S A D to move the rectangle - Arrow Keys (Up & Down) to rotate", 10, 60);
-            g.drawString("Camera: " + cam.getPosition() + " Rect: " + rect.getPosition(), 10,100);
-            g.fillOval(cam.getPosition().x-2, cam.getPosition().y-2, 4, 4);
-            
             cam.applyCamera(g);
+            Vector2D point = cam.projectPoint(new Vector2D(Mouse.x, Mouse.y));
+            if(rect.containsPoint(point))g.setColor(Color.RED.getRGB());
+            g.drawOval(point.x-2, point.y-2, 4, 4);
             g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);            
             newCircle.setPosition(circle.getPosition());
             rect.debugDraw(g);
@@ -149,7 +144,14 @@ public class MTestBench extends GameState
                 circle2.setPosition(circle2.getPosition().add(s.mts));
             }
             cam.unApplyCamera(g);
-            
+            g.setColor(new Color(77,77,77).getRGB());
+            g.fillRect(0, 0, GamePanel.WIDTH, 80);
+            g.setColor(Color.WHITE.getRGB());
+            g.setFont("Arial",Graphics.BOLD,25);
+            g.drawString("Separating Axis Theorem: Circle vs. Polygon - With Working Camera!", 10, 40);
+            g.setFont("Arial",Graphics.PLAIN,15);
+            g.drawString("W S A D to move the rectangle - Arrow Keys (Up & Down) to rotate", 10, 60);
+            g.drawString("Mouse: " + new Vector2D(Mouse.x, Mouse.y).toString() + " Project: " + point.toString() +" Zoom: " + cam.getZoom(), 10,100);
             //</editor-fold>
         }
         else if (state ==2)
@@ -164,9 +166,33 @@ public class MTestBench extends GameState
             g.setFont("Arial",Graphics.PLAIN,15);
             g.drawString("Basic Chat infrastructure - has two text boxes which communicate with each other", 10, 60);
 //</editor-fold>
-        }        
+        }   
+        else if (state == 3)
+        {
+            g.setColor(new Color(77,77,77).getRGB());
+            g.fillRect(0, 0, GamePanel.WIDTH, 80);
+            g.setColor(Color.WHITE.getRGB());
+            g.setFont("Arial",Graphics.BOLD,25);
+            g.drawString("Cantor Set-Recursive Drawing", 10, 40);
+            g.setFont("Arial",Graphics.PLAIN,15);
+            g.drawString("Fractals", 10, 60);
+            g.setColor(Color.WHITE.getRGB());
+            cam.applyCamera(g);
+            cantorDraw(g,50,140,900);
+            cam.unApplyCamera(g);
+        }
         
                         
+    }
+    private void cantorDraw(Graphics g, int x, int y, int len)
+    {   
+        if(len>=1)
+        {
+            g.drawLine(x,y,x+len,y);
+            y+=20;
+            cantorDraw(g,x,y,len/3);
+            cantorDraw(g,x+len*2/3, y, len/3);
+        }
     }
     @Override
     public void handleInput() {
@@ -175,12 +201,13 @@ public class MTestBench extends GameState
         if(Keys.isDown(Keys.A)) rect.getPosition().thisAdd(-1,0);
         if(Keys.isDown(Keys.D)) rect.getPosition().thisAdd(1,0);
         
-        //if(Keys.isDown(Keys.UP)) rect.setRotation(rect.getRotation()+(float)Math.toRadians(1));
-        //if(Keys.isDown(Keys.DOWN)) rect.setRotation(rect.getRotation()-(float)Math.toRadians(1));
-        if(Keys.isDown(Keys.UP)) cam.moveCamera(new Vector2D(0,-5));
-        if(Keys.isDown(Keys.DOWN)) cam.moveCamera(new Vector2D(0,5));
-        if(Keys.isDown(Keys.LEFT)) cam.moveCamera(new Vector2D(-5,0));
-        if(Keys.isDown(Keys.RIGHT)) cam.moveCamera(new Vector2D(5,0));
+        if(Keys.isDown(Keys.UP)) rect.setRotation(rect.getRotation()+(float)Math.toRadians(1));
+        if(Keys.isDown(Keys.DOWN)) rect.setRotation(rect.getRotation()-(float)Math.toRadians(1));
+        
+        if(Keys.isDown(Keys.R)) rect.setPosition(new Vector2D(0,0));
+        if(Keys.isDown(Keys.F)) {cam.zoomInc(0.1f);}
+        if(Keys.isDown(Keys.G)) {cam.zoomInc(-0.1f);}
+        
         
     }   
 }
