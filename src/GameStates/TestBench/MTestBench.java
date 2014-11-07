@@ -180,6 +180,7 @@ public class MTestBench extends GameState
             cam.applyCamera(g);
             cantorDraw(g,50,140,900);
             cam.unApplyCamera(g);
+            g.drawString("Zoom: "+ cam.getZoom(), 10, 80);
         }
         
                         

@@ -20,9 +20,10 @@ public class Camera
 {
     private Vector2D position;
     private Vector2D velocity;
-    private float zoom;
     private Rectangle viewPort;    
     private Vector2D finalPosition;
+    
+    private float zoom;    
     private float finalZoom;
     
     public Camera(Vector2D pos, Rectangle viewPort)
@@ -40,7 +41,7 @@ public class Camera
         velocity.y = this.finalPosition.y - this.position.y;
         if(finalZoom <=0) finalZoom = 0.0001f;
         float zoomVel = (finalZoom - zoom)/5;
-        if(zoomVel>0.00001){zoom += zoomVel*delta;}
+        if(Math.abs(zoomVel)>0.00001){zoom += zoomVel*delta;}
         else {zoom = finalZoom;}
         
         if(velocity.length2()>4){            
@@ -105,13 +106,30 @@ public class Camera
      */
     public void zoomInc(float zoomInc) {this.finalZoom +=zoomInc;}
     
+    
+    /**
     /** Returns the position of the camera     
      * @return the position of the camera */
     public Vector2D getPosition(){return this.position;}
     /** Returns the present zoom level of the camera 
      * @return */
     public float getZoom(){return this.zoom;}
-    
+    /**
+     * Directly set the position of the camera, avoiding any animation
+     * @param pos 
+     */
+    public void setPosition(Vector2D pos){
+        this.finalPosition.x = pos.x; this.finalPosition.y = pos.y;
+        this.position.x =pos.x; this.position.y = pos.y;
+    }
+    /**
+     * Directly set the zoom of the camera, avoiding any animation
+     * @param zoomLevel the zoom level of the camera >0
+     */
+    public void setZoom(float zoomLevel){
+        this.finalZoom = zoomLevel;
+        this.zoom = zoomLevel;
+    }
     /**
      * Takes a screen space coordinate and projects it to the world space
      * @param screen the coordinates in screen space 

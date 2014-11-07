@@ -24,6 +24,10 @@ import java.util.Arrays;
  * The rotation of the shape is applied on all calculated values (i.e when
  * retrieving vertex information or normal information). The rotation can be
  * applied immediately to the local variables or indirectly through getter methods.
+ * 
+ * TODO: need a way of returning or offline calculating the point of collision
+ * (or collision manifold using GJK algorithm). 
+ * 
  * @author muhammed.anwar
  *  With helpful contributions from Narayan Jat (collision normals!!).
  */
