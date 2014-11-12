@@ -33,7 +33,7 @@ public class Main extends JFrame{
          this.setVisible(true);
          
         try {
-            //custom cursor
+            //custom cursor            
             BufferedImage i = ImageIO.read(ClassLoader.class.getResourceAsStream("/mouse.png"));
             Cursor c = Toolkit.getDefaultToolkit().createCustomCursor(i, new Point(0, 0), "mouse");
             this.setCursor(c);

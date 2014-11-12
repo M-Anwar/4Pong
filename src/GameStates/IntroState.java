@@ -6,6 +6,10 @@
 
 package GameStates;
 
+import Engine.GUI.ButtonListener;
+import Engine.GUI.Component;
+import Engine.GUI.GameButton;
+import Engine.GUI.TextBox;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Geometry.CollisionResult;
@@ -17,12 +21,12 @@ import Entity.MenuBall;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
-import Engine.GUI.ButtonListener;
-import Engine.GUI.Component;
-import Engine.GUI.GameButton;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -37,6 +41,8 @@ public class IntroState extends GameState
     GameButton btnMulti;
     GameButton btnOptions;
     GameButton btnExit;
+    
+    TextBox txtUpdates;
     
     public IntroState(GameStateManager gsm) {
         super(gsm);
@@ -55,13 +61,27 @@ public class IntroState extends GameState
         btnMulti=new GameButton("Multi-Player",90,startY+60);
         btnOptions=new GameButton("Options",90,startY+120);
         btnExit=new GameButton("Exit",90,startY+175);
-                
+        txtUpdates =new TextBox("Updates",GamePanel.WIDTH/2-100, 450);                
+        txtUpdates.setFont("Arial",12);
+        txtUpdates.setWidth(600);
+        txtUpdates.setMultiLine(true);
+        txtUpdates.setEditable(false);
+        try {
+            txtUpdates.setText(Engine.Utils.readTextFromFile("/ToDo.txt"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        txtUpdates.setHeight(200);
+        
+        
         addComponent(btnPlay);
         addComponent(btnMulti);
         addComponent(btnOptions);
         addComponent(btnExit);
+        addComponent(txtUpdates);
+        
         for (int i =0; i <10; i ++){
-            b.add(new MenuBall(GamePanel.WIDTH/2+i,GamePanel.HEIGHT/2));       
+            b.add(new MenuBall(GamePanel.WIDTH/2-(10*50)/2+i*50,GamePanel.HEIGHT/2));       
         }
         
         btnExit.addButtonListener(new ButtonListener(){          
@@ -103,7 +123,7 @@ public class IntroState extends GameState
             {
                 CollisionResult s = ball.circleShape.collides(b.get(j).circleShape);
                 if (s!=null){                                       
-                        ball.circleShape.setPosition(ball.circleShape.getPosition().add(s.mts));
+                        b.get(j).circleShape.setPosition(b.get(j).circleShape.getPosition().add(s.mts));
                         Vector2D temp = new Vector2D(ball.velocity);
                         ball.velocity = b.get(j).velocity;
                         b.get(j).velocity= temp;
@@ -132,10 +152,10 @@ public class IntroState extends GameState
         
         //Draw Instructions and welcome details
         g.setFont("Arial", Graphics.BOLD, 45);
-        g.drawString("Welcome",WIDTH/2-100,420);
+        g.drawString("Welcome",WIDTH/2-100,370);
         g.setFont("Arial",Graphics.PLAIN, 20);
-        g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 450);
-        g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 480);        
+        g.drawString("4 Player pong, pick up your paddle and have fun",WIDTH/2-100, 400);
+        g.drawString("Arrow keys to move your paddle",WIDTH/2-100, 430);        
        
         //For giggles :D
 //        for (int i =0; i <b.size(); i ++)

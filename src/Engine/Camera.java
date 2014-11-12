@@ -22,30 +22,34 @@ public class Camera
     private Vector2D velocity;
     private Rectangle viewPort;    
     private Vector2D finalPosition;
-    
+    private float maxVel;
     private float zoom;    
     private float finalZoom;
     
     public Camera(Vector2D pos, Rectangle viewPort)
     {
         this.finalZoom = 1;
-        this.zoom =0.1f;
+        this.zoom =1;//0.1f;
         this.position = pos;
         this.viewPort = viewPort;
         velocity = new Vector2D(0,0);
         finalPosition = new Vector2D(position);
+        maxVel =100;
     }
     public void update(float delta)
     {        
         velocity.x = this.finalPosition.x - this.position.x;
         velocity.y = this.finalPosition.y - this.position.y;
-        if(finalZoom <=0) finalZoom = 0.0001f;
+        if(velocity.length()>maxVel){
+            velocity = velocity.normalize().scale(maxVel);
+        }
+        
+        if(finalZoom <=0.1) finalZoom = 0.1f;
         float zoomVel = (finalZoom - zoom)/5;
-        if(Math.abs(zoomVel)>0.00001){zoom += zoomVel*delta;}
+        if(Math.abs(zoomVel)>0.001){zoom += zoomVel*delta;}
         else {zoom = finalZoom;}
         
         if(velocity.length2()>4){            
-            velocity.thisScale(0.5f);
             velocity.thisScale(delta,delta);       
             position.thisAdd(velocity);
         }else

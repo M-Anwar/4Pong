@@ -167,7 +167,7 @@ public class TextBox extends Component implements KeyListener, Scrollable{
     
     public void resizeHeight(){this.height = StringBuilder.getHeight(message, getFont(), (int)getFontSize())+border;}
     public void appendText(String message){this.message +=message;this.scrollVerEnd =true;}
-    public void setText(String text){this.message = text;this.scrollHorEnd = true; this.scrollVerEnd =true;}
+    public void setText(String text){this.message = text;}
     public void setResizeable(boolean resize){this.isResize = resize;}
     public void setMultiLine(boolean multi){this.isMultiLine = multi;}
     public void setEditable(boolean edit){this.isEditable = edit;}

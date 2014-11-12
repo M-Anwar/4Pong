@@ -36,6 +36,7 @@ public class MTestBench extends GameState
 {
     private GameButton btnClose;   
     Rectangle rect;
+    Rectangle rect1;
     Circle circle;
     Circle newCircle;
     Circle circle2;
@@ -65,7 +66,8 @@ public class MTestBench extends GameState
         });   
         
         cam = new Camera(new Vector2D(GamePanel.WIDTH/2,GamePanel.HEIGHT/2),new Rectangle(0,0,GamePanel.WIDTH,GamePanel.HEIGHT));
-        rect = new Rectangle(GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-200, 80,20);        
+        rect = new Rectangle(GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-200, 80,20);
+        rect1 = new Rectangle(GamePanel.WIDTH/2-100, GamePanel.HEIGHT/2-100,80,20);
         circle = new Circle(GamePanel.WIDTH/2-50, GamePanel.HEIGHT/2,40);
         circle2 = new Circle(GamePanel.WIDTH/2+50, GamePanel.HEIGHT/2,40);
         newCircle = new Circle(GamePanel.WIDTH/2, GamePanel.HEIGHT/2,40);
@@ -132,6 +134,7 @@ public class MTestBench extends GameState
             g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);            
             newCircle.setPosition(circle.getPosition());
             rect.debugDraw(g);
+            rect1.debugDraw(g);
             circle.debugDraw(g);
             circle2.debugDraw(g);
             CollisionResult s;
@@ -142,6 +145,18 @@ public class MTestBench extends GameState
             }
             if((s=rect.collides(circle2))!=null){
                 circle2.setPosition(circle2.getPosition().add(s.mts));
+                g.drawOval(s.poc[0].x-2,s.poc[0].y-2, 4, 4);
+            }
+            if((s=circle2.collides(circle))!=null){
+                g.drawLine(circle.getPosition().x, circle.getPosition().y, circle.getPosition().add(s.mts).x, circle.getPosition().add(s.mts).y);
+                g.drawOval(s.poc[0].x-2,s.poc[0].y-2, 4, 4);
+            }
+            if((s=rect.collidesTest(rect1,g))!=null){
+                //rect1.setPosition(rect1.getPosition().add(s.mts));
+                for(int i =0; i <s.poc.length; i ++){
+                    if(s.poc[i]!=null)
+                        g.drawOval(s.poc[i].x-2,s.poc[i].y-2, 4, 4);
+                }
             }
             cam.unApplyCamera(g);
             g.setColor(new Color(77,77,77).getRGB());
@@ -178,6 +193,13 @@ public class MTestBench extends GameState
             g.drawString("Fractals", 10, 60);
             g.setColor(Color.WHITE.getRGB());
             cam.applyCamera(g);
+            g.drawLine(0, GamePanel.HEIGHT/2, 10000, GamePanel.HEIGHT/2);
+            for(int i =0; i < 100; i ++)
+            {
+                g.drawLine((10000/100)*i, GamePanel.HEIGHT/2, (10000/100)*i,GamePanel.HEIGHT/2-50);
+                g.drawString("P: " + i, (10000/100)*i,GamePanel.HEIGHT/2-50);
+            }
+            
             cantorDraw(g,50,140,900);
             cam.unApplyCamera(g);
             g.drawString("Zoom: "+ cam.getZoom(), 10, 80);
@@ -201,7 +223,6 @@ public class MTestBench extends GameState
         if(Keys.isDown(Keys.S)) rect.getPosition().thisAdd(0,1);
         if(Keys.isDown(Keys.A)) rect.getPosition().thisAdd(-1,0);
         if(Keys.isDown(Keys.D)) rect.getPosition().thisAdd(1,0);
-        
         if(Keys.isDown(Keys.UP)) rect.setRotation(rect.getRotation()+(float)Math.toRadians(1));
         if(Keys.isDown(Keys.DOWN)) rect.setRotation(rect.getRotation()-(float)Math.toRadians(1));
         

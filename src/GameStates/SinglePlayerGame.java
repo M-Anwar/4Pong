@@ -60,9 +60,10 @@ public class SinglePlayerGame extends GameState{
         players.add(player2);
         players.add(player3);
         players.add(player4);
+        for(Paddle p: players)p.update(0);
         
         ball = new ArrayList<>();
-        for(int i =0 ; i <1000; i ++)
+        for(int i =0 ; i <100; i ++)
             ball.add(new Ball());
         btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
@@ -117,13 +118,12 @@ public class SinglePlayerGame extends GameState{
         for(Paddle p: players){
             for(Ball b: ball){
                 if((s=p.getShape().collides(b.getShape()))!=null)
-                {               
-                    b.getPosition().thisAdd(s.mts); 
+                {              
+                    b.getPosition().thisAdd(s.mts);                    
                     float amount = b.getVelocity().dot(p.getVelocity()); //relative velocity
                     b.setAngularVelocity(amount/50);
                     b.getVelocity().thisBounceNormal(s.normal);
                     b.getVelocity().thisAdd(p.getVelocity());
-
                 }
             }
         }
@@ -131,7 +131,7 @@ public class SinglePlayerGame extends GameState{
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         
-        /*
+       /* 
         float x = WIDTH-ImageLoader.LOGO.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.LOGO.getHeight(), ImageLoader.LOGO);
         x-=ImageLoader.EXPADDLE.getWidth();

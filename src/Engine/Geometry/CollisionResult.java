@@ -18,11 +18,14 @@ public class CollisionResult {
      */
     public Vector2D mts;
     /**
-     * Point of Collision (NOT IMPLEMENTED YET)
+     * Point or manifold of collision (Partial implementation between circles
+     * and circle to polygon).
      */
-    public Vector2D poc;
+    public Vector2D[] poc;
     /**
      * Collision normal
      */
     public Vector2D normal;
+    
+    public CollisionResult(){this.poc = new Vector2D[2];}
 }
