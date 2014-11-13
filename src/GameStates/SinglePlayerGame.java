@@ -63,7 +63,7 @@ public class SinglePlayerGame extends GameState{
         for(Paddle p: players)p.update(0);
         
         ball = new ArrayList<>();
-        for(int i =0 ; i <100; i ++)
+        for(int i =0 ; i <1000; i ++)
             ball.add(new Ball());
         btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);

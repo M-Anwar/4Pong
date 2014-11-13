@@ -485,7 +485,7 @@ public abstract class Shape {
         cp = clip(cp.get(0),cp.get(1),refDir.scale(-1), -offset);
         if(cp.size()<2)return;
         
-        Vector2D refNorm = refDir.getPerpendicular();
+        Vector2D refNorm = refDir.getPerpendicular().scale(-1);
         if(flip)refNorm.scale(-1);
         float max = refNorm.dot(ref[0]);
         if(refNorm.dot(cp.get(0))-max <0){   

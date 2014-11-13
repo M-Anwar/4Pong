@@ -20,13 +20,12 @@ import Engine.KeyListener;
 import Engine.Keys;
 import Engine.Mouse;
 import Engine.Vector2D;
+import Entity.Ball;
 import Entity.ImageLoader;
 import G4Pong.GamePanel;
 import java.awt.Color;
-import java.awt.Font;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+
 
 /**
  * MUHAMMEDS TEST BENCH... you can look but DO NOT TOUCH... EVER...
@@ -71,6 +70,8 @@ public class MTestBench extends GameState
         circle = new Circle(GamePanel.WIDTH/2-50, GamePanel.HEIGHT/2,40);
         circle2 = new Circle(GamePanel.WIDTH/2+50, GamePanel.HEIGHT/2,40);
         newCircle = new Circle(GamePanel.WIDTH/2, GamePanel.HEIGHT/2,40);
+        
+        
         
         if(state ==2){
             //<editor-fold defaultstate="collapsed" desc="State 2">
@@ -126,16 +127,16 @@ public class MTestBench extends GameState
         
         if (state ==1){
             //<editor-fold defaultstate="collapsed" desc="SAT Polygon vs. Circle Test"> 
-            g.setColor(Color.WHITE.getRGB());
             cam.applyCamera(g);
-            Vector2D point = cam.projectPoint(new Vector2D(Mouse.x, Mouse.y));
+            g.setColor(Color.WHITE.getRGB());            
+            Vector2D point = cam.projectPoint(new Vector2D(Mouse.x, Mouse.y));             
             if(rect.containsPoint(point))g.setColor(Color.RED.getRGB());
             g.drawOval(point.x-2, point.y-2, 4, 4);
             g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);            
             newCircle.setPosition(circle.getPosition());
             rect.debugDraw(g);
-            rect1.debugDraw(g);
-            circle.debugDraw(g);
+            rect1.debugDraw(g);           
+            circle.debugDraw(g);           
             circle2.debugDraw(g);
             CollisionResult s;
             if((s=rect.collides(circle))!=null){

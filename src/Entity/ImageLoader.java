@@ -21,4 +21,9 @@ public class ImageLoader {
     public static Image CURVE = Utils.loadJava2DImage("/res/curve.png");
     public static Image BACKGROUND = Utils.loadJava2DImage("/res/background.jpg");
     public static Image TREVOR = Utils.loadJava2DImage("/res/trevor.jpg");
+    public static Image WOODFLOOR1 = Utils.loadJava2DImage("/res/wood_floor_1.png");
+    public static Image STONEFLOOR1 = Utils.loadJava2DImage("/res/stone_floor_1.png");
+    public static Image GRASS1 = Utils.loadJava2DImage("/res/Grass1.png");
+    public static Image WATER1 = Utils.loadJava2DImage("/res/Water1.png");
+
 }

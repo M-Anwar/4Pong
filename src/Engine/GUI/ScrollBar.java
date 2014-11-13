@@ -105,6 +105,16 @@ class VerticalScrollBar extends Component{
                 }
             }else{ oldPos = verOffset;firstPress = true;}
         }
+        else{
+            if(!firstPress){
+                verOffset = Mouse.y - mouseY + oldPos;
+                if(verOffset<0){verOffset =0;}
+                if(verOffset > area.getActualHeight()-height){verOffset = area.getActualHeight()-height;}
+            }
+            if(!Mouse.isDown()){
+                oldPos = verOffset;firstPress = true;
+            }
+        }
     }
     public void draw(Graphics g){
         if(area.getActualHeight() > area.getPrefferedHeight()) return;
@@ -164,6 +174,16 @@ class HorizontalScrollBar extends Component{
                     if(horOffset > area.getActualWidth()-width){horOffset = area.getActualWidth()-width;}
                 }
             }else{ oldPos = horOffset;firstPress = true;}
+        }
+        else{
+            if(!firstPress){
+                horOffset = Mouse.x - mouseX + oldPos;
+                if(horOffset<0){horOffset =0;}
+                if(horOffset > area.getActualWidth()-width){horOffset = area.getActualWidth()-width;}
+            }
+            if(!Mouse.isDown()){
+                oldPos = horOffset;firstPress = true;
+            }
         }
     }
     public void draw(Graphics g)

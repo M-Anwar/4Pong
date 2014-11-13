@@ -7,6 +7,7 @@
 package Engine;
 
 import Engine.Geometry.Rectangle;
+import Engine.Geometry.Shape;
 
 /**
  * An interface for a generic graphics object. Defines methods for
@@ -111,6 +112,8 @@ public interface Graphics
      */
     public void fillOval(float x, float y, float width, float height);
 //</editor-fold>
+    public void drawShape(Shape p);
+    public void fillShape(Shape p);
     
     //Drawing Image 
     //<editor-fold defaultstate="collapsed" desc="drawImage">
@@ -162,7 +165,7 @@ public interface Graphics
     public void scale(double dx, double dy);
 //</editor-fold>
     
-    //Getter and Setter for Color
+    //Getter and Setter for Color and Paint
     //<editor-fold defaultstate="collapsed" desc="setColor">
     /**
      * Sets the color of the graphics context
@@ -170,6 +173,25 @@ public interface Graphics
      */
     public void setColor(int Color);
 //</editor-fold>    
+    //<editor-fold defaultstate="collapsed" desc="setPaint(texture,x,y)">
+    /**
+     * Set the paint texture of the graphics object.
+     * All primitives drawn after this method will be drawn with this paint.
+     * The paint can also be used to set the color of the graphics object,
+     * instead of the setColor(int) method (implementation dependant).
+     * @param texture
+     * @param x
+     * @param y
+     */
+    public void setPaint(Image texture,float x, float y);
+//</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="setPaint(texture,x,y,width,height)">
+    public void setPaint(Image texture, float x, float y, float width, float height);
+//</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="setPaint(texture)">
+    public void setPaint(Image texture);
+//</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="getColor">
     /**
      * Gets the color of the graphics context
