@@ -156,11 +156,12 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         g.fillRect(0, 0, WIDTH, HEIGHT);                
         gsm.draw(g);        
         
-        /*
+        
         g.setColor(Color.BLACK.getRGB());
-        g.fillRect(0, 0, 300, 40);
+        g.fillRect(0, 0, 300, 50);
         g.setColor(Color.WHITE.getRGB());
-        g.drawString("FPS: "+ actualFPS, 10, 20);*/
+        g.setFont("Arial", Graphics.BOLD, 14);
+        g.drawString("FPS: "+ actualFPS, 10, 30);
                 
     }
     public void drawToScreen()

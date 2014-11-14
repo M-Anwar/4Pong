@@ -132,7 +132,7 @@ public class MTestBench extends GameState
             Vector2D point = cam.projectPoint(new Vector2D(Mouse.x, Mouse.y));             
             if(rect.containsPoint(point))g.setColor(Color.RED.getRGB());
             g.drawOval(point.x-2, point.y-2, 4, 4);
-            g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);            
+            g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);           
             newCircle.setPosition(circle.getPosition());
             rect.debugDraw(g);
             rect1.debugDraw(g);           
@@ -152,8 +152,8 @@ public class MTestBench extends GameState
                 g.drawLine(circle.getPosition().x, circle.getPosition().y, circle.getPosition().add(s.mts).x, circle.getPosition().add(s.mts).y);
                 g.drawOval(s.poc[0].x-2,s.poc[0].y-2, 4, 4);
             }
-            if((s=rect.collidesTest(rect1,g))!=null){
-                //rect1.setPosition(rect1.getPosition().add(s.mts));
+            if((s=rect.collides(rect1))!=null){
+                rect1.setPosition(rect1.getPosition().add(s.mts));
                 for(int i =0; i <s.poc.length; i ++){
                     if(s.poc[i]!=null)
                         g.drawOval(s.poc[i].x-2,s.poc[i].y-2, 4, 4);

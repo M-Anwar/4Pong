@@ -168,7 +168,7 @@ public abstract class Shape {
             
             result.mts = new Vector2D(smallest).scale(minOverlap);
             result.normal = result.mts.normalize();
-            //findPOC(result,vertex1, vertex2);
+            findPOC(result,vertex1, vertex2);
             return result;
         }
         //Polygon and Circle Collision
@@ -260,187 +260,8 @@ public abstract class Shape {
         }        
         
         return null;
-    }    
-    
-    //<editor-fold defaultstate="collapsed" desc="Collide Function Test">
-    public CollisionResult collidesTest(Shape s,Graphics g)
-    {
-        //Circle on Circle Collision
-        /*
-        Algorithm: If the distance between the centers of the circles are
-        less then the sum of their radii, there is a collision. To
-        seperate them, simply calculate the overlap (radii - distance)
-        and move them away in the direction of their centers;
-        */
-        if (this.getType() == ShapeType.CIRCLE && s.getType() == ShapeType.CIRCLE)
-        {
-            float totalRadius = this.getRadius() + s.getRadius();
-            Vector2D v = this.getPosition().subtract(s.getPosition());
-            float distance2 = v.length2();
-            if(distance2 < (totalRadius*totalRadius)){
-                CollisionResult result = new CollisionResult();
-                float difference = totalRadius - (float)Math.sqrt(distance2);
-                result.mts = v.normalize().scale(-difference);
-                result.normal = result.mts.normalize();
-                result.poc[0] = this.getPosition().add(result.normal.scale(radius));
-                result.poc[1]= null;
-                return result;
-            }
-            else{
-                return null;
-            }
-        }
-        //Polygon on Polygon Collision
-        /*
-        Algorithm: Modified Separating Axis Theorem (look at documentation)
-        */
-        if(this.getType() == ShapeType.POLYGON && s.getType() == ShapeType.POLYGON)
-        {
-            //Apply SAT for convex polygons
-            
-            //Normals and Vertices of polygons
-            Vector2D [] axis1 = this.getNormals();
-            Vector2D [] axis2 = s.getNormals();
-            Vector2D [] vertex1 = this.getVertices();
-            Vector2D [] vertex2 = s.getVertices();
-            if (axis1 == null  || axis2 == null) return null;
-            
-            //Keep track of minimum overlap value and axis
-            float minOverlap = Float.MAX_VALUE;
-            Vector2D smallest =null;
-            
-            //Project onto First set of axes
-            for (int i =0; i < axis1.length; i ++)
-            {
-                Projection proj1 = projectOntoAxis(vertex1,axis1[i]);
-                Projection proj2 = projectOntoAxis(vertex2,axis1[i]);
-                float overlap = proj1.getOverlap(proj2);
-                if(overlap>0){
-                    if(overlap < minOverlap){
-                        minOverlap = overlap;
-                        smallest = axis1[i];
-                    }
-                }
-                else return null;
-            }
-            
-            //Project onto second set of axes
-            for (int i =0; i < axis2.length; i ++)
-            {
-                Projection proj1 = projectOntoAxis(vertex1,axis2[i]);
-                Projection proj2 = projectOntoAxis(vertex2,axis2[i]);
-                float overlap = proj1.getOverlap(proj2);
-                if(overlap>0){
-                    if(overlap <minOverlap){
-                        minOverlap = overlap;
-                        smallest = axis2[i];
-                    }
-                }
-                else return null;
-            }
-            CollisionResult result = new CollisionResult();
-            //Make sure the MTS is pointing the right way by checking which
-            //direction the centers of the polygons are. If the projection onto
-            //the MTS is positive, we have the correct direction, else flip it.
-            if (s.getPosition().subtract(this.getPosition()).dot(smallest)<0)
-                minOverlap *=-1;
-            
-            result.mts = new Vector2D(smallest).scale(minOverlap);
-            result.normal = result.mts.normalize();
-            findPOC(result,vertex1, vertex2,g);
-            return result;
-        }
-        //Polygon and Circle Collision
-        /*
-        Algoritm: Modified Separating Axis Theorem. The axis to check is now
-        the axis formed by the vector from the center of the circle
-        to the nearest vertex of the polygon (Also need to project on the
-        normals of the polygon).
-        */
-        if (this.getType() ==ShapeType.POLYGON && s.getType() == ShapeType.CIRCLE ||
-                this.getType() == ShapeType.CIRCLE && s.getType() == ShapeType.POLYGON)
-        {
-            
-            Shape polygon= null;
-            Shape circle= null;
-            
-            if(this.getType()==ShapeType.POLYGON){
-                polygon = this;
-            }else if(s.getType() == ShapeType.POLYGON){
-                polygon = s;
-            }
-            if(this.getType() == ShapeType.CIRCLE){
-                circle = this;
-            }else if(s.getType() == ShapeType.CIRCLE){
-                circle = s;
-            }
-            
-            Vector2D [] axis1 = polygon.getNormals();
-            Vector2D [] vertex1 = polygon.getVertices();
-            Vector2D axis2 = null;
-            
-            //Keep track of minimum overlap value and axis
-            float minOverlap = Float.MAX_VALUE;
-            Vector2D smallest =null;
-            
-            //Get the axis and the distance to the closest vertex on the polygon
-            Vector2D vec = vertex1[0].subtract(circle.getPosition());
-            float dist = vec.length2();
-            float minDist = dist;
-            axis2 = vec.normalize();
-            for(int i =1; i  <vertex1.length; i++){
-                vec = vertex1[i].subtract(circle.getPosition());
-                dist = vec.length2();
-                if(dist< minDist){
-                    minDist = dist;
-                    axis2 = vec.normalize();
-                }
-            }
-            
-            for(int i =0; i <axis1.length; i ++)
-            {
-                Projection proj1 = projectOntoAxis(vertex1,axis1[i]);
-                Projection proj2 = projectCircleOntoAxis(circle,axis1[i]);
-                float overlap = proj1.getOverlap(proj2);
-                if(overlap>0){
-                    if(overlap <minOverlap){
-                        minOverlap = overlap;
-                        smallest = axis1[i];
-                    }
-                }
-                else return null;
-            }
-            Projection proj1 = projectOntoAxis(vertex1,axis2);
-            Projection proj2 = projectCircleOntoAxis(circle,axis2);
-            float overlap = proj1.getOverlap(proj2);
-            if(overlap>0){
-                if(overlap <minOverlap){
-                    minOverlap = overlap;
-                    smallest = axis2;
-                }
-            }
-            else return null;
-            
-            CollisionResult result = new CollisionResult();
-            //Make sure the MTS is pointing the right way by checking which
-            //direction the centers of the shapes are. If the projection onto
-            //the MTS is positive, we have the correct direction, else flip it.
-            if (s.getPosition().subtract(this.getPosition()).dot(smallest)<0)
-                minOverlap *=-1;
-            
-            result.mts = new Vector2D(smallest).scale(minOverlap);
-            result.normal = result.mts.normalize();
-            if(this.getType()== ShapeType.POLYGON)
-                result.poc[0] = circle.getPosition().add(result.normal.scale(-circle.radius));
-            else
-                result.poc[0] = circle.getPosition().add(result.normal.scale(circle.radius));
-            result.poc[1]= null;
-            return result;
-        }
-        
-        return null;
-    }
-//</editor-fold>
+    }        
+   
     /**
      * Calculates the collision manifold for the intersection of two convex
      * polygons. The collision result should be passed as a reference and the 
@@ -450,17 +271,16 @@ public abstract class Shape {
      * http://www.codezealot.org/archives/394
      * @param result the collision result to store the data in
      */
-    private void findPOC(CollisionResult result,Vector2D[] verticesA, Vector2D[] verticesB,Graphics g)
+    private void findPOC(CollisionResult result,Vector2D[] verticesA, Vector2D[] verticesB)
     {
-        //Find the farthest vertex in the polygon along the seperation normal
-        g.setColor(Color.CYAN.getRGB());
-        g.drawLine(verticesA[0].x,verticesA[0].y,verticesA[0].add(result.normal.scale(10)).x,verticesA[0].add(result.normal.scale(10)).y);
-        
+        //Find the farthest vertex in the polygon along the seperation normal        
         Vector2D[] bestA = getBestEdge(verticesA,result.normal);
         Vector2D[] bestB = getBestEdge(verticesB, result.normal.scale(-1));
         Vector2D e1 = bestA[1].subtract(bestA[0]);
         Vector2D e2 = bestB[1].subtract(bestB[0]);
         
+        //See with best edge is the reference and which is the incident
+        //The reference is the one most perpindicular to the collision normal
         Vector2D[] ref, inc;
         Vector2D refDir;
         boolean flip = false;
@@ -470,21 +290,20 @@ public abstract class Shape {
         }else{
             ref = bestB; inc = bestA; flip= true;
             refDir = e2.normalize();
-        }
+        }          
         
-        g.setColor(Color.GREEN.getRGB());
-        g.drawLine(ref[0].x, ref[0].y, ref[1].x, ref[1].y);
-        g.setColor(Color.YELLOW.getRGB());
-        g.drawLine(inc[0].x, inc[0].y, inc[1].x, inc[1].y);
-        
-        //Begin Clipping
+        //Begin Clipping        
+        //Clip against the first reference vertex
         float offset = refDir.dot(ref[0]);
         ArrayList<Vector2D> cp = clip(inc[0],inc[1],refDir,offset);
         if(cp.size()<2)return;
+        
+        //Clip against the second reference vertex in the opposite direction
         offset = refDir.dot(ref[1]);
         cp = clip(cp.get(0),cp.get(1),refDir.scale(-1), -offset);
         if(cp.size()<2)return;
         
+        //Clip away from the reference edge
         Vector2D refNorm = refDir.getPerpendicular().scale(-1);
         if(flip)refNorm.scale(-1);
         float max = refNorm.dot(ref[0]);
@@ -492,7 +311,7 @@ public abstract class Shape {
             cp.set(0, null);            
         }
         if(refNorm.dot(cp.get(1))-max <0){
-           cp.set(0,null);
+           cp.set(1,null);
         }
         try{
             result.poc[0] = cp.get(0);
@@ -501,6 +320,7 @@ public abstract class Shape {
     }
     private ArrayList<Vector2D> clip(Vector2D v1, Vector2D v2, Vector2D n, float o)
     {
+        //Method taking from reference -> should be self explanatory
         ArrayList<Vector2D> cp = new ArrayList<>();
         float d1 = n.dot(v1)-o;
         float d2 = n.dot(v2)-o;
