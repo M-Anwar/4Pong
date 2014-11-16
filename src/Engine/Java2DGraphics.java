@@ -1,12 +1,15 @@
 package Engine;
 
 import Engine.Geometry.Rectangle;
+import Engine.Geometry.Shape;
+import Engine.Geometry.Shape.ShapeType;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.TexturePaint;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 
@@ -43,7 +46,7 @@ public class Java2DGraphics implements Graphics
      */
     @Override  
     public void drawString(String text, float x, float y) {
-        g.drawString(text, x, y);        
+        g.drawString(text, x, y);       
     }
 
     /**
@@ -80,8 +83,8 @@ public class Java2DGraphics implements Graphics
      * @param height of the rectangle
      */
     @Override
-    public void fillRect(float x, float y, float width, float height) {
-        g.fillRect((int)x, (int)y, (int)width, (int)height);
+    public void fillRect(float x, float y, float width, float height) {       
+        g.fillRect((int)x, (int)y, (int)width, (int)height);        
     }
 
     /**
@@ -111,6 +114,41 @@ public class Java2DGraphics implements Graphics
     public void fillOval(float x, float y, float width, float height) {
         g.fillOval((int)x, (int)y, (int)width, (int)height);
     }
+    
+    public void drawShape(Shape p){
+        if(p.getType()==ShapeType.CIRCLE){
+            Vector2D pos = p.getPosition();
+            float rad = p.getRadius();
+            g.drawOval((int)(pos.x-rad), (int)(pos.y-rad), (int)rad*2, (int)rad*2);
+        }else if(p.getType()==ShapeType.POLYGON){
+            Vector2D[] vertices = p.getVertices();
+            int[]x = new int[vertices.length];
+            int[]y = new int[vertices.length];
+            for(int i =0; i <vertices.length; i ++)
+            {
+                x[i] = (int)vertices[i].x;
+                y[i] = (int)vertices[i].y;                
+            }   
+            g.drawPolygon(x,y,vertices.length);
+        }
+    }
+    public void fillShape(Shape p){
+        if(p.getType()==ShapeType.CIRCLE){
+            Vector2D pos = p.getPosition();
+            float rad = p.getRadius();
+            g.fillOval((int)(pos.x-rad), (int)(pos.y-rad), (int)rad*2, (int)rad*2);
+        }else if(p.getType()==ShapeType.POLYGON){
+            Vector2D[] vertices = p.getVertices();
+            int[]x = new int[vertices.length];
+            int[]y = new int[vertices.length];
+            for(int i =0; i <vertices.length; i ++)
+            {
+                x[i] = (int)vertices[i].x;
+                y[i] = (int)vertices[i].y;                
+            }   
+            g.fillPolygon(x,y,vertices.length);
+        }
+    }
 
      /**
       * Sets the color of the graphics context
@@ -121,6 +159,21 @@ public class Java2DGraphics implements Graphics
         Color c = new Color(Color,true);        
         g.setColor(c);        
     }
+    
+    public void setPaint(Image texture, float x, float y, float width, float height)
+    {
+        if(texture==null){g.setPaint(g.getColor()); return;}       
+        g.setPaint(new TexturePaint(((Java2DImage)texture).image,new java.awt.Rectangle((int)x,(int)y,(int)width,(int)height))); 
+    }
+    @Override
+    public void setPaint(Image texture,float x, float y)
+    {
+        if(texture!=null)
+            setPaint(texture, x,y,texture.getWidth(),texture.getHeight());  
+        else
+            setPaint(null,x,y,0,0);
+    }    
+    public void setPaint(Image texture){setPaint(texture,0,0);}
     /**
      * Gets the color of the graphics context
      * @return the color of the graphics context
@@ -173,7 +226,7 @@ public class Java2DGraphics implements Graphics
      */
     @Override
     public void translate(double x, double y) {
-        g.translate(x, y);
+        g.translate(x, y);        
     }
 
     /**

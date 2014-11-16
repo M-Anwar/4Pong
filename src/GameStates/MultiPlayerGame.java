@@ -28,6 +28,7 @@ public class MultiPlayerGame extends GameState{
     private GameButton btnConnect;
     private TextBox status;
     
+    private boolean txtNameFirst = true;
     public MultiPlayerGame(GameStateManager gsm) {
         super(gsm);       
     }
@@ -36,14 +37,26 @@ public class MultiPlayerGame extends GameState{
     public void init(){
         name = new TextBox("Enter Username", 300, 360);
         name.setFocus(true);
+        name.setMaxChars(14);
         name.addKeyListener(new KeyListener(){
             public void KeyTyped(int keyCode, char keyChar) {
                 if(keyCode == Keys.VK_ENTER){
-                    System.out.println(name.getText());
+                    System.out.println("'" + name.getText()+ "'");
                 }
             }        
         });
+        name.addMouseListener(new ButtonListener(){
+            @Override
+            public void buttonClicked() {
+                if(txtNameFirst){
+                    name.setText("");
+                    txtNameFirst = false;}
+                
+            }        
+        });
+        
         addComponent(name);
+        
         btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          

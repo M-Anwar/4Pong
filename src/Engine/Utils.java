@@ -7,21 +7,23 @@
 package Engine;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import javax.imageio.ImageIO;
-import java.util.*;
-import java.io.PrintWriter;
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * Basic Utilities that are useful for IO functionalities.
@@ -38,6 +40,23 @@ public class Utils
     public static BufferedReader getTextStream(String path)
     {
         return null; //TODO ADD FUNCTIONALITY
+    }
+    
+    public static String readTextFromFile(String fileName) throws IOException
+    {
+        java.lang.StringBuilder result = new java.lang.StringBuilder("");	
+	try (Scanner scanner = new Scanner(ClassLoader.class.getResourceAsStream(fileName))) {
+ 
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			result.append(line).append("\n");
+		}
+ 
+		scanner.close(); 
+	} catch (Exception e) {
+		e.printStackTrace();
+	} 
+	return result.toString();
     }
     
     /**

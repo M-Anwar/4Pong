@@ -41,7 +41,7 @@ public class SinglePlayerGame extends GameState{
     private Paddle player3;
     private Paddle player4;
     private ArrayList<Paddle> players;
-    private Ball ball;    
+    private ArrayList<Ball> ball;    
     
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
@@ -60,9 +60,11 @@ public class SinglePlayerGame extends GameState{
         players.add(player2);
         players.add(player3);
         players.add(player4);
+        for(Paddle p: players)p.update(0);
         
-        ball = new Ball();
-        
+        ball = new ArrayList<>();
+        for(int i =0 ; i <1000; i ++)
+            ball.add(new Ball());
         btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
@@ -78,7 +80,7 @@ public class SinglePlayerGame extends GameState{
         player2.update(delta);
         player3.update(delta);
         player4.update(delta);
-        ball.update(delta);
+        for(Ball b: ball) b.update(delta);
         
       
         handleInput();                 
@@ -109,25 +111,27 @@ public class SinglePlayerGame extends GameState{
         player2.draw(g); 
         player3.draw(g);
         player4.draw(g);
-        ball.draw(g);
+        for(Ball b: ball) b.draw(g);
                
         CollisionResult s;
         
         for(Paddle p: players){
-            if((s=p.getShape().collides(ball.getShape()))!=null)
-            {               
-                ball.getPosition().thisAdd(s.mts); 
-                float amount = ball.getVelocity().dot(p.getVelocity()); //relative velocity
-                ball.setAngularVelocity(amount/50);
-                ball.getVelocity().thisBounceNormal(s.normal);
-                ball.getVelocity().thisAdd(p.getVelocity());
-                
+            for(Ball b: ball){
+                if((s=p.getShape().collides(b.getShape()))!=null)
+                {              
+                    b.getPosition().thisAdd(s.mts);                    
+                    float amount = b.getVelocity().dot(p.getVelocity()); //relative velocity
+                    b.setAngularVelocity(amount/50);
+                    b.getVelocity().thisBounceNormal(s.normal);
+                    b.getVelocity().thisAdd(p.getVelocity());
+                }
             }
         }
         
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         
+       /* 
         float x = WIDTH-ImageLoader.LOGO.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.LOGO.getHeight(), ImageLoader.LOGO);
         x-=ImageLoader.EXPADDLE.getWidth();
@@ -137,7 +141,7 @@ public class SinglePlayerGame extends GameState{
          x-=ImageLoader.SHIELD.getWidth();
         g.drawImage(x, HEIGHT-ImageLoader.SHIELD.getHeight(), ImageLoader.SHIELD);
          x-=ImageLoader.CURVE.getWidth();
-        g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);
+        g.drawImage(x, HEIGHT-ImageLoader.CURVE.getHeight(), ImageLoader.CURVE);*/
     }    
 
     @Override

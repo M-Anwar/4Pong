@@ -62,7 +62,7 @@ public abstract class GameState
      * Switch the current gameState.
      * Will immediately switch the current game state to another one.
      * The parameter should be taken from the list of static values in 
-     * GameStateManager.
+     * GameStateManager. (POSSIBLE CHANGE IN FUTURE)
      * @param state GameStateManager.INTRO etc, the int representing the state.
      */
     public void setState(int state)

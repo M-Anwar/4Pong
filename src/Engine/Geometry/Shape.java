@@ -8,10 +8,12 @@ package Engine.Geometry;
 
 import Engine.Graphics;
 import Engine.Vector2D;
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * A Generic shape definition used for collision detection. 
+ * A Generic shape definition used for collision detection and shape representation. 
  * When defining a polygon a local coordinate system is used. Refer to the 
  * geometry documentation for more details on how to define a general polygon.
  * The vertices should be defined when the polygon has 0 rotation. 
@@ -24,7 +26,12 @@ import java.util.Arrays;
  * The rotation of the shape is applied on all calculated values (i.e when
  * retrieving vertex information or normal information). The rotation can be
  * applied immediately to the local variables or indirectly through getter methods.
+ * 
+ * TODO: need a way of returning or offline calculating the point of collision
+ * (or collision manifold using GJK algorithm). 
+ * 
  * @author muhammed.anwar
+ *  With helpful contributions from Narayan Jat (collision normals!!).
  */
 public abstract class Shape {
     
@@ -94,8 +101,10 @@ public abstract class Shape {
             if(distance2 < (totalRadius*totalRadius)){
                 CollisionResult result = new CollisionResult();
                 float difference = totalRadius - (float)Math.sqrt(distance2);                
-                result.mts = v.normalize().scale(difference);
+                result.mts = v.normalize().scale(-difference);
                 result.normal = result.mts.normalize();
+                result.poc[0] = this.getPosition().add(result.normal.scale(radius));
+                result.poc[1]= null;
                 return result;
             }   
             else{
@@ -127,7 +136,7 @@ public abstract class Shape {
                 Projection proj1 = projectOntoAxis(vertex1,axis1[i]);                
                 Projection proj2 = projectOntoAxis(vertex2,axis1[i]);     
                 float overlap = proj1.getOverlap(proj2);
-                if(overlap>=0){
+                if(overlap>0){
                     if(overlap < minOverlap){
                         minOverlap = overlap;
                         smallest = axis1[i];
@@ -142,7 +151,7 @@ public abstract class Shape {
                 Projection proj1 = projectOntoAxis(vertex1,axis2[i]);
                 Projection proj2 = projectOntoAxis(vertex2,axis2[i]);                
                 float overlap = proj1.getOverlap(proj2);
-                if(overlap>=0){
+                if(overlap>0){
                     if(overlap <minOverlap){
                         minOverlap = overlap;
                         smallest = axis2[i];
@@ -158,7 +167,8 @@ public abstract class Shape {
                 minOverlap *=-1;
             
             result.mts = new Vector2D(smallest).scale(minOverlap);
-            result.normal = new Vector2D(smallest);
+            result.normal = result.mts.normalize();
+            findPOC(result,vertex1, vertex2);
             return result;
         }
         //Polygon and Circle Collision
@@ -213,7 +223,7 @@ public abstract class Shape {
                 Projection proj1 = projectOntoAxis(vertex1,axis1[i]);
                 Projection proj2 = projectCircleOntoAxis(circle,axis1[i]);
                 float overlap = proj1.getOverlap(proj2);                
-                if(overlap>=0){
+                if(overlap>0){
                     if(overlap <minOverlap){
                         minOverlap = overlap;
                         smallest = axis1[i];
@@ -224,7 +234,7 @@ public abstract class Shape {
             Projection proj1 = projectOntoAxis(vertex1,axis2);
             Projection proj2 = projectCircleOntoAxis(circle,axis2);
             float overlap = proj1.getOverlap(proj2);
-            if(overlap>=0){
+            if(overlap>0){
                 if(overlap <minOverlap){
                     minOverlap = overlap;
                     smallest = axis2;
@@ -240,11 +250,116 @@ public abstract class Shape {
                 minOverlap *=-1;
             
             result.mts = new Vector2D(smallest).scale(minOverlap);
-            result.normal = new Vector2D(smallest);
+            result.normal = result.mts.normalize();
+            if(this.getType()== ShapeType.POLYGON)
+                result.poc[0] = circle.getPosition().add(result.normal.scale(-circle.radius));
+            else
+                result.poc[0] = circle.getPosition().add(result.normal.scale(circle.radius));
+            result.poc[1]= null;
             return result;
-        }
+        }        
+        
         return null;
-    }    
+    }        
+   
+    /**
+     * Calculates the collision manifold for the intersection of two convex
+     * polygons. The collision result should be passed as a reference and the 
+     * collision manifold will be added to the CollisionResult. The method used
+     * is Contact point clipping, similar to the one used in Box2D. A
+     * detailed explanation can be found here:
+     * http://www.codezealot.org/archives/394
+     * @param result the collision result to store the data in
+     */
+    private void findPOC(CollisionResult result,Vector2D[] verticesA, Vector2D[] verticesB)
+    {
+        //Find the farthest vertex in the polygon along the seperation normal        
+        Vector2D[] bestA = getBestEdge(verticesA,result.normal);
+        Vector2D[] bestB = getBestEdge(verticesB, result.normal.scale(-1));
+        Vector2D e1 = bestA[1].subtract(bestA[0]);
+        Vector2D e2 = bestB[1].subtract(bestB[0]);
+        
+        //See with best edge is the reference and which is the incident
+        //The reference is the one most perpindicular to the collision normal
+        Vector2D[] ref, inc;
+        Vector2D refDir;
+        boolean flip = false;
+        if(Math.abs(e1.dot(result.normal))<=Math.abs(e2.dot(result.normal))){
+            ref = bestA; inc = bestB;
+            refDir = e1.normalize();
+        }else{
+            ref = bestB; inc = bestA; flip= true;
+            refDir = e2.normalize();
+        }          
+        
+        //Begin Clipping        
+        //Clip against the first reference vertex
+        float offset = refDir.dot(ref[0]);
+        ArrayList<Vector2D> cp = clip(inc[0],inc[1],refDir,offset);
+        if(cp.size()<2)return;
+        
+        //Clip against the second reference vertex in the opposite direction
+        offset = refDir.dot(ref[1]);
+        cp = clip(cp.get(0),cp.get(1),refDir.scale(-1), -offset);
+        if(cp.size()<2)return;
+        
+        //Clip away from the reference edge
+        Vector2D refNorm = refDir.getPerpendicular().scale(-1);
+        if(flip)refNorm.scale(-1);
+        float max = refNorm.dot(ref[0]);
+        if(refNorm.dot(cp.get(0))-max <0){   
+            cp.set(0, null);            
+        }
+        if(refNorm.dot(cp.get(1))-max <0){
+           cp.set(1,null);
+        }
+        try{
+            result.poc[0] = cp.get(0);
+            result.poc[1] = cp.get(1);
+        }catch(Exception e){}
+    }
+    private ArrayList<Vector2D> clip(Vector2D v1, Vector2D v2, Vector2D n, float o)
+    {
+        //Method taking from reference -> should be self explanatory
+        ArrayList<Vector2D> cp = new ArrayList<>();
+        float d1 = n.dot(v1)-o;
+        float d2 = n.dot(v2)-o;
+        if(d1>=0)cp.add(v1);
+        if(d2>=0)cp.add(v2);
+        if(d1*d2<0)
+        {
+            Vector2D e = v2.subtract(v1);
+            float u = d1/(d1-d2);
+            e.thisScale(u);
+            e.thisAdd(v1);
+            cp.add(e);
+        }
+        return cp;
+    }
+    private Vector2D[] getBestEdge(Vector2D[] vertices,Vector2D norm){
+        
+        //Find the farthest vertex in the polygon along the seperation normal
+        float max = norm.dot(vertices[0]);        
+        int index=0;
+        for(int i =1; i <vertices.length; i ++){
+            float proj = norm.dot(vertices[i]);
+            if(proj>max){
+                max = proj;
+                index =i;
+            }
+        }        
+        Vector2D v = vertices[index];
+        Vector2D v1 = vertices[(index+1)%vertices.length];
+        if(index-1<0)index = vertices.length-1;
+        Vector2D v0 = vertices[index];
+        
+        Vector2D l = v.subtract(v1);
+        Vector2D r = v.subtract(v0);
+        l.thisNormalize();
+        r.thisNormalize();
+        if(r.dot(norm)<=l.dot(norm)){return new Vector2D[]{new Vector2D(v0),new Vector2D(v)};}
+        else return new Vector2D[]{new Vector2D(v),new Vector2D(v1)};
+    }
     
     /**
      * Project the given vertices onto the given axis and return the max-min
@@ -281,6 +396,41 @@ public abstract class Shape {
         return proj;
     }
     
+    /**
+     * Returns whether or not the given point is contained in the current shape
+     * @param point The point to check against
+     * @return true if the point is contained, false if not. If the point is on
+     * the edge of the shape the return might be true or false.
+     */
+    public boolean containsPoint(Vector2D point)
+    {
+        /*Algorithm provided by http://alienryderflex.com/polygon/ without 
+         pre-calc. Works for both concave and convex polygons and circles.*/
+        if(this.type == ShapeType.POLYGON){
+            Vector2D[] vertices = this.getVertices();
+            int i, j = vertices.length-1;
+            boolean oddnodes = false;
+            for(i=0; i < vertices.length; i++)
+            {
+                if( (vertices[i].y < point.y && vertices[j].y >= point.y || vertices[j].y < point.y && vertices[i].y >= point.y) 
+                        &&(vertices[i].x <=point.x || vertices[j].x <=point.x)){
+                    oddnodes ^=(vertices[i].x +(point.y-vertices[i].y)/(vertices[j].y-vertices[i].y)*(vertices[j].x-vertices[i].x) <point.x);
+                }
+                j = i;
+            }            
+            return oddnodes;
+        }
+        /* If the point is at a distance smaller then the radius of the cirle,
+        then it is contained.
+        */
+        if(this.type == ShapeType.CIRCLE){
+            float rad = this.getRadius();
+            Vector2D pos = this.getPosition();
+            if(point.subtract(pos).length2() < rad*rad) return true;
+            else return false;
+        }       
+        return false;
+    }
 }
 class Projection
 {

@@ -1,0 +1,21 @@
+TODO List For ENGINE: FOR (G4F and G4P)
+	[ ] Spatial Partitioning using Quadtree data structure 		PRIORITY [2]
+	[x] Point of collision for geometric primitives 					PRIORITY [1]
+	[ ] Property animation system 									PRIORITY [4]
+	[ ] Level of detail infrastructure 									PRIORITY [3]	
+			: Zooming in and out should dynamically scale the amount of detail being rendered on screen
+	[ ] Add more methods to the Graphics object to allow for textured shapes to be drawn.
+	[x] Create basic camera system to handle large worlds
+
+DEVLOG: (Started 11/7/2014)
+	: Completed basic camera system 
+	: Working on implementing point of collision for shapes using polygon clipping.
+		- Point of Collision for circles and cirlce to polygon have been implemented.
+		  Remaining to finish polygon to polygon.
+(11/13/2014)
+	: Debugging point of collision between polygon and polygon
+	: Fixed scollbar behaviour, so now you only need to be hovered over it initially on the
+		click, but can scroll as long as your held down (no need to be hovered).
+	: Added Graphics Capabilities - Draw textures and shapes
+	: Finished Debugging the point of collision between polygon and polygon. Algorithm
+		 looks to be efficient for now.
