@@ -11,31 +11,161 @@ import Engine.GUI.TextBox;
 import Engine.GameState;
 import Engine.GameStateManager;
 import Engine.Graphics;
+import Engine.Java2DImage;
+import Engine.KeyListener;
+import Engine.Keys;
+import Engine.Network.Network;
+import Engine.Network.Network.ChatMessage;
+import Engine.Network.Network.RegisterName;
+import Engine.Network.Network.RegisteredNames;
+import Entity.ImageLoader;
 import G4Pong.GamePanel;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Frame;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
  * @author Jason Xu
  */
-public class MultiPlayerChat extends GameState{
-    private TextBox chat;
-    private GameButton btnExit;
-
+public class MultiPlayerChat extends GameState{   
+    private GameButton btnExit;   
+    private GameButton btnMinimize;  
+    private TextBox chatInput;
+    private TextBox chatLog;    
+    private boolean firstClick = true;
+    
+    public static String userName;
+    public String [] users;
+    Client client;
+    
     public MultiPlayerChat(GameStateManager gsm) {
-        super(gsm);       
+        super(gsm);           
     }
     
     @Override
-    public void init(){
-        //chat = new TextBox(280, 500);
-        addComponent(chat);
+    public void init(){        
         btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
+                client.close();
+                client.stop();
                setState(GameStateManager.MULTI_PLAYER_STATE);
             }                
         });
+        btnMinimize = new GameButton("_",GamePanel.WIDTH-110,10);
+        addComponent(btnMinimize);
+        btnMinimize.addButtonListener(new ButtonListener(){          
+            public void buttonClicked() {
+                GamePanel.parent.setState(JFrame.ICONIFIED);
+            }                
+        });
+        
+        chatInput = new TextBox("Enter text here...",10,GamePanel.HEIGHT-300+90);
+            chatInput.setFocus(false);
+            chatInput.setMultiLine(false);
+            chatInput.setWidth(GamePanel.WIDTH-300);
+            chatInput.setFont("Arial", 12);
+            chatInput.resizeHeight();
+            
+            chatInput.addKeyListener(new KeyListener(){
+                @Override
+                public void KeyTyped(int keyCode, char keyChar) {
+                    if(keyCode == Keys.VK_ENTER){
+                        ChatMessage request = new ChatMessage();
+                        String toSend = chatInput.getText().trim();
+                        if(toSend.length()==0)return;
+                        request.text =toSend;
+                        client.sendTCP(request);
+                        chatInput.setText("");
+                    }
+                }
+            });
+            chatInput.addMouseListener(new ButtonListener(){
+                @Override
+                public void buttonClicked() {
+                    if(firstClick){
+                        firstClick = false;
+                        chatInput.setText("");
+                    }
+                }
+            });
+            
+            chatLog= new TextBox(10,85,GamePanel.WIDTH-300,GamePanel.HEIGHT-300);
+            chatLog.setFont("Arial", 12);
+            chatLog.setEditable(false);
+            chatLog.setMultiLine(true);
+            chatLog.setText("WELCOME TO 4 P O N G chat lobby:\n");
+            
+            addComponent(chatInput);
+            addComponent(chatLog);
+            
+            //Network code
+            users = new String[0];
+            client = new Client();
+            Network.register(client);
+
+            new Thread(client).start();
+            
+            
+            client.addListener(new Listener(){
+                public void connected(Connection c)
+                {
+                    chatLog.appendText("Connected to Chat!\n");
+                    RegisterName registerName = new RegisterName();
+                    registerName.name = userName;
+                    client.sendTCP(registerName);
+                }
+                public void received(Connection connection, Object object){
+                    
+                    if(object instanceof ChatMessage)
+                    {
+                        ChatMessage response = (ChatMessage)object;
+                        chatLog.appendText(response.text+"\n");
+                    }
+                    if(object instanceof RegisteredNames)
+                    {
+                        RegisteredNames names = (RegisteredNames)object;
+                        users = names.names;
+                    }
+                }
+                public void disconnected(Connection c)
+                {
+                    setState(GameStateManager.MULTI_PLAYER_STATE);
+                }
+            });  
+            
+            new Thread(){
+                public void run(){   
+                    try{                                          
+                        client.connect(5000, "67.188.28.76", Network.TCPport,Network.UDPport);                        
+                    }catch(IOException ex){chatLog.appendText(ex.getMessage()); chatLog.appendText("\nConnecting to LAN server \n");
+                        InetAddress addr  = client.discoverHost(Network.UDPport, 10000);      
+                        try{
+                            client.connect(5000, addr, Network.TCPport,Network.UDPport);
+                        }catch(IOException e){chatLog.appendText(e.getMessage());}
+                    }                  
+//                    while(client.isConnected()){
+//                        try {                      
+//                        Thread.sleep(5000);
+//                        } catch (InterruptedException ex) {}
+//                    }
+//                    client.close();
+//                    client.stop();
+//                    chatLog.appendText("Disconnected from server\n");
+//                    setState(GameStateManager.MULTI_PLAYER_STATE);
+                }                
+            }.start();
     }
 
     @Override
@@ -44,6 +174,28 @@ public class MultiPlayerChat extends GameState{
 
     @Override
     public void draw(Graphics g) {
+        g.setColor(new Color(77,77,77).getRGB());
+        g.fillRect(0, 0, GamePanel.WIDTH, 80);
+        g.setColor(Color.WHITE.getRGB());
+        g.setFont("Courier New", Graphics.BOLD, 70);
+        g.drawString("4PONG Lobby", GamePanel.WIDTH/2-g.getFontDimension("4PONG Lobby")[0]/2, 60);
+       
+        g.setColor(Color.WHITE.getRGB());
+        g.setFont("Arial",Graphics.BOLD, 20);
+        g.drawString("Connected Users:", 10+GamePanel.WIDTH-300+10, 105);
+        g.setFont("Arial",Graphics.PLAIN, 12);
+        for(int i =0; i <users.length; i ++)
+        {
+            if(users[i].equals(userName))g.setColor(Color.GREEN.getRGB());
+            else g.setColor(Color.WHITE.getRGB());
+            g.drawString(users[i], 10+GamePanel.WIDTH-300+10,130+20*i);
+        }
+        g.setColor(Color.WHITE.getRGB());
+        g.setFont("Arial", Graphics.BOLD,14);
+        g.drawString("Commands:", 10, GamePanel.HEIGHT-150);
+        g.setFont("Arial", Graphics.BOLD,12);
+        g.drawString("Whisper -> /whisper 'target' 'message' : (/whisper John Hi how are you) : Allows you to whisper to a particular person without "
+                + "everyone else seeing",20,GamePanel.HEIGHT-135);
     }
 
     @Override
