@@ -17,6 +17,8 @@ import Engine.Vector2D;
 public class Test {
     public static void main(String [] args)
     {
-       System.out.println(-1%4);
+        String hello = "hello";
+        String [] parts = hello.split(" ");
+        System.out.println(parts[0]);
     }
 }

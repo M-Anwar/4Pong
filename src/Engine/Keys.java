@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Keys
 {
-    public static final int NUM_KEYS = 16;
+    public static final int NUM_KEYS = 18;
 	
     public static boolean keyState[] = new boolean[NUM_KEYS];
     public static boolean prevKeyState[] = new boolean[NUM_KEYS];
@@ -41,7 +41,9 @@ public class Keys
     public static int G = 13;
     public static int Q = 14;
     public static int Z = 15;
-            
+    public static int CTL = 16;
+    public static int V = 17;
+    
     //These ints should only be used in listeners
     public static final int VK_ENTER = 10;
     public static final int VK_BACK_SPACE = 8;
@@ -50,6 +52,8 @@ public class Keys
     public static final int VK_RIGHT = 39;
     public static final int VK_DOWN = 40;
     public static final int VK_SHIFT = 16;
+    public static final int VK_CONTROL = 17;
+    public static final int VK_CAPS_LOCK = 20;
     
     public static void keySet(int i, boolean b) {
             if(i == KeyEvent.VK_ENTER) keyState[ENTER] = b;
@@ -68,6 +72,8 @@ public class Keys
             if(i == KeyEvent.VK_G) keyState[G] = b;
             if(i == KeyEvent.VK_Q) keyState[Q] = b;
             if(i == KeyEvent.VK_Z) keyState[Z] = b;
+            if(i == KeyEvent.VK_CONTROL)keyState[CTL]=b;
+            if(i == KeyEvent.VK_V)keyState[V]=b;
     }
 
     public static void update() {

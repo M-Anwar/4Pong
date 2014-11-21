@@ -42,7 +42,7 @@ public class GameStateManager
     
 
     public GameStateManager() {
-        currentState = MTEST_STATE;
+        currentState = MULTI_PLAYER_STATE;//MTEST_STATE;
         loadState(currentState);
     }
 

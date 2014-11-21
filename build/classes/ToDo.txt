@@ -19,3 +19,6 @@ DEVLOG: (Started 11/7/2014)
 	: Added Graphics Capabilities - Draw textures and shapes
 	: Finished Debugging the point of collision between polygon and polygon. Algorithm
 		 looks to be efficient for now.
+(11/20/2014)
+	: equations y= {a*sqrt(x) when 0<x<d and a*exp(-(x-z)) when x>d}
+		where z=ln(sqrt(d) +d

@@ -22,17 +22,19 @@ public class Paddle extends GameObject
 {
     public float maxSpeed = 30;
     protected Rectangle limits;
-    protected PaddlePosition pos;
+    public PaddlePosition pos;
     protected int col;
+    protected InputGenerator input;
     public enum PaddlePosition{
         TOP,BOTTOM,LEFT,RIGHT
     }
     
-    public Paddle(PaddlePosition p)
+    public Paddle(PaddlePosition p,InputGenerator input)
     {
         this.velocity = new Vector2D(0,0);      
         limits = getBounds(p);
         this.pos = p;
+        this.input = input;
     }
     @Override
     public void update(float delta) {
@@ -41,22 +43,22 @@ public class Paddle extends GameObject
         Rectangle r = (Rectangle)this.bounds;
         if(vertices[0].x<limits.getPosition().x){
             this.setPosition(new Vector2D(limits.getPosition().x + r.getWidth()/2,this.getPosition().y)); 
-            this.velocity.thisBounceNormal(new Vector2D(1,0));
+            //this.velocity.thisBounceNormal(new Vector2D(1,0));
             this.velocity.thisScale(0.1f);
         }
         if(vertices[1].x>limits.getPosition().x+limits.getWidth()){
             this.setPosition(new Vector2D(limits.getPosition().x +limits.getWidth()-r.getWidth()/2,this.getPosition().y));        
-            this.velocity.thisBounceNormal(new Vector2D(-1,0));
+            //this.velocity.thisBounceNormal(new Vector2D(-1,0));
             this.velocity.thisScale(0.1f);
         }
         if(vertices[0].y <limits.getPosition().y){
             this.setPosition(new Vector2D(this.getPosition().x,limits.getPosition().y + r.getHeight()/2)); 
-            this.velocity.thisBounceNormal(new Vector2D(0,1));
+            //this.velocity.thisBounceNormal(new Vector2D(0,1));
             this.velocity.thisScale(0.1f);
         }
         if(vertices[2].y>limits.getPosition().y+limits.getHeight()){
             this.setPosition(new Vector2D(this.getPosition().x,limits.getPosition().y+limits.getHeight() - r.getHeight()/2));        
-            this.velocity.thisBounceNormal(new Vector2D(0,-1));
+            //this.velocity.thisBounceNormal(new Vector2D(0,-1));
             this.velocity.thisScale(0.1f);
         }
         
@@ -69,23 +71,26 @@ public class Paddle extends GameObject
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.WHITE.getRGB());
-        //g.drawRect(limits.getPosition().x, limits.getPosition().y, limits.getWidth(), limits.getHeight());
+        g.setColor(Color.WHITE.getRGB());    
         Rectangle r = (Rectangle)this.bounds;
         g.setColor(col);                
         g.fillRect(this.getPosition().x-r.getWidth()/2, this.getPosition().y-r.getHeight()/2, r.getWidth(), r.getHeight());
-//        g.setColor(Color.WHITE.getRGB());
-//        Vector2D position = this.getPosition();
-//        g.drawString("Velocity: " + velocity.length(),position.x, position.y+20);
+
     }
     
     public void handleInput()
     {
+        int in = input.getInput();
         
-        if(Keys.isDown(Keys.W)){this.velocity.thisAdd(new Vector2D(0,-2));}
-        if(Keys.isDown(Keys.S)){this.velocity.thisAdd(new Vector2D(0,2));}
-        if(Keys.isDown(Keys.A)){this.velocity.thisAdd(new Vector2D(-8,0));}
-        if(Keys.isDown(Keys.D)){this.velocity.thisAdd(new Vector2D(8,0));}
+        if(in == Keys.W){this.velocity.thisAdd(new Vector2D(0,-8));}
+        if(in == Keys.S){this.velocity.thisAdd(new Vector2D(0,8));}
+        if(in == Keys.A){this.velocity.thisAdd(new Vector2D(-8,0));}
+        if(in == Keys.D){this.velocity.thisAdd(new Vector2D(8,0));}
+        
+//        if(Keys.isDown(Keys.W)){this.velocity.thisAdd(new Vector2D(0,-8));}
+//        if(Keys.isDown(Keys.S)){this.velocity.thisAdd(new Vector2D(0,8));}
+//        if(Keys.isDown(Keys.A)){this.velocity.thisAdd(new Vector2D(-8,0));}
+//        if(Keys.isDown(Keys.D)){this.velocity.thisAdd(new Vector2D(8,0));}
         
     }
     private Rectangle getBounds(PaddlePosition pos)
