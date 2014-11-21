@@ -63,7 +63,6 @@ public abstract class Component
         this.fontSize = size;              
     }    
     public void setFocus(boolean foc){this.isFocused = foc;}
-    public void setEnabled(boolean enable){this.isEnabled=enable;}
     
     public String getFont(){return this.font;}
     public float getFontSize(){return this.fontSize;}
@@ -90,10 +89,12 @@ public abstract class Component
             velocity.thisScale(0.5f);
             velocity.thisScale(delta,delta);       
             position.thisAdd(velocity);
+            this.isEnabled = false;
         }else
         {
             position.x = finalPosition.x;
             position.y = finalPosition.y;
+            this.isEnabled = true;
         }               
         if(isHovering(Mouse.x,Mouse.y)){
             if(Mouse.isPressed()){

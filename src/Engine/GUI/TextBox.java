@@ -14,10 +14,6 @@ import Engine.StringBuilder;
 import Engine.Vector2D;
 import G4Pong.GamePanel;
 import java.awt.Color;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.util.ArrayList;
 
 /**
@@ -188,7 +184,6 @@ public class TextBox extends Component implements KeyListener, Scrollable{
 
     @Override
     public void KeyTyped(int keyCode, char keyChar) {
-       
         if(this.isFocused() && this.isEditable()){   
             for(KeyListener k: listeners){
                 k.KeyTyped(keyCode, keyChar);
@@ -197,27 +192,7 @@ public class TextBox extends Component implements KeyListener, Scrollable{
                 if(message.length()>=1)
                     message = message.substring(0, message.length()-1);
             }                        
-            else if(keyCode == Keys.VK_SHIFT || keyCode == Keys.VK_CONTROL || 
-                    keyCode == Keys.VK_LEFT || keyCode == Keys.VK_RIGHT ||
-                    keyCode == Keys.VK_DOWN || keyCode == Keys.VK_UP ||
-                    keyCode == Keys.VK_CAPS_LOCK){/*Nothing*/}  
-            else if(Keys.isDown(Keys.CTL) && Keys.isPressed(Keys.V)){                
-                String result = "";
-                //Paste from clipboard...comment out if feature not supported
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                Transferable contents = clipboard.getContents(null);
-                boolean hasTransferableText =
-                  (contents != null) &&
-                  contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-                
-                if (hasTransferableText) {
-                  try {
-                    result = (String)contents.getTransferData(DataFlavor.stringFlavor);
-                  }catch (Exception ex){}
-                }
-                message = message + result;
-                if(this.maxChars>0 && message.length()>=maxChars)message = message.substring(0,maxChars);
-            }
+            else if(keyCode == Keys.VK_SHIFT){/*Nothing*/}              
             else{                
                 if(this.maxChars > 0 && message.length()>=maxChars) return;
                 message = message+ keyChar;                  

@@ -21,8 +21,6 @@ import Engine.Vector2D;
 import Entity.Ball;
 import Entity.ImageLoader;
 import Entity.Paddle;
-import Entity.PaddleAI;
-import Entity.PlayerInputGenerator;
 import G4Pong.GamePanel;
 import static G4Pong.GamePanel.HEIGHT;
 import static G4Pong.GamePanel.WIDTH;
@@ -42,14 +40,8 @@ public class SinglePlayerGame extends GameState{
     private Paddle player2;
     private Paddle player3;
     private Paddle player4;
-    public ArrayList<Paddle> players;
-    public ArrayList<Ball> ball;    
-    
-    public Paddle lastHit;
-    public int p1score;
-    public int p2score;
-    public int p3score;
-    public int p4score;
+    private ArrayList<Paddle> players;
+    private ArrayList<Ball> ball;    
     
     private float rotation = 0;
     public SinglePlayerGame(GameStateManager gsm) {
@@ -59,21 +51,20 @@ public class SinglePlayerGame extends GameState{
     @Override
     public void init() 
     {      
-        player = new Paddle(Paddle.PaddlePosition.BOTTOM, new PlayerInputGenerator());
-        player2 = new Paddle(Paddle.PaddlePosition.RIGHT, new PaddleAI(this,1));
-        player3 = new Paddle(Paddle.PaddlePosition.TOP, new PaddleAI(this,2));
-        player4= new Paddle(Paddle.PaddlePosition.LEFT, new PaddleAI(this,3));
+        player = new Paddle(Paddle.PaddlePosition.BOTTOM);
+        player2 = new Paddle(Paddle.PaddlePosition.RIGHT);
+        player3 = new Paddle(Paddle.PaddlePosition.TOP);
+        player4= new Paddle(Paddle.PaddlePosition.LEFT);
         players = new ArrayList<>();
         players.add(player);
         players.add(player2);
         players.add(player3);
-        players.add(player4);        
-        
-        ball = new ArrayList<>();
-        for(int i =0 ; i <1; i ++)
-            ball.add(new Ball());
+        players.add(player4);
         for(Paddle p: players)p.update(0);
         
+        ball = new ArrayList<>();
+        for(int i =0 ; i <1000; i ++)
+            ball.add(new Ball());
         btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
@@ -85,25 +76,17 @@ public class SinglePlayerGame extends GameState{
 
     @Override
     public void update(float delta) {
-        for(Paddle p: players)p.update(delta);        
-        for(Ball b: ball) {
-            b.update(delta);
-            if(b.hitWall==true){
-                b.hitWall=false;
-                b.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));
-                b.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));
-                if(lastHit ==player) p1score++;
-                if(lastHit ==player2) p2score++;
-                if(lastHit ==player3) p3score++;
-                if(lastHit ==player4) p4score++;
-            }
-        }
-       
+        player.update(delta);
+        player2.update(delta);
+        player3.update(delta);
+        player4.update(delta);
+        for(Ball b: ball) b.update(delta);
+        
       
         handleInput();                 
         
     }
-    
+
     @Override
     public void draw(Graphics g) {             
         
@@ -113,34 +96,38 @@ public class SinglePlayerGame extends GameState{
         g.drawString("Score:",GamePanel.GAMEWIDTH+20,70);
         g.setFont("Arial",Graphics.PLAIN,15);
         g.setColor(Color.GREEN.getRGB());
-        g.drawString("Player 1:"+p1score,GamePanel.GAMEWIDTH+40,90);
+        g.drawString("Player 1:",GamePanel.GAMEWIDTH+40,90);
         g.setColor(Color.WHITE.getRGB());        
-        g.drawString("CPU 1:"+p2score,GamePanel.GAMEWIDTH+40,110);
-        g.drawString("CPU 2:"+p3score,GamePanel.GAMEWIDTH+40,130);
-        g.drawString("CPU 3:"+p4score,GamePanel.GAMEWIDTH+40,150);
+        g.drawString("CPU 1:",GamePanel.GAMEWIDTH+40,110);
+        g.drawString("CPU 2:",GamePanel.GAMEWIDTH+40,130);
+        g.drawString("CPU 3:",GamePanel.GAMEWIDTH+40,150);
                          
         //Sets the game area
         g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
         g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
-        
-        g.translate(5, 5);      
-        //g.rotate(Math.toRadians(90), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
-        for(Paddle p: players) p.draw(g);
+        g.translate(5, 5);       
+     
+        player.draw(g);
+        player2.draw(g); 
+        player3.draw(g);
+        player4.draw(g);
         for(Ball b: ball) b.draw(g);
                
-        CollisionResult s;        
+        CollisionResult s;
+        
         for(Paddle p: players){
             for(Ball b: ball){
                 if((s=p.getShape().collides(b.getShape()))!=null)
                 {              
-                    b.getPosition().thisAdd(s.mts);                                 
-                    lastHit = p;                   
+                    b.getPosition().thisAdd(s.mts);                    
+                    float amount = b.getVelocity().dot(p.getVelocity()); //relative velocity
+                    b.setAngularVelocity(amount/50);
                     b.getVelocity().thisBounceNormal(s.normal);
                     b.getVelocity().thisAdd(p.getVelocity());
                 }
             }
         }
-        //g.rotate(Math.toRadians(-90), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
+        
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         

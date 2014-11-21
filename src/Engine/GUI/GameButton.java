@@ -21,7 +21,7 @@ public class GameButton extends Component
     private boolean isHovered;    
     protected ButtonListener listener;
     protected float border = 25;
-    private boolean forceClick;
+    
     //The Data stored in the button
     protected String buttonText;
     
@@ -29,11 +29,10 @@ public class GameButton extends Component
         super(x,y,10,10);
         setText(text);
         this.setFont("Arial", 30);       
-        this.setEnabled(true);
+        
         this.height = StringBuilder.getHeight(text,getFont(), (int)getFontSize()) + border;
         this.width = StringBuilder.getWidth(text,getFont(), (int)getFontSize()) + border;   
-        listener = null; 
-        forceClick = false;
+        listener = null;       
     }
 
 
@@ -45,8 +44,7 @@ public class GameButton extends Component
     {
         super.update(delta);
         isHovered = isHovering(Mouse.x,Mouse.y);
-        if(listener!=null && forceClick==true){listener.buttonClicked(); forceClick = false;}
-        if(isHovered && isEnabled()){
+        if(isHovered){
             if(Mouse.isPressed()){
                if(listener!=null){              
                    GamePanel.getAudio().play("BUTTON");
@@ -71,7 +69,7 @@ public class GameButton extends Component
     @Override
     public void draw(Graphics g)
     {           
-        if(isHovered && this.isEnabled())
+        if(isHovered)
             g.setColor(new Color(0,176,240).getRGB());
         else
             g.setColor(Color.BLACK.getRGB());
@@ -79,11 +77,10 @@ public class GameButton extends Component
         g.fillRect(this.position.x, this.position.y, width, height);
         g.setColor(Color.WHITE.getRGB());
         g.drawRect(this.position.x, this.position.y, width, height);
-        if(this.isEnabled()==false){g.setColor(Color.GRAY.getRGB());}
-        else{g.setColor(Color.WHITE.getRGB());}
+        
         g.drawString(this.getText(), this.position.x+border/2, this.position.y+height-border/2);                
     }
-    public void doClick(){forceClick=true;}
+
     @Override
     public void dispose() {        
     }

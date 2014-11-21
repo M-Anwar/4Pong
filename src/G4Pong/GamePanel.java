@@ -8,15 +8,15 @@ package G4Pong;
 
 import Engine.Audio.Audio;
 import Engine.Audio.JavaAudio;
-import Engine.GUI.ButtonListener;
-import Engine.GUI.Component;
-import Engine.GUI.GameButton;
 import Engine.GameStateManager;
 import Engine.Graphics;
 import Engine.Java2DGraphics;
 import Engine.Keys;
 import Engine.Mouse;
 import Entity.MenuBall;
+import Engine.GUI.ButtonListener;
+import Engine.GUI.Component;
+import Engine.GUI.GameButton;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -33,9 +33,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  * Platform dependant game screen. Contains the main game loop and event handling.
@@ -73,13 +71,12 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     
     //Audio Engine Handle
     private static Audio gameAudio;
-    public static JFrame parent;
     
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         this.setFocusable(true);
-        this.requestFocus();           
+        this.requestFocus();       
     }
     @Override
     public void addNotify() {
@@ -91,12 +88,10 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
                 thread = new Thread(this);
                 thread.setName("G4PMainEngineThread");
                 thread.start();
-                parent = (JFrame)SwingUtilities.getWindowAncestor(this);
         }
     }
     
-    private void init() {
-        System.setProperty("sun.java2d.opengl","true");
+    private void init() {		
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = (Graphics2D) image.getGraphics();        
         g = new Java2DGraphics(g2d);
@@ -129,7 +124,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         while(running) {
             start = System.nanoTime();
             
-            update(delta);            
+            update(delta);
             draw();
             drawToScreen();
 
@@ -144,7 +139,6 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
             actualFPS = (1000000000/(float)delta);            
         }        
     }
-    
     public void update(long delta)
     {       
         float deltaf = delta;
@@ -155,21 +149,19 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
         Mouse.update();
         Keys.update();
     }
-    boolean showDebug = false;
+    
     public void draw()
     { 
         g.setColor(Color.BLACK.getRGB());       
         g.fillRect(0, 0, WIDTH, HEIGHT);                
         gsm.draw(g);        
         
-        if(showDebug){
-        g.setColor(new Color(0,0,0,128).getRGB());
-        g.fillRect(10, 10, 300, 50);
+        
+        g.setColor(Color.BLACK.getRGB());
+        g.fillRect(0, 0, 300, 50);
         g.setColor(Color.WHITE.getRGB());
-        g.drawRect(10,10,300,50);
-        g.setFont("Arial", Graphics.BOLD, 17);
-        g.drawString("FPS: "+ actualFPS, 20, 30);
-        }
+        g.setFont("Arial", Graphics.BOLD, 14);
+        g.drawString("FPS: "+ actualFPS, 10, 30);
                 
     }
     public void drawToScreen()
@@ -212,8 +204,7 @@ public class GamePanel extends JPanel implements Runnable,MouseListener, MouseMo
     @Override
     public void keyPressed(KeyEvent ke) {
         Keys.keySet(ke.getKeyCode(),true);
-        Keys.keyTyped(ke);        
-        if(ke.isControlDown() && ke.getKeyCode()==KeyEvent.VK_D){showDebug=!showDebug;}
+        Keys.keyTyped(ke);
     }
     @Override
     public void keyReleased(KeyEvent ke) {

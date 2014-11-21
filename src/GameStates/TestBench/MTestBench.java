@@ -7,7 +7,6 @@
 package GameStates.TestBench;
 
 import Engine.Camera;
-import Engine.Effects.ParticleFactory;
 import Engine.GUI.ButtonListener;
 import Engine.GUI.GameButton;
 import Engine.GUI.TextBox;
@@ -26,7 +25,6 @@ import Entity.ImageLoader;
 import G4Pong.GamePanel;
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Random;
 
 
 /**
@@ -40,12 +38,12 @@ public class MTestBench extends GameState
     Rectangle rect1;
     Circle circle;
     Circle newCircle;
-    Circle circle2;   
+    Circle circle2;
     
     private TextBox chatInput;
     private TextBox chatLog;    
     private boolean firstClick = true;
-    
+          
     Camera cam;
     int state;
     
@@ -113,15 +111,15 @@ public class MTestBench extends GameState
             addComponent(chatLog);
 //</editor-fold>            
         }       
-                   
+      
+        
     }
-   
     
     @Override
     public void update(float delta)
     {
         cam.update(delta);
-        cam.moveTo(rect.getPosition());        
+        cam.moveTo(rect.getPosition());
         handleInput();
     }
     @Override
@@ -133,9 +131,8 @@ public class MTestBench extends GameState
             g.setColor(Color.WHITE.getRGB());            
             Vector2D point = cam.projectPoint(new Vector2D(Mouse.x, Mouse.y));             
             if(rect.containsPoint(point))g.setColor(Color.RED.getRGB());
-            g.drawOval(point.x-2, point.y-2, 4, 4);                    
-            g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-            
+            g.drawOval(point.x-2, point.y-2, 4, 4);
+            g.drawRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);           
             newCircle.setPosition(circle.getPosition());
             rect.debugDraw(g);
             rect1.debugDraw(g);           
@@ -185,7 +182,29 @@ public class MTestBench extends GameState
             g.setFont("Arial",Graphics.PLAIN,15);
             g.drawString("Basic Chat infrastructure - has two text boxes which communicate with each other", 10, 60);
 //</editor-fold>
-        }           
+        }   
+        else if (state == 3)
+        {
+            g.setColor(new Color(77,77,77).getRGB());
+            g.fillRect(0, 0, GamePanel.WIDTH, 80);
+            g.setColor(Color.WHITE.getRGB());
+            g.setFont("Arial",Graphics.BOLD,25);
+            g.drawString("Cantor Set-Recursive Drawing", 10, 40);
+            g.setFont("Arial",Graphics.PLAIN,15);
+            g.drawString("Fractals", 10, 60);
+            g.setColor(Color.WHITE.getRGB());
+            cam.applyCamera(g);
+            g.drawLine(0, GamePanel.HEIGHT/2, 10000, GamePanel.HEIGHT/2);
+            for(int i =0; i < 100; i ++)
+            {
+                g.drawLine((10000/100)*i, GamePanel.HEIGHT/2, (10000/100)*i,GamePanel.HEIGHT/2-50);
+                g.drawString("P: " + i, (10000/100)*i,GamePanel.HEIGHT/2-50);
+            }
+            
+            cantorDraw(g,50,140,900);
+            cam.unApplyCamera(g);
+            g.drawString("Zoom: "+ cam.getZoom(), 10, 80);
+        }
         
                         
     }

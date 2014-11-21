@@ -123,6 +123,7 @@ public class IntroState extends GameState
             {
                 CollisionResult s = ball.circleShape.collides(b.get(j).circleShape);
                 if (s!=null){                                       
+                        b.get(j).circleShape.setPosition(b.get(j).circleShape.getPosition().add(s.mts));
                         Vector2D temp = new Vector2D(ball.velocity);
                         ball.velocity = b.get(j).velocity;
                         b.get(j).velocity= temp;
