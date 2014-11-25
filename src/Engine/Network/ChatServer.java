@@ -6,9 +6,22 @@
 
 package Engine.Network;
 
+import Engine.Geometry.CollisionResult;
+import Engine.Network.GameNetwork.InputUpdate;
+import Engine.Network.GameNetwork.PlayerNumber;
+import Engine.Network.GameNetwork.PositionUpdate;
+import Engine.Network.Network.BeginGame;
 import Engine.Network.Network.ChatMessage;
+import Engine.Network.Network.ReadyState;
 import Engine.Network.Network.RegisterName;
 import Engine.Network.Network.RegisteredNames;
+import Engine.Vector2D;
+import Entity.Ball;
+import Entity.ClientInputGenerator;
+import Entity.Paddle;
+import Entity.PaddleAI;
+import Entity.PlayerInputGenerator;
+import G4Pong.GamePanel;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -24,6 +37,11 @@ import java.util.logging.Logger;
  */
 public class ChatServer {
     public static Server server;
+    public static Server gameServer;
+    public final static int players =4;
+    public final static boolean debug = true;
+    public static Runnable gameThread;
+    public static int playerCount=0;
     public static void main(String[] args) 
     {   
         try {
@@ -34,6 +52,60 @@ public class ChatServer {
                 }                    
             };
             Network.register(server);
+           
+            gameServer = new Server(){
+                protected Connection newConnection(){ 
+                    return new GameConnection();
+                }
+            };
+            GameNetwork.register(gameServer);
+            gameServer.bind(GameNetwork.TCPport,GameNetwork.UDPport);
+            gameServer.addListener(new Listener(){
+                 public void received(Connection c, Object object){
+                    GameConnection connection = (GameConnection)c;
+                    if(object instanceof RegisterName)
+                    {
+                        if(connection.name!=null)return;
+                        String name = ((RegisterName)object).name;
+                        if(name==null)return;
+                        name = name.trim();
+                        connection.name = name;
+                        connection.ready = false;
+                        connection.playerNum = playerCount;
+                        playerCount++;
+                        PlayerNumber player = new PlayerNumber();
+                        player.playerNum= connection.playerNum;
+                        gameServer.sendToTCP(c.getID(), player);
+                        ChatMessage response = new ChatMessage();
+                        response.text = name + " connected.";
+                        System.out.println(gameServer.toString()+ ": " + response.text);
+                        gameServer.sendToAllExceptTCP(connection.getID(), response);
+                        updateNames(gameServer);
+                        return;                        
+                    }
+                 }
+                public void connected(Connection connection)
+                {
+                    System.out.println(gameServer.toString()+": Connection Received: " + connection.getRemoteAddressTCP().getAddress());
+                    if(gameServer.getConnections().length>players){System.out.println("Closing Connection");connection.close(); }
+                }
+                public void disconnected(Connection c)
+                {
+                    ChatConnection connection = (ChatConnection)c;
+                    if(connection.name!=null)
+                    {                       
+                        System.out.println(gameServer.toString() + ": " +connection.name +" disconnected");
+                        playerCount--;
+                        return;
+                    }
+                } 
+            });
+            gameServer.start();
+            
+            gameThread =new GameThread(gameServer);
+            new Thread(gameThread).start();
+            
+            
             server.start();            
             server.bind(Network.TCPport,Network.UDPport);
             server.addListener(new Listener(){
@@ -46,11 +118,12 @@ public class ChatServer {
                         if(name==null)return;
                         name = name.trim();
                         connection.name = name;
+                        connection.ready = false;
                         ChatMessage response = new ChatMessage();
                         response.text = name + " connected.";
                         System.out.println(response.text);
                         server.sendToAllExceptTCP(connection.getID(), response);
-                        updateNames();
+                        updateNames(server);
                         return;                        
                     }
                     if(object instanceof ChatMessage){
@@ -79,6 +152,30 @@ public class ChatServer {
                         server.sendToAllTCP(response);  
                         return;
                     }
+                    if(object instanceof ReadyState)
+                    {
+                        if(connection.name==null)return;
+                        ReadyState state = (ReadyState)object;
+                        connection.ready=state.clientReady;
+                        updateNames(server);
+                        Connection[] connections = server.getConnections();
+                        ArrayList<Connection> readyCon = new ArrayList<>();                        
+                        for(int i =0; i <connections.length;i++){
+                            ChatConnection ccon = (ChatConnection)connections[i];
+                            if(ccon.ready==true){                               
+                                readyCon.add(ccon);
+                            }
+                        }   
+                        if(readyCon.size()>=players){
+                            System.out.println(players + " People are ready and match made: " + readyCon.toString());
+                            BeginGame b = new BeginGame();
+                            b.beginGame=true;
+                            
+                            for(Connection d: readyCon){
+                                server.sendToTCP(d.getID(), b);
+                            }
+                        }
+                    }
                 }  
                 public void connected(Connection connection)
                 {
@@ -93,11 +190,10 @@ public class ChatServer {
                         response.text = connection.name + " disconnected.";
                         System.out.println(response.text);
                         server.sendToAllTCP(response);
-                        updateNames();
+                        updateNames(server);
                         return;
                     }
-                }
-               
+                }               
             });
             
             
@@ -116,6 +212,35 @@ public class ChatServer {
                         for (int i = connections.length - 1; i >= 0; i--) {
                                 ChatConnection connection = (ChatConnection)connections[i];
                                 System.out.println(connection.name + " : " + connection.getRemoteAddressTCP());                                
+                        }  
+                        connections = gameServer.getConnections(); 
+                        System.out.printf(gameServer.toString()+" : Connections [%s]:\n", connections.length);
+                        for (int i = connections.length - 1; i >= 0; i--) {
+                                ChatConnection connection = (ChatConnection)connections[i];
+                                System.out.println(connection.name + " : " + connection.getRemoteAddressTCP());                                
+                        }  
+                    }
+                    else if(input.contains("discong"))
+                    {
+                        String[]args = input.split(" ");
+                        if(args.length==2){
+                            Connection[] connections = gameServer.getConnections();                         
+                            for (int i = connections.length - 1; i >= 0; i--) {
+                                ChatConnection connection = (ChatConnection)connections[i];
+                                if(connection.name.equals(args[1])){
+                                    System.out.println("Disconnecting: " + connection.name + " : " + connection.getRemoteAddressTCP());  
+                                    connection.close();    
+                                }                                                  
+                            }
+                        }
+                    } 
+                    else if(input.equals("disconallg")){
+                        Connection[] connections = gameServer.getConnections(); 
+                        System.out.printf("Disconnecting [%s]:\n", connections.length);
+                        for (int i = connections.length - 1; i >= 0; i--) {
+                                ChatConnection connection = (ChatConnection)connections[i];
+                                System.out.println(connection.name + " : " + connection.getRemoteAddressTCP());  
+                                connection.close();                                
                         }                       
                     }
                     else if(input.equals("disconall")){
@@ -140,28 +265,137 @@ public class ChatServer {
                                 }                                                  
                             }
                         }
-                    }                    
+                    }  
+                    
+                    
                 }                
                 server.close();
                 server.stop();
+                gameServer.close();
+                gameServer.stop();
+                GameThread g = (GameThread)gameThread;
+                g.isRunning=false;
+                
             }            
         }.start();
     }    
-    private static void updateNames()
+    private static void updateNames(Server s)
     {
-        Connection[] connections = server.getConnections();
+        Connection[] connections = s.getConnections();
         ArrayList names = new ArrayList(connections.length);
+        boolean [] ready = new boolean[connections.length];
         for (int i = connections.length - 1; i >= 0; i--) {
                 ChatConnection curConnection = (ChatConnection)connections[i];
                 names.add(curConnection.name);
+                ready[Math.abs(connections.length-1-i)]=curConnection.ready;
         }
         // Send the names to everyone.
         RegisteredNames updateNames = new RegisteredNames();
         updateNames.names = (String[])names.toArray(new String[names.size()]);
-        server.sendToAllTCP(updateNames);
+        updateNames.ready = ready; 
+        s.sendToAllTCP(updateNames);
     }
 }
-class ChatConnection extends Connection {
+class ChatConnection extends Connection
+{
     public String name;
+    public boolean ready;
 }
 
+class GameConnection extends ChatConnection
+{
+    public int playerNum;
+}
+
+class GameThread implements Runnable
+{
+    Server server;
+    public Ball ball;
+    public ArrayList<Paddle> players;
+    public ArrayList<ClientInputGenerator> inputs;
+    public boolean isRunning = true;
+    public GameThread(Server server)
+    {
+        this.server = server;
+                
+        ball = new Ball();
+        inputs = new ArrayList<>();
+        inputs.add(new ClientInputGenerator(Paddle.PaddlePosition.BOTTOM));
+        inputs.add(new ClientInputGenerator(Paddle.PaddlePosition.RIGHT));
+        inputs.add(new ClientInputGenerator(Paddle.PaddlePosition.TOP));
+        inputs.add(new ClientInputGenerator(Paddle.PaddlePosition.LEFT));
+        
+        players = new ArrayList<>();
+        players.add(new Paddle(Paddle.PaddlePosition.BOTTOM, inputs.get(0)));
+        players.add(new Paddle(Paddle.PaddlePosition.RIGHT, inputs.get(1)));
+        players.add(new Paddle(Paddle.PaddlePosition.TOP, inputs.get(2)));
+        players.add(new Paddle(Paddle.PaddlePosition.LEFT, inputs.get(3)));
+        for(Paddle p:players)p.update(0);
+        
+        server.addListener(new Listener(){
+            public void received(Connection c, Object object){
+                GameConnection connection = (GameConnection)c;
+                if(object instanceof InputUpdate)
+                {
+                    InputUpdate i = (InputUpdate)object;
+                    inputs.get(connection.playerNum).setInput(i.input);
+                    return;                        
+                }
+            }        
+        });
+    }
+    @Override
+    public void run() {
+        while(server.getConnections().length<ChatServer.players && isRunning){try {Thread.sleep(100);} catch (InterruptedException ex) {}   }
+        while(isRunning){
+            if(server.getConnections().length==ChatServer.players){
+                PositionUpdate pos = new PositionUpdate();
+                   
+                //Game Logic run on server
+                ball.update(0.1547197f);
+                for(Paddle p: players)p.update(0.15f);
+                if(ball.hitWall==true){
+                    ball.hitWall=false;
+                    ball.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));                   
+                    ball.setVelocity(new Vector2D((float)Math.random()*(15-10)+10,(float)Math.toRadians(Math.random()*360), 1));
+                }
+                 CollisionResult s;        
+                for(Paddle p: players){                    
+                    if((s=p.getShape().collides(ball.getShape()))!=null)
+                    {              
+                        ball.getPosition().thisAdd(s.mts);                                 
+                        ball.getVelocity().thisBounceNormal(s.normal);
+                        ball.getVelocity().thisAdd(p.getVelocity());
+                        Vector2D norm = s.normal.getPerpendicular();
+                        float rel1 = ball.getVelocity().dot(norm);
+                        float rel2 = p.getVelocity().dot(norm);
+                        float dir = ball.getVelocity().dot(p.getVelocity());
+                        if(dir!=0)
+                            dir = dir/Math.abs(dir);
+                        float amount = rel1-rel2;
+                        ball.setAngularVelocity(Math.abs(amount)*dir*4);
+
+                    }                    
+                }
+                //Server side code for client side rendering
+                pos.ID = "BALL";     
+                pos.x = ball.getPosition().x;
+                pos.y = ball.getPosition().y;       
+                server.sendToAllTCP(pos);
+                int i =0;
+                for(Paddle p: players){
+                    pos.ID = "PLAYER"+i; i++;                    
+                    pos.x = p.getPosition().x;
+                    pos.y = p.getPosition().y;
+                    server.sendToAllTCP(pos);                            
+                }
+            }
+            else{
+                try {Thread.sleep(5000);} catch (InterruptedException ex) {}            
+                ball.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));
+                ball.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20)); 
+            }
+            try {Thread.sleep(10);} catch (InterruptedException ex) {}            
+        }
+    }    
+}

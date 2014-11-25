@@ -15,7 +15,9 @@ import Engine.Java2DImage;
 import Engine.KeyListener;
 import Engine.Keys;
 import Engine.Network.Network;
+import Engine.Network.Network.BeginGame;
 import Engine.Network.Network.ChatMessage;
+import Engine.Network.Network.ReadyState;
 import Engine.Network.Network.RegisterName;
 import Engine.Network.Network.RegisteredNames;
 import Entity.ImageLoader;
@@ -40,12 +42,14 @@ import javax.swing.JFrame;
 public class MultiPlayerChat extends GameState{   
     private GameButton btnExit;   
     private GameButton btnMinimize;  
+    private GameButton btnReady;
     private TextBox chatInput;
     private TextBox chatLog;    
     private boolean firstClick = true;
     
     public static String userName;
     public String [] users;
+    public boolean []ready;
     Client client;
     
     public MultiPlayerChat(GameStateManager gsm) {
@@ -69,6 +73,18 @@ public class MultiPlayerChat extends GameState{
             public void buttonClicked() {
                 GamePanel.parent.setState(JFrame.ICONIFIED);
             }                
+        });
+        btnReady = new GameButton("Ready!",GamePanel.WIDTH-100,GamePanel.HEIGHT-50);
+        btnReady.setFont("Arial", 16);
+        addComponent(btnReady);
+        btnReady.addButtonListener(new ButtonListener(){
+            public void buttonClicked() {
+                ReadyState r= new ReadyState();
+                r.clientReady=true;
+                client.sendTCP(r);
+                btnReady.setEnabled(false);
+            }
+            
         });
         
         chatInput = new TextBox("Enter text here...",10,GamePanel.HEIGHT-300+90);
@@ -137,6 +153,13 @@ public class MultiPlayerChat extends GameState{
                     {
                         RegisteredNames names = (RegisteredNames)object;
                         users = names.names;
+                        ready = names.ready;                        
+                    }
+                    if(object instanceof BeginGame)
+                    {
+                        client.close();
+                        client.stop();
+                        setState(GameStateManager.MULTI_PLAYER_GAME_STATE);
                     }
                 }
                 public void disconnected(Connection c)
@@ -147,23 +170,17 @@ public class MultiPlayerChat extends GameState{
             
             new Thread(){
                 public void run(){   
-                    try{                                          
+                    try{                                
+                        chatLog.appendText("Connecting to server \n");          
                         client.connect(5000, "67.188.28.76", Network.TCPport,Network.UDPport);                        
-                    }catch(IOException ex){chatLog.appendText(ex.getMessage()); chatLog.appendText("\nConnecting to LAN server \n");
-                        InetAddress addr  = client.discoverHost(Network.UDPport, 10000);      
+                    }catch(IOException ex){chatLog.appendText(ex.getMessage());
+                        chatLog.appendText("\nConnecting to LAN server \n");                              
                         try{
+                            InetAddress addr  = client.discoverHost(Network.UDPport, 10000);
                             client.connect(5000, addr, Network.TCPport,Network.UDPport);
-                        }catch(IOException e){chatLog.appendText(e.getMessage());}
-                    }                  
-//                    while(client.isConnected()){
-//                        try {                      
-//                        Thread.sleep(5000);
-//                        } catch (InterruptedException ex) {}
-//                    }
-//                    client.close();
-//                    client.stop();
-//                    chatLog.appendText("Disconnected from server\n");
-//                    setState(GameStateManager.MULTI_PLAYER_STATE);
+                        }catch(Exception e){chatLog.appendText(e.getMessage());setState(GameStateManager.MULTI_PLAYER_STATE);}
+                    }              
+
                 }                
             }.start();
     }
@@ -188,6 +205,7 @@ public class MultiPlayerChat extends GameState{
         {
             if(users[i].equals(userName))g.setColor(Color.GREEN.getRGB());
             else g.setColor(Color.WHITE.getRGB());
+            if(ready[i]==true){g.setColor(Color.CYAN.getRGB());}
             g.drawString(users[i], 10+GamePanel.WIDTH-300+10,130+20*i);
         }
         g.setColor(Color.WHITE.getRGB());

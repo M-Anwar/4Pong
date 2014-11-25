@@ -24,6 +24,9 @@ public class Network {
         kryo.register(RegisterName.class);
         kryo.register(RegisteredNames.class);
         kryo.register(String[].class);
+        kryo.register(boolean[].class);
+        kryo.register(ReadyState.class);
+        kryo.register(BeginGame.class);
     }    
     public static class RegisterName {
         public String name;
@@ -33,5 +36,13 @@ public class Network {
     }
     public static class RegisteredNames{
         public String[] names;
+        public boolean[] ready;
     }
+    public static class ReadyState{
+        public boolean clientReady;
+    }   
+    public static class BeginGame{
+        public boolean beginGame;
+    }
+    
 }
