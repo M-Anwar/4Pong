@@ -3,124 +3,200 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package GameStates;
 
 import Engine.GUI.ButtonListener;
 import Engine.GUI.GameButton;
-import Engine.GUI.TextBox;
 import Engine.GameState;
 import Engine.GameStateManager;
+import Engine.Geometry.CollisionResult;
 import Engine.Graphics;
-import Engine.KeyListener;
 import Engine.Keys;
+import Engine.Network.GameNetwork;
+import Engine.Network.GameNetwork.InputUpdate;
+import Engine.Network.GameNetwork.PlayerNumber;
+import Engine.Network.GameNetwork.PositionUpdate;
+import Engine.Network.Network;
+import Engine.Vector2D;
+import Entity.Ball;
+import Entity.Paddle;
+import Entity.PaddleAI;
+import Entity.PlayerInputGenerator;
 import G4Pong.GamePanel;
-import static G4Pong.GamePanel.WIDTH;
+import static GameStates.MultiPlayerChat.userName;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import java.awt.Color;
-import java.util.Arrays;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author Jason Xu
+ * @author muhammed.anwar
  */
-public class MultiPlayerGame extends GameState{
+public class MultiPlayerGame extends GameState {
+     private GameButton btnExit;
+    private Paddle player;
+    private Paddle player2;
+    private Paddle player3;
+    private Paddle player4;
+    public ArrayList<Paddle> players;
+    public Ball ball;    
     
-    private TextBox name;
-    private GameButton btnExit;
-    private GameButton btnConnect;
-    private TextBox status;
+    public Paddle lastHit;
+    public int p1score;
+    public int p2score;
+    public int p3score;
+    public int p4score;
     
-    private String errorMsg;
-    
-    private boolean txtNameFirst = true;
+    public Client client;
+     public String [] users;
+     public int playerNum;
+     
+    private float rotation = 0;
     public MultiPlayerGame(GameStateManager gsm) {
         super(gsm);       
     }
-    
+
     @Override
-    public void init(){
-        errorMsg ="";
-        name = new TextBox("Enter Username", 300, 360);
-        name.setFocus(true);
-        name.setMaxChars(12);
-        name.addKeyListener(new KeyListener(){
-            public void KeyTyped(int keyCode, char keyChar) {
-                if(keyCode == Keys.VK_ENTER){
-                    name.setText(name.getText());
-                    btnConnect.doClick();
-                    btnExit.setEnabled(true);
+    public void init() 
+    {      
+        client = new Client();
+            GameNetwork.register(client);
+
+            new Thread(client).start();            
+            
+            client.addListener(new Listener(){
+                public void connected(Connection c)
+                {                                 
+                    System.out.println("Connected to GameServer");                    
+                    Network.RegisterName registerName = new Network.RegisterName();
+                    registerName.name = userName;
+                    client.sendTCP(registerName);
                 }
-            }        
-        });        
-        name.addMouseListener(new ButtonListener(){
-            @Override
-            public void buttonClicked() {
-                if(txtNameFirst){
-                    name.setText("");
-                    txtNameFirst = false;}
-                
-            }        
-        });
+                public void received(Connection connection, Object object){
+                    
+                    if(object instanceof PlayerNumber)
+                    {
+                        PlayerNumber p = (PlayerNumber)object;
+                        playerNum = p.playerNum;
+                    }
+                    if(object instanceof Network.ChatMessage)
+                    {
+                        Network.ChatMessage response = (Network.ChatMessage)object;
+                        
+                    }
+                    if(object instanceof Network.RegisteredNames)
+                    {
+                        Network.RegisteredNames names = (Network.RegisteredNames)object;
+                        users = names.names;                                               
+                    }                   
+                    if(object instanceof PositionUpdate){
+                        PositionUpdate p = (PositionUpdate)object;
+                        if(p.ID.equals("BALL")){
+                            
+                            ball.setPosition(new Vector2D(p.x,p.y));
+                        }
+                        if(p.ID.equals("PLAYER0")){
+                            players.get(0).setPosition(new Vector2D(p.x,p.y));
+                        }
+                        if(p.ID.equals("PLAYER1")){
+                            players.get(1).setPosition(new Vector2D(p.x,p.y));
+                        }
+                        if(p.ID.equals("PLAYER2")){
+                            players.get(2).setPosition(new Vector2D(p.x,p.y));
+                        }
+                        if(p.ID.equals("PLAYER3")){
+                            players.get(3).setPosition(new Vector2D(p.x,p.y));
+                        }
+                    }
+                }
+                public void disconnected(Connection c)
+                {
+                    setState(GameStateManager.MULTI_PLAYER_STATE);
+                }
+            });  
+         try {               
+              InetAddress addr  = client.discoverHost(GameNetwork.UDPport, 5000);
+              System.out.println("Connecting: " + addr.getHostAddress());
+              client.connect(5000, addr, GameNetwork.TCPport,GameNetwork.UDPport);
+         } catch (IOException ex) {
+         }
+        player = new Paddle(Paddle.PaddlePosition.BOTTOM, new PlayerInputGenerator());
+        player2 = new Paddle(Paddle.PaddlePosition.RIGHT, new PlayerInputGenerator());
+        player3 = new Paddle(Paddle.PaddlePosition.TOP, new PlayerInputGenerator());
+        player4= new Paddle(Paddle.PaddlePosition.LEFT, new PlayerInputGenerator());
         
-        addComponent(name);
+        players = new ArrayList<>();
+        players.add(player);
+        players.add(player2);
+        players.add(player3);
+        players.add(player4);        
         
-        btnExit = new GameButton("X",GamePanel.WIDTH-60,10);
+        ball = new Ball();        
+        
+        btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
         btnExit.addButtonListener(new ButtonListener(){          
             public void buttonClicked() {
+                client.close();
+                client.stop();
                setState(GameStateManager.INTRO_STATE);
             }                
-        });
+        });        
+    }
+   
+    @Override
+    public void draw(Graphics g) {             
         
-        btnConnect = new GameButton("Connect",300,420);
-        addComponent(btnConnect);
-        btnConnect.addButtonListener(new ButtonListener(){          
-            public void buttonClicked() {
-                btnExit.setEnabled(false);                
-                String userName = name.getText().trim();
-                char [] invalids = new char[]{'/','\\','-','(',')','~',' '};
-                errorMsg = "";
-                for(int i =0; i <invalids.length;i ++){
-                    if(userName.contains(Character.toString(invalids[i]))){
-                        errorMsg = "Invalid UserName, can't contain: " + Arrays.toString(invalids);
-                        return;
-                    }                    
-                }    
-                if(userName.contains("Enter Username") || userName.length()==0){
-                    errorMsg = "Enter a valid user name";
-                    return;
-                }
-                
-                MultiPlayerChat.userName = userName;
-                setState(GameStateManager.MULTIPLAYER_CHAT_STATE);    
-//                removeComponent(btnConnect);   
-//                status = new TextBox("Connecting...",300,420);
-//                addComponent(status);
-            }                
-        }); 
-    }
-    
-    @Override
-    public void update(float delta){
+        //Draw Score Card
+        g.setFont("Arial", Graphics.BOLD, 25);
+        g.setColor(Color.WHITE.getRGB());        
+        g.drawString("Score:",GamePanel.GAMEWIDTH+20,70);        
+        g.setFont("Arial",Graphics.PLAIN,15);
+        if(users!=null){
+            for(int i =0; i<users.length;i++)
+            {
+                g.drawString(users[i] +": "+p1score,GamePanel.GAMEWIDTH+40,90+20*i);
+            }
+        }        
+
+        //Sets the game area
+        g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
+        g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
+        
+        g.translate(5, 5);      
+        g.rotate(Math.toRadians(90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
+        
+        for(Paddle p: players) p.draw(g);
+        ball.draw(g);
        
-    }
-    
-    @Override
-    public void draw(Graphics g){
-        g.setColor(Color.WHITE.getRGB());
-         g.setFont("Arial", Graphics.BOLD, 180);       
-        g.drawString("4 P O N G", WIDTH/2 - g.getFontDimension("4 P O N G")[0]/2, 250);
-        g.setFont("Arial", Graphics.PLAIN, 50);
-        g.drawString("MULTIPLAYER",WIDTH/2,300);
-        g.setFont("Arial",Graphics.PLAIN,20);
-        if(errorMsg!=null || !errorMsg.equals("")){
-            g.drawString(errorMsg, 30, 550);
-        }
-    }
-    
+        g.rotate(Math.toRadians(-90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
+        g.translate(-5, -5);
+        g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
+        
+     
+    }    
+
     @Override
     public void handleInput() {
-        
+        InputUpdate i = new InputUpdate();     
+        i.input =-1;
+        if(Keys.isDown(Keys.W)){i.input = Keys.W;client.sendTCP(i);}
+        else if(Keys.isDown(Keys.S)){i.input = Keys.S;client.sendTCP(i);}
+        else if(Keys.isDown(Keys.A)){i.input = Keys.A;client.sendTCP(i);}
+        else if(Keys.isDown(Keys.D)){i.input = Keys.D;client.sendTCP(i);}
+        else client.sendTCP(i);
     }
-    
-    
+
+    @Override
+    public void update(float delta) {
+        handleInput();
+    }
 }

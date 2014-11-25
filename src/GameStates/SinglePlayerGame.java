@@ -91,7 +91,7 @@ public class SinglePlayerGame extends GameState{
             if(b.hitWall==true){
                 b.hitWall=false;
                 b.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));
-                b.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));
+                b.setVelocity(new Vector2D((float)Math.random()*(25+15)+15,(float)Math.toRadians(Math.random()*360), 1));
                 if(lastHit ==player) p1score++;
                 if(lastHit ==player2) p2score++;
                 if(lastHit ==player3) p3score++;
@@ -127,7 +127,8 @@ public class SinglePlayerGame extends GameState{
         //g.rotate(Math.toRadians(90), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
         for(Paddle p: players) p.draw(g);
         for(Ball b: ball) b.draw(g);
-               
+        g.setColor(Color.WHITE.getRGB());
+        g.drawString("Angular Velocity: " + ball.get(0).getAngularVelocity(), 10,30);
         CollisionResult s;        
         for(Paddle p: players){
             for(Ball b: ball){
@@ -137,6 +138,15 @@ public class SinglePlayerGame extends GameState{
                     lastHit = p;                   
                     b.getVelocity().thisBounceNormal(s.normal);
                     b.getVelocity().thisAdd(p.getVelocity());
+                    Vector2D norm = s.normal.getPerpendicular();
+                    float rel1 = b.getVelocity().dot(norm);
+                    float rel2 = p.getVelocity().dot(norm);
+                    float dir = b.getVelocity().dot(p.getVelocity());
+                    if(dir!=0)
+                        dir = dir/Math.abs(dir);
+                    float amount = rel1-rel2;
+                    b.setAngularVelocity(Math.abs(amount)*dir*4);
+                    
                 }
             }
         }

@@ -9,6 +9,7 @@ package G4Pong;
 import Engine.Geometry.Circle;
 import Engine.Geometry.Rectangle;
 import Engine.Vector2D;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,8 +18,12 @@ import Engine.Vector2D;
 public class Test {
     public static void main(String [] args)
     {
-        String hello = "hello";
-        String [] parts = hello.split(" ");
-        System.out.println(parts[0]);
+        
+        ArrayList<String>names = new ArrayList<>();
+        names.add("Muhammed");
+        names.add("Jason");
+        names.add("Trevor");
+        names.add("Jason");
+        System.out.println(names.toString());
     }
 }

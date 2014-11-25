@@ -147,7 +147,7 @@ public class IntroState extends GameState
         g.setFont("Arial", Graphics.BOLD, 180);       
         g.drawString("4 P O N G", WIDTH/2 - g.getFontDimension("4 P O N G")[0]/2, 250);
         g.setFont("Arial", Graphics.PLAIN, 20);
-        g.drawString("Muhammed A. , Jason X. , Trevor W.", WIDTH-g.getFontDimension("Muhammed A. , Jason X., Trevor W.")[0]-100, 300);
+        g.drawString("Muhammed A. , Jason X. , Trevor W. , Narayan J.", WIDTH-g.getFontDimension("Muhammed A. , Jason X. , Trevor W. , Narayan J.")[0]-100, 300);
         
         //Draw Instructions and welcome details
         g.setFont("Arial", Graphics.BOLD, 45);

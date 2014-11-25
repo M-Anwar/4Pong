@@ -8,12 +8,13 @@ package Engine;
 
 import G4Pong.GamePanel;
 import GameStates.IntroState;
-import GameStates.TestBench.JasonTestBench;
-import GameStates.TestBench.MTestBench;
 import GameStates.MultiPlayerChat;
 import GameStates.MultiPlayerGame;
+import GameStates.MultiPlayerLogin;
 import GameStates.Options;
 import GameStates.SinglePlayerGame;
+import GameStates.TestBench.JasonTestBench;
+import GameStates.TestBench.MTestBench;
 import GameStates.TestBench.TrevorTestBench;
 import java.awt.Color;
 
@@ -39,10 +40,11 @@ public class GameStateManager
     public static final int MULTI_PLAYER_STATE = 5;
     public static final int MULTIPLAYER_CHAT_STATE = 6;
     public static final int TTEST_STATE = 7;
+    public static final int MULTI_PLAYER_GAME_STATE=8;
     
 
     public GameStateManager() {
-        currentState = MULTI_PLAYER_STATE;//MTEST_STATE;
+        currentState = INTRO_STATE;//MULTI_PLAYER_GAME_STATE;//MULTI_PLAYER_STATE;//MTEST_STATE;
         loadState(currentState);
     }
 
@@ -58,11 +60,13 @@ public class GameStateManager
             else if(state == MTEST_STATE)
                     gameState =new MTestBench(this);
             else if(state == MULTI_PLAYER_STATE)
-                    gameState = new MultiPlayerGame(this);
+                    gameState = new MultiPlayerLogin(this);
             else if(state == MULTIPLAYER_CHAT_STATE)
                     gameState = new MultiPlayerChat(this);
             else if(state == TTEST_STATE)
                     gameState =new TrevorTestBench(this);
+            else if(state == MULTI_PLAYER_GAME_STATE)
+                    gameState = new MultiPlayerGame(this);
 
     }
 

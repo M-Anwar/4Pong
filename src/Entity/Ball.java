@@ -19,6 +19,7 @@ import java.awt.Color;
 public class Ball extends GameObject
 {
     private float maxSpeed = 50;
+    private float maxAngularVel =60;
     public boolean hitWall=false;
     public Ball()
     {
@@ -26,11 +27,12 @@ public class Ball extends GameObject
         //this.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2,GamePanel.GAMEHEIGHT/2));
         //this.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));   
         this.setVelocity(new Vector2D(0,(float)Math.random()*(30-20)+20));      
-        this.setAngularVelocity(10);
+        //this.setAngularVelocity(100);
     }
     @Override
-    public void update(float delta) {         
-        this.bounds.setRotation((float)Math.toRadians(10));
+    public void update(float delta) {   
+        this.setRotation(this.getRotation()+(float)Math.toRadians(this.getAngularVelocity()*delta));
+       
         this.setPosition(this.getPosition().add(velocity.scale(delta)));   
         Vector2D position = bounds.getPosition();
         float radius = bounds.getRadius();
@@ -40,9 +42,16 @@ public class Ball extends GameObject
         if((position.y +radius/2)>GamePanel.GAMEHEIGHT){ bounds.setYPosition(GamePanel.GAMEHEIGHT-radius/2);velocity.thisBounceNormal(new Vector2D(0,-1));hitWall=true;}
          if(velocity.length()>maxSpeed){
             velocity = velocity.normalize().scale(maxSpeed);
-        }                
+        }
+         this.angularVelocity*=(float)Math.pow(0.90f, delta);
+         this.velocity.thisRotate((float)Math.toRadians(getAngleChange(delta)));
+         if(Math.abs(this.angularVelocity) > maxAngularVel) this.angularVelocity=maxAngularVel*this.angularVelocity/Math.abs(this.angularVelocity);
+         
     }
-
+    private float getAngleChange(float delta)
+    {
+        return this.angularVelocity/500*this.velocity.length()*delta;
+    }
     @Override
     public void draw(Graphics g) {
         

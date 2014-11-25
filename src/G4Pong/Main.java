@@ -23,7 +23,7 @@ import javax.swing.JFrame;
  * @author muhammed.anwar
  */
 public class Main extends JFrame{
-    
+    public static final boolean debug = false;
     public Main()
     {           
         this.setTitle("4Pong");
@@ -32,7 +32,7 @@ public class Main extends JFrame{
         this.add((new GamePanel()));            
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setUndecorated(true);
+        this.setUndecorated(!debug);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
