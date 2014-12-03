@@ -47,7 +47,7 @@ public class ChatServer {
     public static void main(String[] args) 
     {   
         try {
-            System.out.println("Starting Server");
+            System.out.println("Starting Server [type 'help' for list of commands]");
             server  = new Server(){ 
                 protected Connection newConnection(){
                     return new ChatConnection();
@@ -268,6 +268,17 @@ public class ChatServer {
                             }
                         }
                     }  
+                    else if (input.contains("help"))
+                    {
+                        System.out.println("Commands possible: " );
+                        System.out.println("\texit: stops the server and game server and exits the application");
+                        System.out.println("\tconnections: shows a list of all the current connections to the chat and game server");
+                        System.out.println("\tdisconall: disconnect all clients from the chat server");
+                        System.out.println("\tdiscon <name>: disconnect the specified person from the chat server (argument passed with a space)");
+                        System.out.println("\tdisconallg: disconnect all clients from the game server");
+                        System.out.println("\tdiscong <name>: disconnect the specified person from the game server (argument passed with a space)");
+                        System.out.println("\t\tHelpful Tip: Always try to stop the server using the 'exit' command");
+                    }
                     
                     
                 }                
