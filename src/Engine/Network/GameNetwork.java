@@ -30,6 +30,8 @@ public class GameNetwork {
         kryo.register(PositionUpdate.class);
         kryo.register(InputUpdate.class);
         kryo.register(PlayerNumber.class);
+        kryo.register(ScoreUpdate.class);
+        kryo.register(int[].class);
     }    
     public static class PositionUpdate
     {
@@ -45,6 +47,10 @@ public class GameNetwork {
     public static class PlayerNumber
     {
         public int playerNum;
+    }
+    public static class ScoreUpdate
+    {
+        public int scores[];
     }
     
 }

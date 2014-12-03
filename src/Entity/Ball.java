@@ -21,12 +21,13 @@ public class Ball extends GameObject
     private float maxSpeed = 50;
     private float maxAngularVel =60;
     public boolean hitWall=false;
+    public int wallHit;
     public Ball()
     {
         this.bounds = new Circle(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2,10);
         //this.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2,GamePanel.GAMEHEIGHT/2));
         //this.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));   
-        this.setVelocity(new Vector2D(0,(float)Math.random()*(30-20)+20));      
+        this.setVelocity(new Vector2D(0,(float)Math.random()*(30-20)+20));       
         //this.setAngularVelocity(100);
     }
     @Override
@@ -36,10 +37,10 @@ public class Ball extends GameObject
         this.setPosition(this.getPosition().add(velocity.scale(delta)));   
         Vector2D position = bounds.getPosition();
         float radius = bounds.getRadius();
-        if((position.x -radius/2)<0){ bounds.setXPosition(radius/2); velocity.thisBounceNormal(new Vector2D(1,0));hitWall=true;}
-        if((position.x +radius/2)>GamePanel.GAMEWIDTH){ bounds.setXPosition(GamePanel.GAMEWIDTH-radius/2);velocity.thisBounceNormal(new Vector2D(-1,0));hitWall=true;}
-        if((position.y -radius/2)<0){bounds.setYPosition(radius/2);velocity.thisBounceNormal(new Vector2D(0,1));hitWall=true;}
-        if((position.y +radius/2)>GamePanel.GAMEHEIGHT){ bounds.setYPosition(GamePanel.GAMEHEIGHT-radius/2);velocity.thisBounceNormal(new Vector2D(0,-1));hitWall=true;}
+        if((position.x -radius/2)<0){ bounds.setXPosition(radius/2); velocity.thisBounceNormal(new Vector2D(1,0));hitWall=true;wallHit = 4;}
+        if((position.x +radius/2)>GamePanel.GAMEWIDTH){ bounds.setXPosition(GamePanel.GAMEWIDTH-radius/2);velocity.thisBounceNormal(new Vector2D(-1,0));hitWall=true;wallHit=2;}
+        if((position.y -radius/2)<0){bounds.setYPosition(radius/2);velocity.thisBounceNormal(new Vector2D(0,1));hitWall=true;wallHit = 3;}
+        if((position.y +radius/2)>GamePanel.GAMEHEIGHT){ bounds.setYPosition(GamePanel.GAMEHEIGHT-radius/2);velocity.thisBounceNormal(new Vector2D(0,-1));hitWall=true;wallHit=1;}
          if(velocity.length()>maxSpeed){
             velocity = velocity.normalize().scale(maxSpeed);
         }

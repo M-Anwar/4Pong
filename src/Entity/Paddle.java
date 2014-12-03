@@ -93,6 +93,7 @@ public class Paddle extends GameObject
 //        if(Keys.isDown(Keys.D)){this.velocity.thisAdd(new Vector2D(8,0));}
         
     }
+   
     private Rectangle getBounds(PaddlePosition pos)
     {
         Rectangle r = null;

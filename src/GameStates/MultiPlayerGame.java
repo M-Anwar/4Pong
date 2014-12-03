@@ -13,10 +13,12 @@ import Engine.GameStateManager;
 import Engine.Geometry.CollisionResult;
 import Engine.Graphics;
 import Engine.Keys;
+import Engine.Network.ChatServer;
 import Engine.Network.GameNetwork;
 import Engine.Network.GameNetwork.InputUpdate;
 import Engine.Network.GameNetwork.PlayerNumber;
 import Engine.Network.GameNetwork.PositionUpdate;
+import Engine.Network.GameNetwork.ScoreUpdate;
 import Engine.Network.Network;
 import Engine.Vector2D;
 import Entity.Ball;
@@ -50,16 +52,16 @@ public class MultiPlayerGame extends GameState {
     public Ball ball;    
     
     public Paddle lastHit;
-    public int p1score;
-    public int p2score;
-    public int p3score;
-    public int p4score;
+    public int[]scores;
     
     public Client client;
      public String [] users;
      public int playerNum;
      
     private float rotation = 0;
+    private boolean gameOver;
+    private int winner;
+    private float counter;
     public MultiPlayerGame(GameStateManager gsm) {
         super(gsm);       
     }
@@ -67,7 +69,7 @@ public class MultiPlayerGame extends GameState {
     @Override
     public void init() 
     {      
-        client = new Client();
+            client = new Client();
             GameNetwork.register(client);
 
             new Thread(client).start();            
@@ -89,8 +91,7 @@ public class MultiPlayerGame extends GameState {
                     }
                     if(object instanceof Network.ChatMessage)
                     {
-                        Network.ChatMessage response = (Network.ChatMessage)object;
-                        
+                        Network.ChatMessage response = (Network.ChatMessage)object;                        
                     }
                     if(object instanceof Network.RegisteredNames)
                     {
@@ -114,6 +115,18 @@ public class MultiPlayerGame extends GameState {
                         }
                         if(p.ID.equals("PLAYER3")){
                             players.get(3).setPosition(new Vector2D(p.x,p.y));
+                        }
+                    }
+                    if(object instanceof ScoreUpdate)
+                    {
+                        ScoreUpdate scup = (ScoreUpdate)object;
+                        scores = scup.scores;
+                        for(int i =0; i <scores.length;i++)
+                        {
+                            if(scores[i]>ChatServer.maxScore){
+                                gameOver=true;
+                                winner = i;
+                            }
                         }
                     }
                 }
@@ -140,6 +153,11 @@ public class MultiPlayerGame extends GameState {
         players.add(player4);        
         
         ball = new Ball();        
+        scores = new int[4];
+        
+        //Game over variable initialization
+        counter=0;
+        gameOver=false;
         
         btnExit = new GameButton("X",GamePanel.WIDTH-60,20);
         addComponent(btnExit);
@@ -155,6 +173,8 @@ public class MultiPlayerGame extends GameState {
     @Override
     public void draw(Graphics g) {             
         
+        
+   
         //Draw Score Card
         g.setFont("Arial", Graphics.BOLD, 25);
         g.setColor(Color.WHITE.getRGB());        
@@ -163,21 +183,37 @@ public class MultiPlayerGame extends GameState {
         if(users!=null){
             for(int i =0; i<users.length;i++)
             {
-                g.drawString(users[i] +": "+p1score,GamePanel.GAMEWIDTH+40,90+20*i);
+                if(i==0)g.setColor(new Color(146,208,80).getRGB());
+                else if(i==1)g.setColor(Color.CYAN.getRGB());
+                else if(i==2)g.setColor(Color.RED.getRGB());
+                else if(i==3)g.setColor(Color.ORANGE.getRGB());
+                g.drawString(users[i] +": "+scores[i],GamePanel.GAMEWIDTH+40,90+20*i);
+                g.setColor(Color.WHITE.getRGB());
             }
         }        
 
         //Sets the game area
         g.drawRect(5, 5, GamePanel.GAMEWIDTH,GamePanel.GAMEHEIGHT);
-        g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);
-        
+        g.setClip(5, 5, GamePanel.GAMEWIDTH, GamePanel.GAMEHEIGHT);   
         g.translate(5, 5);      
-        g.rotate(Math.toRadians(90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
-        
-        for(Paddle p: players) p.draw(g);
-        ball.draw(g);
-       
-        g.rotate(Math.toRadians(-90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
+        if(gameOver){
+            g.setColor(Color.WHITE.getRGB());
+            g.setFont("Arial", Graphics.BOLD,60);            
+            g.drawString("GameOver!", GamePanel.GAMEWIDTH/2-g.getFontDimension("GameOver!")[0]/2, 100);
+            g.drawString(users[winner]+" won the game!", GamePanel.GAMEWIDTH/2-g.getFontDimension(users[winner]+" won the game!")[0]/2, 200);
+            g.drawString("", GamePanel.GAMEWIDTH-g.getFontDimension("GameOver!")[0], 100);            
+            if(counter>=80){
+                client.close();
+                client.stop();
+                setState(GameStateManager.MULTIPLAYER_CHAT_STATE);
+            }
+        }
+        else{            
+            g.rotate(Math.toRadians(90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);        
+            for(Paddle p: players) p.draw(g);
+            ball.draw(g);       
+            g.rotate(Math.toRadians(-90*playerNum), GamePanel.GAMEWIDTH/2+5, GamePanel.GAMEHEIGHT/2+5);
+        }
         g.translate(-5, -5);
         g.setClip(0,0,GamePanel.WIDTH,GamePanel.HEIGHT);
         
@@ -198,5 +234,6 @@ public class MultiPlayerGame extends GameState {
     @Override
     public void update(float delta) {
         handleInput();
+        if(gameOver){counter+=delta;}
     }
 }

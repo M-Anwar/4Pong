@@ -10,6 +10,7 @@ import Engine.Geometry.CollisionResult;
 import Engine.Network.GameNetwork.InputUpdate;
 import Engine.Network.GameNetwork.PlayerNumber;
 import Engine.Network.GameNetwork.PositionUpdate;
+import Engine.Network.GameNetwork.ScoreUpdate;
 import Engine.Network.Network.BeginGame;
 import Engine.Network.Network.ChatMessage;
 import Engine.Network.Network.ReadyState;
@@ -39,6 +40,7 @@ public class ChatServer {
     public static Server server;
     public static Server gameServer;
     public final static int players =4;
+    public final static int maxScore=15;
     public final static boolean debug = true;
     public static Runnable gameThread;
     public static int playerCount=0;
@@ -314,6 +316,9 @@ class GameThread implements Runnable
     public ArrayList<Paddle> players;
     public ArrayList<ClientInputGenerator> inputs;
     public boolean isRunning = true;
+    public Paddle lastHit;
+    public int scores[];
+    public boolean gameOver;
     public GameThread(Server server)
     {
         this.server = server;
@@ -332,6 +337,7 @@ class GameThread implements Runnable
         players.add(new Paddle(Paddle.PaddlePosition.LEFT, inputs.get(3)));
         for(Paddle p:players)p.update(0);
         
+        scores = new int[4];
         server.addListener(new Listener(){
             public void received(Connection c, Object object){
                 GameConnection connection = (GameConnection)c;
@@ -343,57 +349,77 @@ class GameThread implements Runnable
                 }
             }        
         });
+        gameOver= false;
     }
     @Override
     public void run() {
         while(server.getConnections().length<ChatServer.players && isRunning){try {Thread.sleep(100);} catch (InterruptedException ex) {}   }
         while(isRunning){
             if(server.getConnections().length==ChatServer.players){
-                PositionUpdate pos = new PositionUpdate();
-                   
-                //Game Logic run on server
-                ball.update(0.1547197f);
-                for(Paddle p: players)p.update(0.15f);
-                if(ball.hitWall==true){
-                    ball.hitWall=false;
-                    ball.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));                   
-                    ball.setVelocity(new Vector2D((float)Math.random()*(15-10)+10,(float)Math.toRadians(Math.random()*360), 1));
-                }
-                 CollisionResult s;        
-                for(Paddle p: players){                    
-                    if((s=p.getShape().collides(ball.getShape()))!=null)
-                    {              
-                        ball.getPosition().thisAdd(s.mts);                                 
-                        ball.getVelocity().thisBounceNormal(s.normal);
-                        ball.getVelocity().thisAdd(p.getVelocity());
-                        Vector2D norm = s.normal.getPerpendicular();
-                        float rel1 = ball.getVelocity().dot(norm);
-                        float rel2 = p.getVelocity().dot(norm);
-                        float dir = ball.getVelocity().dot(p.getVelocity());
-                        if(dir!=0)
-                            dir = dir/Math.abs(dir);
-                        float amount = rel1-rel2;
-                        ball.setAngularVelocity(Math.abs(amount)*dir*4);
+                if(gameOver==false){
+                    PositionUpdate pos = new PositionUpdate();
 
-                    }                    
-                }
-                //Server side code for client side rendering
-                pos.ID = "BALL";     
-                pos.x = ball.getPosition().x;
-                pos.y = ball.getPosition().y;       
-                server.sendToAllTCP(pos);
-                int i =0;
-                for(Paddle p: players){
-                    pos.ID = "PLAYER"+i; i++;                    
-                    pos.x = p.getPosition().x;
-                    pos.y = p.getPosition().y;
-                    server.sendToAllTCP(pos);                            
+                    //Game Logic run on server
+                    ball.update(0.1547197f);
+                    for(Paddle p: players)p.update(0.15f);
+                    if(ball.hitWall==true){
+                        ball.hitWall=false;
+                        ball.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));                   
+                        ball.setVelocity(new Vector2D((float)Math.random()*(15-10)+10,(float)Math.toRadians(Math.random()*360), 1));
+                        if(lastHit == players.get(0) && ball.wallHit!=1)scores[0]++;
+                        if(lastHit == players.get(1) && ball.wallHit!=2)scores[1]++;
+                        if(lastHit == players.get(2) && ball.wallHit!=3)scores[2]++;
+                        if(lastHit == players.get(3) && ball.wallHit!=4)scores[3]++;
+                        lastHit =null;
+                        for(int i =0;i <scores.length;i++)
+                        {
+                            if(scores[i]>ChatServer.maxScore){
+                                gameOver=true;
+                            }
+                        }
+                        ScoreUpdate scup = new ScoreUpdate();
+                        scup.scores = this.scores;
+                        server.sendToAllTCP(scup);
+                    }
+                     CollisionResult s;        
+                    for(Paddle p: players){                    
+                        if((s=p.getShape().collides(ball.getShape()))!=null)
+                        {              
+                            lastHit = p;
+                            ball.getPosition().thisAdd(s.mts);                                 
+                            ball.getVelocity().thisBounceNormal(s.normal);
+                            ball.getVelocity().thisAdd(p.getVelocity());
+                            Vector2D norm = s.normal.getPerpendicular();
+                            float rel1 = ball.getVelocity().dot(norm);
+                            float rel2 = p.getVelocity().dot(norm);
+                            float dir = ball.getVelocity().dot(p.getVelocity());
+                            if(dir!=0)
+                                dir = dir/Math.abs(dir);
+                            float amount = rel1-rel2;
+                            ball.setAngularVelocity(Math.abs(amount)*dir*4);
+
+                        }                    
+                    }
+                    //Server side code for client side rendering
+                    pos.ID = "BALL";     
+                    pos.x = ball.getPosition().x;
+                    pos.y = ball.getPosition().y;       
+                    server.sendToAllTCP(pos);
+                    int i =0;
+                    for(Paddle p: players){
+                        pos.ID = "PLAYER"+i; i++;                    
+                        pos.x = p.getPosition().x;
+                        pos.y = p.getPosition().y;
+                        server.sendToAllTCP(pos);                            
+                    }
                 }
             }
             else{
                 try {Thread.sleep(5000);} catch (InterruptedException ex) {}            
                 ball.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));
-                ball.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20)); 
+                ball.setVelocity(new Vector2D((float)Math.random()*20,(float)Math.random()*20));
+                gameOver= false;
+                scores = new int[4];
             }
             try {Thread.sleep(10);} catch (InterruptedException ex) {}            
         }

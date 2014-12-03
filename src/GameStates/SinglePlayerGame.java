@@ -89,13 +89,14 @@ public class SinglePlayerGame extends GameState{
         for(Ball b: ball) {
             b.update(delta);
             if(b.hitWall==true){
-                b.hitWall=false;
+                b.hitWall=false;                
                 b.setPosition(new Vector2D(GamePanel.GAMEWIDTH/2, GamePanel.GAMEHEIGHT/2));
-                b.setVelocity(new Vector2D((float)Math.random()*(25+15)+15,(float)Math.toRadians(Math.random()*360), 1));
-                if(lastHit ==player) p1score++;
-                if(lastHit ==player2) p2score++;
-                if(lastHit ==player3) p3score++;
-                if(lastHit ==player4) p4score++;
+                b.setVelocity(new Vector2D((float)Math.random()*(25+15)+15,(float)Math.toRadians(Math.random()*360), 1));             
+                if(lastHit == players.get(0) && ball.get(0).wallHit!=1)p1score++;
+                if(lastHit == players.get(1) && ball.get(0).wallHit!=2)p2score++;
+                if(lastHit == players.get(2) && ball.get(0).wallHit!=3)p3score++;
+                if(lastHit == players.get(3) && ball.get(0).wallHit!=4)p4score++;
+                lastHit =null;
             }
         }
        
@@ -128,7 +129,6 @@ public class SinglePlayerGame extends GameState{
         for(Paddle p: players) p.draw(g);
         for(Ball b: ball) b.draw(g);
         g.setColor(Color.WHITE.getRGB());
-        g.drawString("Angular Velocity: " + ball.get(0).getAngularVelocity(), 10,30);
         CollisionResult s;        
         for(Paddle p: players){
             for(Ball b: ball){

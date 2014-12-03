@@ -37,7 +37,7 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author Jason Xu
+ * @author Jason Xu and Muhammed Anwar
  */
 public class MultiPlayerChat extends GameState{   
     private GameButton btnExit;   
